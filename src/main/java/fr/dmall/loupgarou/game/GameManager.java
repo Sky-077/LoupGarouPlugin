@@ -4,23 +4,19 @@ import fr.dmall.loupgarou.manager.Manager;
 
 public class GameManager implements Manager {
 
-    private GameState gameState;
+    private Game currentGame;
 
     @Override
     public void enable() {
-        gameState = GameState.WAITING;
+        currentGame = new Game();
     }
 
     @Override
     public void disable() {
-
+        currentGame = null;
     }
 
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
+    public Game getCurrentGame() {
+        return currentGame;
     }
 }
