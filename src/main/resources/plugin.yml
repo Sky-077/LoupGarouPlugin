@@ -1,0 +1,11 @@
+name: LoupGarouPlugin
+version: '1.0.0'
+main: fr.dmall.loupgarou.LoupGarouPlugin
+api-version: '1.21'
+author: dmall
+description: Plugin Loup-Garou
+
+commands:
+  lg:
+    description: Commande principale du plugin
+    usage: /lg
