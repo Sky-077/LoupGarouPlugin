@@ -7,7 +7,11 @@ import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
+import fr.dmall.loupgarou.role.village.VillageoisRole;
 import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StartSubCommand implements SubCommand {
 
@@ -45,18 +49,25 @@ public class StartSubCommand implements SubCommand {
 
         game.clearPlayers();
 
+        List<LGPlayer> players = new ArrayList<>();
+
         for (LGPlayer player : playerManager.getPlayers()) {
-
-            roleManager.assignDefaultRole(player);
-
             game.addPlayer(player);
-
+            players.add(player);
         }
+
+        roleManager.clearGameRoles();
+
+        // Pour le moment, tous les joueurs seront Villageois.
+        // Plus tard, cette liste sera configurée avant la partie.
+        roleManager.addGameRole(new VillageoisRole());
+
+        roleManager.assignRoles(players);
 
         game.setState(GameState.PLAYING);
 
         sender.sendMessage("§aLa partie a été lancée !");
-        sender.sendMessage("§7Joueurs : §e" + game.getPlayers().size());
+        sender.sendMessage("§7Joueurs : §e" + players.size());
 
         return true;
     }
