@@ -2,7 +2,9 @@ package fr.dmall.loupgarou;
 
 import fr.dmall.loupgarou.command.LGCommand;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.listener.PlayerConnectionListener;
 import fr.dmall.loupgarou.manager.ManagerRegistry;
+import fr.dmall.loupgarou.player.PlayerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class LoupGarouPlugin extends JavaPlugin {
@@ -18,12 +20,18 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry = new ManagerRegistry();
 
         managerRegistry.register(new GameManager());
+        managerRegistry.register(new PlayerManager());
 
         managerRegistry.enableAll();
 
         getCommand("lg").setExecutor(new LGCommand());
 
-        getLogger().info("Plugin activé !");
+        getServer().getPluginManager().registerEvents(
+                new PlayerConnectionListener(),
+                this
+        );
+
+        getLogger().info("Plugin LoupGarou activé !");
     }
 
     @Override
