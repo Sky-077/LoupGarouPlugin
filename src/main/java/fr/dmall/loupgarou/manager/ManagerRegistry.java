@@ -11,6 +11,15 @@ public class ManagerRegistry {
         managers.add(manager);
     }
 
+    public <T extends Manager> T getManager(Class<T> clazz) {
+        for (Manager manager : managers) {
+            if (clazz.isInstance(manager)) {
+                return clazz.cast(manager);
+            }
+        }
+        return null;
+    }
+
     public void enableAll() {
         managers.forEach(Manager::enable);
     }
