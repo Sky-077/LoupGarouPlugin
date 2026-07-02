@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
 import fr.dmall.loupgarou.manager.ManagerRegistry;
 import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.role.RoleManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class LoupGarouPlugin extends JavaPlugin {
@@ -15,12 +16,14 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         instance = this;
 
         managerRegistry = new ManagerRegistry();
 
         managerRegistry.register(new GameManager());
         managerRegistry.register(new PlayerManager());
+        managerRegistry.register(new RoleManager());
 
         managerRegistry.enableAll();
 
@@ -36,7 +39,9 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
         managerRegistry.disableAll();
+
     }
 
     public static LoupGarouPlugin getInstance() {
@@ -46,4 +51,5 @@ public final class LoupGarouPlugin extends JavaPlugin {
     public ManagerRegistry getManagerRegistry() {
         return managerRegistry;
     }
+
 }
