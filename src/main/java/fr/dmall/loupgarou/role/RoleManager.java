@@ -6,61 +6,67 @@ import fr.dmall.loupgarou.role.village.VillageoisRole;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RoleManager implements Manager {
 
-    private final List<Role> registeredRoles = new ArrayList<>();
-    private final List<Role> gameRoles = new ArrayList<>();
+    private final Map<String, Integer> gameRoles = new LinkedHashMap<>();
 
     @Override
     public void enable() {
 
-        register(new VillageoisRole());
+        RoleFactory.register("villageois", VillageoisRole::new);
 
     }
 
     @Override
     public void disable() {
 
-        registeredRoles.clear();
         gameRoles.clear();
 
     }
 
-    public void register(Role role) {
-        registeredRoles.add(role);
+    public void addGameRole(String name, int amount) {
+
+        if (!RoleFactory.exists(name)) {
+            throw new IllegalArgumentException("Rôle inconnu : " + name);
+        }
+
+        gameRoles.merge(name.toLowerCase(), amount, Integer::sum);
+
     }
 
-    public List<Role> getRegisteredRoles() {
-        return Collections.unmodifiableList(registeredRoles);
-    }
-
-    public List<Role> getGameRoles() {
-        return Collections.unmodifiableList(gameRoles);
+    public boolean removeGameRole(String name) {
+        return gameRoles.remove(name.toLowerCase()) != null;
     }
 
     public void clearGameRoles() {
         gameRoles.clear();
     }
 
-    public void addGameRole(Role role) {
-        gameRoles.add(role);
+    public Map<String, Integer> getGameRoles() {
+        return Collections.unmodifiableMap(gameRoles);
     }
 
     public void assignRoles(List<LGPlayer> players) {
 
-        Collections.shuffle(gameRoles);
+        List<String> pool = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> entry : gameRoles.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                pool.add(entry.getKey());
+            }
+        }
+
+        Collections.shuffle(pool);
 
         for (int i = 0; i < players.size(); i++) {
 
-            Role role;
-
-            if (i < gameRoles.size()) {
-                role = RoleFactory.create(gameRoles.get(i));
-            } else {
-                role = new VillageoisRole();
-            }
+            Role role = (i < pool.size())
+                    ? RoleFactory.create(pool.get(i))
+                    : new VillageoisRole();
 
             players.get(i).setRole(role);
 

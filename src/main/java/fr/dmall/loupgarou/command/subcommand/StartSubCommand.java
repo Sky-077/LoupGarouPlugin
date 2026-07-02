@@ -7,7 +7,6 @@ import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
-import fr.dmall.loupgarou.role.village.VillageoisRole;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -55,12 +54,6 @@ public class StartSubCommand implements SubCommand {
             game.addPlayer(player);
             players.add(player);
         }
-
-        roleManager.clearGameRoles();
-
-        // Pour le moment, tous les joueurs seront Villageois.
-        // Plus tard, cette liste sera configurée avant la partie.
-        roleManager.addGameRole(new VillageoisRole());
 
         roleManager.assignRoles(players);
 

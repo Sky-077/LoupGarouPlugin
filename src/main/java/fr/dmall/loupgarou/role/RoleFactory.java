@@ -1,19 +1,33 @@
 package fr.dmall.loupgarou.role;
 
-import fr.dmall.loupgarou.role.village.VillageoisRole;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class RoleFactory {
+
+    private static final Map<String, Supplier<Role>> ROLES = new LinkedHashMap<>();
 
     private RoleFactory() {
     }
 
-    public static Role create(Role role) {
+    public static void register(String name, Supplier<Role> supplier) {
+        ROLES.put(name.toLowerCase(), supplier);
+    }
 
-        if (role instanceof VillageoisRole) {
-            return new VillageoisRole();
+    public static boolean exists(String name) {
+        return ROLES.containsKey(name.toLowerCase());
+    }
+
+    public static Role create(String name) {
+
+        Supplier<Role> supplier = ROLES.get(name.toLowerCase());
+
+        if (supplier == null) {
+            throw new IllegalArgumentException("Rôle inconnu : " + name);
         }
 
-        throw new IllegalArgumentException("Rôle inconnu : " + role.getClass().getSimpleName());
+        return supplier.get();
     }
 
 }

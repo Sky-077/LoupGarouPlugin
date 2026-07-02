@@ -22,6 +22,7 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§e/lg info §7- Informations de la partie");
         sender.sendMessage("§e/lg start §7- Lance une partie");
         sender.sendMessage("§e/lg stop §7- Arrête la partie");
+        sender.sendMessage("§e/lg role §7- Configure les rôles (add/remove/list/clear)");
 
         return true;
     }
