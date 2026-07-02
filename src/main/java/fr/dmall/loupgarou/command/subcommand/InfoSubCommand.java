@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.command.subcommand;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.player.LGPlayer;
 import org.bukkit.command.CommandSender;
 
 public class InfoSubCommand implements SubCommand {
@@ -29,6 +30,12 @@ public class InfoSubCommand implements SubCommand {
         sender.sendMessage("§6===== Informations =====");
         sender.sendMessage("§eÉtat : §f" + game.getState());
         sender.sendMessage("§eJoueurs : §f" + game.getPlayers().size());
+
+        for (LGPlayer player : game.getPlayers()) {
+            if (player.getRole() != null) {
+                sender.sendMessage(" §7- §f" + player.getRole().getName());
+            }
+        }
 
         return true;
     }

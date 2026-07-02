@@ -4,6 +4,9 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
+import fr.dmall.loupgarou.player.LGPlayer;
+import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.role.village.VillageoisRole;
 import org.bukkit.command.CommandSender;
 
 public class StartSubCommand implements SubCommand {
@@ -25,6 +28,10 @@ public class StartSubCommand implements SubCommand {
                 .getManagerRegistry()
                 .getManager(GameManager.class);
 
+        PlayerManager playerManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(PlayerManager.class);
+
         Game game = gameManager.getCurrentGame();
 
         if (game.getState() != GameState.WAITING) {
@@ -32,9 +39,17 @@ public class StartSubCommand implements SubCommand {
             return true;
         }
 
+        game.clearPlayers();
+
+        for (LGPlayer player : playerManager.getPlayers()) {
+            player.setRole(new VillageoisRole());
+            game.addPlayer(player);
+        }
+
         game.setState(GameState.PLAYING);
 
         sender.sendMessage("§aLa partie a été lancée !");
+        sender.sendMessage("§7Joueurs : §e" + game.getPlayers().size());
 
         return true;
     }

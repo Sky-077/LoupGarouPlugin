@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.player.LGPlayer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Game {
@@ -24,14 +25,20 @@ public class Game {
     }
 
     public List<LGPlayer> getPlayers() {
-        return players;
+        return Collections.unmodifiableList(players);
     }
 
     public void addPlayer(LGPlayer player) {
-        players.add(player);
+        if (!players.contains(player)) {
+            players.add(player);
+        }
     }
 
     public void removePlayer(LGPlayer player) {
         players.remove(player);
+    }
+
+    public void clearPlayers() {
+        players.clear();
     }
 }
