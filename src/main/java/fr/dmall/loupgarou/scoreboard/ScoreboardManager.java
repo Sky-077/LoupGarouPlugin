@@ -21,6 +21,7 @@ import org.bukkit.scoreboard.Scoreboard;
 public class ScoreboardManager implements Manager {
 
     private static final String OBJECTIVE_NAME = "lg_uhc";
+    private static final int DIAMOND_TARGET = 17;
 
     private BukkitTask task;
 
@@ -100,6 +101,7 @@ public class ScoreboardManager implements Manager {
 
         String group = "-";
         String kills = "-";
+        String diamonds = "0/" + DIAMOND_TARGET;
 
         if (lgPlayer != null) {
 
@@ -110,10 +112,11 @@ public class ScoreboardManager implements Manager {
             }
 
             kills = String.valueOf(lgPlayer.getKills());
+            diamonds = lgPlayer.getDiamonds() + "/" + DIAMOND_TARGET;
 
         }
 
-        int line = 8;
+        int line = 9;
 
         objective.getScore("§e» §fInformations").setScore(line--);
         objective.getScore("§7Durée: §f" + duration).setScore(line--);
@@ -123,6 +126,7 @@ public class ScoreboardManager implements Manager {
         objective.getScore("§7Joueurs: §f" + players).setScore(line--);
         objective.getScore("§7Bordure: §f" + border).setScore(line--);
         objective.getScore("§7Kills: §f" + kills).setScore(line--);
+        objective.getScore("§bDiamants: §f" + diamonds).setScore(line--);
 
         player.setScoreboard(scoreboard);
 

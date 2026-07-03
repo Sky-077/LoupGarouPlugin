@@ -6,6 +6,7 @@ import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.listener.AutoSmeltListener;
+import fr.dmall.loupgarou.listener.DiamondCounterListener;
 import fr.dmall.loupgarou.listener.LethalDamageListener;
 import fr.dmall.loupgarou.listener.PetiteFilleListener;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
@@ -65,6 +66,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new AutoSmeltListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new DiamondCounterListener(),
                 this
         );
 

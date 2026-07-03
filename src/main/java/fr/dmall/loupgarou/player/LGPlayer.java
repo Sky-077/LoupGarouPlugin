@@ -10,6 +10,7 @@ public class LGPlayer {
 
     private boolean alive;
     private int kills;
+    private int diamonds;
 
     private Role role;
 
@@ -37,6 +38,14 @@ public class LGPlayer {
 
     public void addKill() {
         kills++;
+    }
+
+    public int getDiamonds() {
+        return diamonds;
+    }
+
+    public void addDiamonds(int amount) {
+        diamonds += amount;
     }
 
     public Role getRole() {
