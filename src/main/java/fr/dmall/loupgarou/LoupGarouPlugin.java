@@ -4,6 +4,7 @@ import fr.dmall.loupgarou.command.LGCommand;
 import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.listener.LethalDamageListener;
 import fr.dmall.loupgarou.listener.PetiteFilleListener;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
@@ -28,6 +29,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry = new ManagerRegistry();
 
         managerRegistry.register(new GameManager());
+        managerRegistry.register(new WorldManager());
         managerRegistry.register(new PlayerManager());
         managerRegistry.register(new RoleManager());
         managerRegistry.register(new CycleManager());

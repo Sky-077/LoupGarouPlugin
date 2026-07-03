@@ -5,6 +5,8 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class GameStarter {
 
     private static final int MIN_PLAYERS = 3;
+    private static final long INVINCIBILITY_DURATION_TICKS = 20L * 30L; // 30 secondes
 
     private GameStarter() {
     }
@@ -35,6 +38,10 @@ public class GameStarter {
         CycleManager cycleManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
                 .getManager(CycleManager.class);
+
+        WorldManager worldManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(WorldManager.class);
 
         Game game = gameManager.getCurrentGame();
 
@@ -72,13 +79,64 @@ public class GameStarter {
 
         }
 
+        Bukkit.broadcastMessage("§7Génération du monde de jeu, veuillez patienter...");
+
+        World gameWorld = worldManager.prepareGameWorld();
+
+        game.setState(GameState.SCATTERING);
+
+        for (LGPlayer lgPlayer : players) {
+
+            Player scatterPlayer = Bukkit.getPlayer(lgPlayer.getUuid());
+
+            if (scatterPlayer == null) {
+                continue;
+            }
+
+            Location location = worldManager.findScatterLocation(gameWorld);
+            scatterPlayer.teleport(location);
+            scatterPlayer.setInvulnerable(true);
+
+        }
+
+        game.setState(GameState.INVINCIBILITY);
+
+        long invincibilitySeconds = INVINCIBILITY_DURATION_TICKS / 20L;
+
+        Bukkit.broadcastMessage("§aLa partie a été lancée ! §7Vous êtes invulnérable pendant "
+                + invincibilitySeconds + " secondes.");
+        sender.sendMessage("§7Joueurs : §e" + players.size());
+
+        Bukkit.getScheduler().runTaskLater(
+                LoupGarouPlugin.getInstance(),
+                () -> beginGame(game, players, cycleManager),
+                INVINCIBILITY_DURATION_TICKS
+        );
+
+        return true;
+
+    }
+
+    private static void beginGame(Game game, List<LGPlayer> players, CycleManager cycleManager) {
+
+        if (game.getState() != GameState.INVINCIBILITY) {
+            return;
+        }
+
+        for (LGPlayer lgPlayer : players) {
+
+            Player player = Bukkit.getPlayer(lgPlayer.getUuid());
+
+            if (player != null) {
+                player.setInvulnerable(false);
+            }
+
+        }
+
         game.markStarted();
         game.setState(cycleManager.getPhaseForCurrentTime());
 
-        sender.sendMessage("§aLa partie a été lancée !");
-        sender.sendMessage("§7Joueurs : §e" + players.size());
-
-        return true;
+        Bukkit.broadcastMessage("§aLa partie commence !");
 
     }
 

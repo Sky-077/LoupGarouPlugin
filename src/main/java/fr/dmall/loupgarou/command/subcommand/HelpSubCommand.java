@@ -31,6 +31,7 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§e/lg empoisonner <joueur> §7- Potion de mort (Sorcière)");
         sender.sendMessage("§e/lg tirer <joueur> §7- Riposte en mourant (Chasseur)");
         sender.sendMessage("§e/lg forcestart §7- [Debug] Force le lancement sans minimum de joueurs");
+        sender.sendMessage("§e/lg bordure <taille> §7- Configure la bordure de la prochaine partie");
 
         return true;
     }

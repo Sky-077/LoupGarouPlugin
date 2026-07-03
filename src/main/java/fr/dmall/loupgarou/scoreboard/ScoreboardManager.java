@@ -4,6 +4,7 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
+import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.manager.Manager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
@@ -59,14 +60,20 @@ public class ScoreboardManager implements Manager {
                 .getManagerRegistry()
                 .getManager(PlayerManager.class);
 
+        WorldManager worldManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(WorldManager.class);
+
         Game game = gameManager.getCurrentGame();
 
         boolean started = game.getState() == GameState.DAY || game.getState() == GameState.NIGHT;
 
+        World scoreboardWorld = (worldManager.getGameWorld() != null) ? worldManager.getGameWorld() : Bukkit.getWorlds().get(0);
+
         String cycle = getCycleLabel(game.getState());
         String duration = started ? formatDuration(System.currentTimeMillis() - game.getStartTimeMillis()) : "-";
         String episode = started ? String.valueOf(game.getEpisode()) : "-";
-        String border = formatBorder(Bukkit.getWorlds().get(0));
+        String border = formatBorder(scoreboardWorld);
         String players = formatPlayers(game, playerManager, started);
 
         for (Player player : Bukkit.getOnlinePlayers()) {

@@ -101,7 +101,15 @@ public class CycleManager implements Manager {
     }
 
     private World getWorld() {
-        return Bukkit.getWorlds().get(0);
+
+        WorldManager worldManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(WorldManager.class);
+
+        World gameWorld = worldManager.getGameWorld();
+
+        return (gameWorld != null) ? gameWorld : Bukkit.getWorlds().get(0);
+
     }
 
 }
