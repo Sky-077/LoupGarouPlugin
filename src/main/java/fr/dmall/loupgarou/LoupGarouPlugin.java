@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.listener.PetiteFilleListener;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
+import fr.dmall.loupgarou.listener.PlayerDeathListener;
 import fr.dmall.loupgarou.manager.ManagerRegistry;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
@@ -41,6 +42,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new PetiteFilleListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new PlayerDeathListener(),
                 this
         );
 
