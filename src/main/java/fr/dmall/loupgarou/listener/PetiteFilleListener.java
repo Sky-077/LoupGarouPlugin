@@ -58,13 +58,6 @@ public class PetiteFilleListener implements Listener {
 
         PetiteFilleRole role = (PetiteFilleRole) lgPlayer.getRole();
 
-        LoupGarouPlugin.getInstance().getLogger().info(
-                "[DEBUG] Casque=" + player.getInventory().getHelmet()
-                        + " | Plastron=" + player.getInventory().getChestplate()
-                        + " | Jambières=" + player.getInventory().getLeggings()
-                        + " | Bottes=" + player.getInventory().getBoots()
-        );
-
         if (role.hasNoArmor(player)) {
             role.applyInvisibility(player);
         } else {

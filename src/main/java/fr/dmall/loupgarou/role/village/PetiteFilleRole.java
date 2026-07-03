@@ -2,7 +2,9 @@ package fr.dmall.loupgarou.role.village;
 
 import fr.dmall.loupgarou.role.Role;
 import fr.dmall.loupgarou.role.RoleTeam;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -64,11 +66,15 @@ public class PetiteFilleRole extends Role {
 
         PlayerInventory inventory = player.getInventory();
 
-        return inventory.getHelmet() == null
-                && inventory.getChestplate() == null
-                && inventory.getLeggings() == null
-                && inventory.getBoots() == null;
+        return isEmpty(inventory.getHelmet())
+                && isEmpty(inventory.getChestplate())
+                && isEmpty(inventory.getLeggings())
+                && isEmpty(inventory.getBoots());
 
+    }
+
+    private boolean isEmpty(ItemStack item) {
+        return item == null || item.getType() == Material.AIR;
     }
 
 }
