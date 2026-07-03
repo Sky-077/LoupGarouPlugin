@@ -59,7 +59,7 @@ public class PetiteFilleListener implements Listener {
         PetiteFilleRole role = (PetiteFilleRole) lgPlayer.getRole();
 
         if (role.hasNoArmor(player)) {
-            role.applyInvisibility(player);
+            role.tryActivateInvisibility(player);
         } else {
             role.removeInvisibility(player);
         }

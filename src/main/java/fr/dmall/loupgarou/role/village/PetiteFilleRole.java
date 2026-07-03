@@ -13,6 +13,8 @@ public class PetiteFilleRole extends Role {
 
     public static final int INVISIBILITY_DURATION_TICKS = 20 * 60 * 5; // 5 minutes
 
+    private boolean powerAvailable = true;
+
     public PetiteFilleRole() {
         super("Petite Fille", RoleTeam.VILLAGE);
     }
@@ -20,9 +22,11 @@ public class PetiteFilleRole extends Role {
     @Override
     public void onNight(Player player) {
 
+        powerAvailable = true;
+
         // Vérification au tout début de la nuit, au cas où elle serait déjà sans armure.
         if (hasNoArmor(player)) {
-            applyInvisibility(player);
+            tryActivateInvisibility(player);
         }
 
     }
@@ -30,6 +34,19 @@ public class PetiteFilleRole extends Role {
     @Override
     public void onDay(Player player) {
         removeInvisibility(player);
+    }
+
+    public void tryActivateInvisibility(Player player) {
+
+        if (!powerAvailable) {
+            player.sendMessage("§cVous avez déjà utilisé votre pouvoir cette nuit.");
+            return;
+        }
+
+        powerAvailable = false;
+
+        applyInvisibility(player);
+
     }
 
     public void applyInvisibility(Player player) {
