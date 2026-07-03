@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.role.loup.LoupGarouRole;
 import fr.dmall.loupgarou.role.village.PetiteFilleRole;
 import fr.dmall.loupgarou.role.village.VillageoisRole;
+import fr.dmall.loupgarou.role.village.VoyanteRole;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,7 @@ public class RoleManager implements Manager {
         RoleFactory.register("villageois", VillageoisRole::new);
         RoleFactory.register("loup-garou", LoupGarouRole::new);
         RoleFactory.register("petite-fille", PetiteFilleRole::new);
+        RoleFactory.register("voyante", VoyanteRole::new);
 
     }
 
