@@ -86,6 +86,16 @@ public class DeathManager implements Manager {
         return pendingKillers.get(player.getUniqueId());
     }
 
+    public void killInstantly(Player player, Player killer) {
+
+        if (killer != null) {
+            pendingKillers.put(player.getUniqueId(), killer.getUniqueId());
+        }
+
+        player.setHealth(0.0);
+
+    }
+
     private void finalizeDeath(Player player) {
 
         pendingTasks.remove(player.getUniqueId());

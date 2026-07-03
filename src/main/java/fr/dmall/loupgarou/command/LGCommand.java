@@ -22,6 +22,9 @@ public class LGCommand implements CommandExecutor {
         register(new SondeSubCommand());
         register(new InfecterSubCommand());
         register(new RegleSubCommand());
+        register(new SoignerSubCommand());
+        register(new EmpoisonnerSubCommand());
+        register(new TirerSubCommand());
     }
 
     private void register(SubCommand subCommand) {
