@@ -5,10 +5,12 @@ import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.WorldManager;
+import fr.dmall.loupgarou.listener.AutoSmeltListener;
 import fr.dmall.loupgarou.listener.LethalDamageListener;
 import fr.dmall.loupgarou.listener.PetiteFilleListener;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
 import fr.dmall.loupgarou.listener.PlayerDeathListener;
+import fr.dmall.loupgarou.listener.PortalBlockListener;
 import fr.dmall.loupgarou.manager.ManagerRegistry;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
@@ -57,6 +59,16 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new PlayerDeathListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new AutoSmeltListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new PortalBlockListener(),
                 this
         );
 

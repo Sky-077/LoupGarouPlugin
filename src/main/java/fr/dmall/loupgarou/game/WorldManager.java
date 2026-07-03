@@ -83,6 +83,7 @@ public class WorldManager implements Manager {
         WorldCreator creator = new WorldCreator(WORLD_NAME);
         creator.seed(new Random().nextLong());
         creator.environment(World.Environment.NORMAL);
+        creator.generateStructures(false);
 
         World world = creator.createWorld();
 
