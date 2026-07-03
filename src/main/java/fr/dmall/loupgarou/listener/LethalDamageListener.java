@@ -18,7 +18,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 public class LethalDamageListener implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
 
         if (!(event.getEntity() instanceof Player)) {

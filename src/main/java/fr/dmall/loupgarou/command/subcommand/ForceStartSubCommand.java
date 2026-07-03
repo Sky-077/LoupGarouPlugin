@@ -3,7 +3,7 @@ package fr.dmall.loupgarou.command.subcommand;
 import fr.dmall.loupgarou.game.GameStarter;
 import org.bukkit.command.CommandSender;
 
-public class ForceStartSubCommand implements SubCommand {
+public class ForceStartSubCommand extends DebugSubCommand {
 
     @Override
     public String getName() {
@@ -16,7 +16,7 @@ public class ForceStartSubCommand implements SubCommand {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String[] args) {
+    protected boolean executeDebug(CommandSender sender, String[] args) {
 
         GameStarter.start(sender, true);
 

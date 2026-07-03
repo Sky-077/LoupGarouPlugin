@@ -17,6 +17,7 @@ public class GameStarter {
 
     private static final int MIN_PLAYERS = 3;
     private static final long INVINCIBILITY_DURATION_TICKS = 20L * 30L; // 30 secondes
+    private static final long PVP_DELAY_TICKS = 20L * 60L * 30L; // 30 minutes
 
     private GameStarter() {
     }
@@ -136,7 +137,35 @@ public class GameStarter {
         game.markStarted();
         game.setState(cycleManager.getPhaseForCurrentTime());
 
-        Bukkit.broadcastMessage("§aLa partie commence !");
+        Bukkit.broadcastMessage("§aLa partie commence ! §7Le PVP sera activé dans 30 minutes.");
+
+        long startedAt = game.getStartTimeMillis();
+
+        Bukkit.getScheduler().runTaskLater(
+                LoupGarouPlugin.getInstance(),
+                () -> enablePvp(game, startedAt),
+                PVP_DELAY_TICKS
+        );
+
+    }
+
+    private static void enablePvp(Game game, long startedAt) {
+
+        if (game.getStartTimeMillis() != startedAt) {
+            return;
+        }
+
+        if (game.getState() != GameState.DAY && game.getState() != GameState.NIGHT) {
+            return;
+        }
+
+        if (game.isPvpEnabled()) {
+            return;
+        }
+
+        game.enablePvp();
+
+        Bukkit.broadcastMessage("§c⚔ Le PVP est désormais activé !");
 
     }
 

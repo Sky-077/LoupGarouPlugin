@@ -12,6 +12,7 @@ public class Game {
     private final List<LGPlayer> players;
     private long startTimeMillis;
     private int episode;
+    private boolean pvpEnabled;
 
     public Game() {
         this.state = GameState.WAITING;
@@ -29,6 +30,15 @@ public class Game {
     public void markStarted() {
         this.startTimeMillis = System.currentTimeMillis();
         this.episode = 1;
+        this.pvpEnabled = false;
+    }
+
+    public boolean isPvpEnabled() {
+        return pvpEnabled;
+    }
+
+    public void enablePvp() {
+        pvpEnabled = true;
     }
 
     public long getStartTimeMillis() {
