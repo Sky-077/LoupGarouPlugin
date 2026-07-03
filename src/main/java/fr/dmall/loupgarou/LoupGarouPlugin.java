@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou;
 
 import fr.dmall.loupgarou.command.LGCommand;
+import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
 import fr.dmall.loupgarou.manager.ManagerRegistry;
@@ -24,6 +25,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry.register(new GameManager());
         managerRegistry.register(new PlayerManager());
         managerRegistry.register(new RoleManager());
+        managerRegistry.register(new CycleManager());
 
         managerRegistry.enableAll();
 

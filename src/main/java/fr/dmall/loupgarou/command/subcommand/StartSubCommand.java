@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
@@ -39,6 +40,10 @@ public class StartSubCommand implements SubCommand {
                 .getManagerRegistry()
                 .getManager(RoleManager.class);
 
+        CycleManager cycleManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(CycleManager.class);
+
         Game game = gameManager.getCurrentGame();
 
         if (game.getState() != GameState.WAITING) {
@@ -57,7 +62,7 @@ public class StartSubCommand implements SubCommand {
 
         roleManager.assignRoles(players);
 
-        game.setState(GameState.PLAYING);
+        game.setState(cycleManager.getPhaseForCurrentTime());
 
         sender.sendMessage("§aLa partie a été lancée !");
         sender.sendMessage("§7Joueurs : §e" + players.size());
