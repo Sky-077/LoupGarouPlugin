@@ -3,22 +3,22 @@ package fr.dmall.loupgarou.command.subcommand;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
-import fr.dmall.loupgarou.role.Role;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RegleSubCommand implements SubCommand {
+public class JoinSubCommand implements SubCommand {
 
     @Override
     public String getName() {
-        return "regle";
+        return "join";
     }
 
     @Override
     public String getDescription() {
-        return "Réaffiche l'explication de votre rôle et de ses commandes.";
+        return "S'inscrit pour la prochaine partie.";
     }
 
     @Override
@@ -31,6 +31,17 @@ public class RegleSubCommand implements SubCommand {
 
         Player player = (Player) sender;
 
+        GameManager gameManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(GameManager.class);
+
+        Game game = gameManager.getCurrentGame();
+
+        if (game.getState() != GameState.WAITING) {
+            sender.sendMessage("§cImpossible de s'inscrire, une partie est déjà en cours.");
+            return true;
+        }
+
         PlayerManager playerManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
                 .getManager(PlayerManager.class);
@@ -42,25 +53,14 @@ public class RegleSubCommand implements SubCommand {
             return true;
         }
 
-        Role role = lgPlayer.getRole();
-
-        if (role == null) {
-            sender.sendMessage("§7Vous n'avez pas encore de rôle (la partie n'a peut-être pas démarré).");
+        if (lgPlayer.isJoined()) {
+            sender.sendMessage("§7Vous êtes déjà inscrit.");
             return true;
         }
 
-        GameManager gameManager = LoupGarouPlugin.getInstance()
-                .getManagerRegistry()
-                .getManager(GameManager.class);
+        lgPlayer.setJoined(true);
 
-        Game game = gameManager.getCurrentGame();
-
-        if (!game.isRevealed()) {
-            sender.sendMessage("§7Les rôles n'ont pas encore été révélés.");
-            return true;
-        }
-
-        role.sendInstructions(player);
+        sender.sendMessage("§aVous êtes inscrit pour la prochaine partie !");
 
         return true;
     }

@@ -11,6 +11,7 @@ public class LGPlayer {
     private boolean alive;
     private int kills;
     private int diamonds;
+    private boolean joined;
 
     private Role role;
 
@@ -54,6 +55,14 @@ public class LGPlayer {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public boolean isJoined() {
+        return joined;
+    }
+
+    public void setJoined(boolean joined) {
+        this.joined = joined;
     }
 
 }

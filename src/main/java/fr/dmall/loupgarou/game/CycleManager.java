@@ -68,22 +68,26 @@ public class CycleManager implements Manager {
             game.incrementEpisode();
         }
 
-        for (LGPlayer lgPlayer : game.getPlayers()) {
+        if (game.isRevealed()) {
 
-            if (!lgPlayer.isAlive() || lgPlayer.getRole() == null) {
-                continue;
-            }
+            for (LGPlayer lgPlayer : game.getPlayers()) {
 
-            Player player = Bukkit.getPlayer(lgPlayer.getUuid());
+                if (!lgPlayer.isAlive() || lgPlayer.getRole() == null) {
+                    continue;
+                }
 
-            if (player == null) {
-                continue;
-            }
+                Player player = Bukkit.getPlayer(lgPlayer.getUuid());
 
-            if (newState == GameState.DAY) {
-                lgPlayer.getRole().onDay(player);
-            } else {
-                lgPlayer.getRole().onNight(player);
+                if (player == null) {
+                    continue;
+                }
+
+                if (newState == GameState.DAY) {
+                    lgPlayer.getRole().onDay(player);
+                } else {
+                    lgPlayer.getRole().onNight(player);
+                }
+
             }
 
         }

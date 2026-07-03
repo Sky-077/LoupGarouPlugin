@@ -1,6 +1,8 @@
 package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.Game;
+import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
@@ -44,6 +46,17 @@ public class MeSubCommand implements SubCommand {
 
         if (role == null) {
             sender.sendMessage("§7Vous n'avez pas encore de rôle (la partie n'a peut-être pas démarré).");
+            return true;
+        }
+
+        GameManager gameManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(GameManager.class);
+
+        Game game = gameManager.getCurrentGame();
+
+        if (!game.isRevealed()) {
+            sender.sendMessage("§7Les rôles n'ont pas encore été révélés.");
             return true;
         }
 

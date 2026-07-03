@@ -20,7 +20,7 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§6========== LoupGarou ==========");
         sender.sendMessage("§e/lg help §7- Affiche cette aide");
         sender.sendMessage("§e/lg info §7- Informations de la partie");
-        sender.sendMessage("§e/lg start §7- Lance une partie");
+        sender.sendMessage("§e/lg start §7- Lance la partie avec les joueurs inscrits (/lg join)");
         sender.sendMessage("§e/lg stop §7- Arrête la partie");
         sender.sendMessage("§e/lg role §7- Configure les rôles (add/remove/list/clear)");
         sender.sendMessage("§e/lg me §7- Affiche votre rôle actuel");
@@ -33,6 +33,9 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§e/lg forcestart §7- [Debug] Force le lancement sans minimum de joueurs");
         sender.sendMessage("§e/lg bordure <taille> §7- Configure la bordure de la prochaine partie");
         sender.sendMessage("§e/lg forcepvp §7- [Debug] Active immédiatement le PVP");
+        sender.sendMessage("§e/lg join §7- S'inscrit pour la prochaine partie");
+        sender.sendMessage("§e/lg leave §7- Annule son inscription");
+        sender.sendMessage("§e/lg forcereveal §7- [Debug] Force la révélation immédiate des rôles");
 
         return true;
     }

@@ -63,6 +63,11 @@ public class SondeSubCommand implements SubCommand {
 
         Game game = gameManager.getCurrentGame();
 
+        if (!game.isRevealed()) {
+            sender.sendMessage("§cLes rôles n'ont pas encore été révélés.");
+            return true;
+        }
+
         if (game.getState() != GameState.NIGHT) {
             sender.sendMessage("§cVous ne pouvez sonder un joueur que la nuit.");
             return true;

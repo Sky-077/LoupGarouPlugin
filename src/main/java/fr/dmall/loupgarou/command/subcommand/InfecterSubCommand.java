@@ -77,6 +77,11 @@ public class InfecterSubCommand implements SubCommand {
             return true;
         }
 
+        if (!game.isRevealed()) {
+            sender.sendMessage("§cLes rôles n'ont pas encore été révélés.");
+            return true;
+        }
+
         PereDesLoupsRole pereDesLoups = (PereDesLoupsRole) role;
 
         if (!pereDesLoups.isInfectionAvailable()) {

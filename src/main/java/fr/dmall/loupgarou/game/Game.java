@@ -13,6 +13,7 @@ public class Game {
     private long startTimeMillis;
     private int episode;
     private boolean pvpEnabled;
+    private boolean revealed;
 
     public Game() {
         this.state = GameState.WAITING;
@@ -31,6 +32,15 @@ public class Game {
         this.startTimeMillis = System.currentTimeMillis();
         this.episode = 1;
         this.pvpEnabled = false;
+        this.revealed = false;
+    }
+
+    public boolean isRevealed() {
+        return revealed;
+    }
+
+    public void reveal() {
+        revealed = true;
     }
 
     public boolean isPvpEnabled() {

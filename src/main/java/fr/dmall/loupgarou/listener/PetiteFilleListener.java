@@ -44,6 +44,10 @@ public class PetiteFilleListener implements Listener {
             return;
         }
 
+        if (!game.isRevealed()) {
+            return;
+        }
+
         PlayerManager playerManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
                 .getManager(PlayerManager.class);

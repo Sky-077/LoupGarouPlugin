@@ -2,6 +2,8 @@ package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.DeathManager;
+import fr.dmall.loupgarou.game.Game;
+import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
@@ -56,6 +58,17 @@ public class EmpoisonnerSubCommand implements SubCommand {
 
         if (!(role instanceof SorciereRole)) {
             sender.sendMessage("§cVous n'êtes pas la Sorcière.");
+            return true;
+        }
+
+        GameManager gameManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(GameManager.class);
+
+        Game game = gameManager.getCurrentGame();
+
+        if (!game.isRevealed()) {
+            sender.sendMessage("§cLes rôles n'ont pas encore été révélés.");
             return true;
         }
 

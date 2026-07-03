@@ -2,6 +2,8 @@ package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.DeathManager;
+import fr.dmall.loupgarou.game.Game;
+import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
@@ -61,6 +63,17 @@ public class TirerSubCommand implements SubCommand {
 
         if (!deathManager.isDying(hunter)) {
             sender.sendMessage("§cVous ne pouvez utiliser ce pouvoir qu'en train de mourir.");
+            return true;
+        }
+
+        GameManager gameManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(GameManager.class);
+
+        Game game = gameManager.getCurrentGame();
+
+        if (!game.isRevealed()) {
+            sender.sendMessage("§cLes rôles n'ont pas encore été révélés.");
             return true;
         }
 
