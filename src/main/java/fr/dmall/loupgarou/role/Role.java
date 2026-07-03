@@ -1,5 +1,7 @@
 package fr.dmall.loupgarou.role;
 
+import org.bukkit.entity.Player;
+
 public abstract class Role {
 
     private final String name;
@@ -18,19 +20,19 @@ public abstract class Role {
         return team;
     }
 
-    public void onGameStart() {
+    public void onGameStart(Player player) {
 
     }
 
-    public void onDeath() {
+    public void onDeath(Player player) {
 
     }
 
-    public void onDay() {
+    public void onDay(Player player) {
 
     }
 
-    public void onNight() {
+    public void onNight(Player player) {
 
     }
 

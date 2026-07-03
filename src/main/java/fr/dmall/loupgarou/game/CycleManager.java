@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.manager.Manager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 public class CycleManager implements Manager {
@@ -63,16 +64,22 @@ public class CycleManager implements Manager {
 
     private void onPhaseChange(Game game, GameState newState) {
 
-        for (LGPlayer player : game.getPlayers()) {
+        for (LGPlayer lgPlayer : game.getPlayers()) {
 
-            if (!player.isAlive() || player.getRole() == null) {
+            if (!lgPlayer.isAlive() || lgPlayer.getRole() == null) {
+                continue;
+            }
+
+            Player player = Bukkit.getPlayer(lgPlayer.getUuid());
+
+            if (player == null) {
                 continue;
             }
 
             if (newState == GameState.DAY) {
-                player.getRole().onDay();
+                lgPlayer.getRole().onDay(player);
             } else {
-                player.getRole().onNight();
+                lgPlayer.getRole().onNight(player);
             }
 
         }

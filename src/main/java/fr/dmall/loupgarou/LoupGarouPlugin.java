@@ -3,10 +3,12 @@ package fr.dmall.loupgarou;
 import fr.dmall.loupgarou.command.LGCommand;
 import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.listener.PetiteFilleListener;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
 import fr.dmall.loupgarou.manager.ManagerRegistry;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
+import fr.dmall.loupgarou.scoreboard.ScoreboardManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class LoupGarouPlugin extends JavaPlugin {
@@ -26,6 +28,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry.register(new PlayerManager());
         managerRegistry.register(new RoleManager());
         managerRegistry.register(new CycleManager());
+        managerRegistry.register(new ScoreboardManager());
 
         managerRegistry.enableAll();
 
@@ -33,6 +36,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new PlayerConnectionListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new PetiteFilleListener(),
                 this
         );
 
