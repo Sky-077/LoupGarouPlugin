@@ -8,7 +8,9 @@ import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +63,16 @@ public class StartSubCommand implements SubCommand {
         }
 
         roleManager.assignRoles(players);
+
+        for (LGPlayer lgPlayer : players) {
+
+            Player rolePlayer = Bukkit.getPlayer(lgPlayer.getUuid());
+
+            if (rolePlayer != null && lgPlayer.getRole() != null) {
+                lgPlayer.getRole().sendInstructions(rolePlayer);
+            }
+
+        }
 
         game.setState(cycleManager.getPhaseForCurrentTime());
 

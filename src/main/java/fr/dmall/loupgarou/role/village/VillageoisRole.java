@@ -9,4 +9,12 @@ public class VillageoisRole extends Role {
         super("Villageois", RoleTeam.VILLAGE);
     }
 
+    @Override
+    public String[] getInstructions() {
+        return new String[] {
+                "Vous n'avez aucun pouvoir spécial.",
+                "Survivez et tentez de démasquer les Loups-Garous en combat direct.",
+        };
+    }
+
 }

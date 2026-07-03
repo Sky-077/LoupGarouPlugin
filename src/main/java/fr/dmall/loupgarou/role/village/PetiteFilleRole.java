@@ -79,6 +79,15 @@ public class PetiteFilleRole extends Role {
 
     }
 
+    @Override
+    public String[] getInstructions() {
+        return new String[] {
+                "Retirez toute votre armure pendant la nuit pour devenir invisible durant 5 minutes.",
+                "Remettre une pièce d'armure annule l'effet immédiatement.",
+                "Ce pouvoir n'est utilisable qu'une fois par nuit.",
+        };
+    }
+
     public boolean hasNoArmor(Player player) {
 
         PlayerInventory inventory = player.getInventory();

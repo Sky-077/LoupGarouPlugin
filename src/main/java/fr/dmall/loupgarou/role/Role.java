@@ -36,4 +36,19 @@ public abstract class Role {
 
     }
 
+    public String[] getInstructions() {
+        return new String[] { "Aucun pouvoir spécial." };
+    }
+
+    public void sendInstructions(Player player) {
+
+        player.sendMessage("§6===== Votre rôle : " + getName() + " =====");
+        player.sendMessage("§eÉquipe : §f" + getTeam());
+
+        for (String line : getInstructions()) {
+            player.sendMessage("§7" + line);
+        }
+
+    }
+
 }

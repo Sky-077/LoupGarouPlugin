@@ -34,6 +34,15 @@ public class PereDesLoupsRole extends Role {
 
     }
 
+    @Override
+    public String[] getInstructions() {
+        return new String[] {
+                "Vous recevez Force I chaque nuit, comme un Loup-Garou.",
+                "Une fois par partie, dans la minute qui suit un coup mortel porté à votre propre victime,",
+                "vous pouvez l'infecter avec /lg infecter <joueur> pour la transformer en Loup-Garou au lieu de la tuer.",
+        };
+    }
+
     public boolean isInfectionAvailable() {
         return infectionAvailable;
     }

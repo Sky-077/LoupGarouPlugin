@@ -32,4 +32,12 @@ public class LoupGarouRole extends Role {
 
     }
 
+    @Override
+    public String[] getInstructions() {
+        return new String[] {
+                "Vous recevez Force I chaque nuit.",
+                "Éliminez les villageois en combat direct (PVP libre, pas de vote ni de ciblage).",
+        };
+    }
+
 }
