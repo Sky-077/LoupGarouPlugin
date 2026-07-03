@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
+import fr.dmall.loupgarou.game.VictoryChecker;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
@@ -121,6 +122,8 @@ public class InfecterSubCommand implements SubCommand {
 
         target.sendMessage("§4Le Père des Loups vous a infecté... Vous êtes désormais Loup-Garou !");
         infector.sendMessage("§4Vous avez infecté " + target.getName() + " ! Il rejoint la meute.");
+
+        VictoryChecker.check();
 
         return true;
     }
