@@ -32,6 +32,8 @@ public class PetiteFilleRole extends Role {
 
     public void applyInvisibility(Player player) {
 
+        boolean alreadyInvisible = player.hasPotionEffect(PotionEffectType.INVISIBILITY);
+
         player.addPotionEffect(new PotionEffect(
                 PotionEffectType.INVISIBILITY,
                 INVISIBILITY_DURATION_TICKS,
@@ -40,10 +42,22 @@ public class PetiteFilleRole extends Role {
                 false
         ));
 
+        if (!alreadyInvisible) {
+            player.sendMessage("§7Vous êtes désormais invisible.");
+        }
+
     }
 
     public void removeInvisibility(Player player) {
+
+        boolean wasInvisible = player.hasPotionEffect(PotionEffectType.INVISIBILITY);
+
         player.removePotionEffect(PotionEffectType.INVISIBILITY);
+
+        if (wasInvisible) {
+            player.sendMessage("§7Vous n'êtes plus invisible.");
+        }
+
     }
 
     public boolean hasNoArmor(Player player) {
