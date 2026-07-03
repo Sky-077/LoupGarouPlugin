@@ -7,15 +7,32 @@ import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.village.PetiteFilleRole;
-import io.papermc.paper.event.player.PlayerArmorChangeEvent;
+import io.papermc.paper.event.entity.EntityEquipmentChangedEvent;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class PetiteFilleListener implements Listener {
 
     @EventHandler
-    public void onArmorChange(PlayerArmorChangeEvent event) {
+    public void onEquipmentChange(EntityEquipmentChangedEvent event) {
+
+        Entity entity = event.getEntity();
+
+        if (!(entity instanceof Player)) {
+            return;
+        }
+
+        boolean armorSlotChanged = event.getEquipmentChanges().containsKey(EquipmentSlot.HEAD)
+                || event.getEquipmentChanges().containsKey(EquipmentSlot.CHEST)
+                || event.getEquipmentChanges().containsKey(EquipmentSlot.LEGS)
+                || event.getEquipmentChanges().containsKey(EquipmentSlot.FEET);
+
+        if (!armorSlotChanged) {
+            return;
+        }
 
         GameManager gameManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
@@ -31,7 +48,7 @@ public class PetiteFilleListener implements Listener {
                 .getManagerRegistry()
                 .getManager(PlayerManager.class);
 
-        Player player = event.getPlayer();
+        Player player = (Player) entity;
 
         LGPlayer lgPlayer = playerManager.get(player);
 
