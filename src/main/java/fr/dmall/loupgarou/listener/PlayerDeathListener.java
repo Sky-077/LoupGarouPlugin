@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou.listener;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
@@ -14,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+
+import java.util.UUID;
 
 public class PlayerDeathListener implements Listener {
 
@@ -51,7 +54,13 @@ public class PlayerDeathListener implements Listener {
             role.onDeath(player);
         }
 
-        Player killer = player.getKiller();
+        DeathManager deathManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(DeathManager.class);
+
+        UUID killerUuid = deathManager.consumeKiller(player);
+
+        Player killer = (killerUuid != null) ? Bukkit.getPlayer(killerUuid) : player.getKiller();
 
         if (killer != null && !killer.equals(player)) {
 
