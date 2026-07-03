@@ -10,6 +10,8 @@ public class Game {
 
     private GameState state;
     private final List<LGPlayer> players;
+    private long startTimeMillis;
+    private int episode;
 
     public Game() {
         this.state = GameState.WAITING;
@@ -22,6 +24,23 @@ public class Game {
 
     public void setState(GameState state) {
         this.state = state;
+    }
+
+    public void markStarted() {
+        this.startTimeMillis = System.currentTimeMillis();
+        this.episode = 1;
+    }
+
+    public long getStartTimeMillis() {
+        return startTimeMillis;
+    }
+
+    public int getEpisode() {
+        return episode;
+    }
+
+    public void incrementEpisode() {
+        episode++;
     }
 
     public List<LGPlayer> getPlayers() {

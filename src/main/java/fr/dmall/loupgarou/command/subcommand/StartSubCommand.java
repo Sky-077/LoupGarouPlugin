@@ -74,6 +74,7 @@ public class StartSubCommand implements SubCommand {
 
         }
 
+        game.markStarted();
         game.setState(cycleManager.getPhaseForCurrentTime());
 
         sender.sendMessage("§aLa partie a été lancée !");

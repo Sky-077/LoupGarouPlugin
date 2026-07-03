@@ -64,6 +64,10 @@ public class CycleManager implements Manager {
 
     private void onPhaseChange(Game game, GameState newState) {
 
+        if (newState == GameState.DAY) {
+            game.incrementEpisode();
+        }
+
         for (LGPlayer lgPlayer : game.getPlayers()) {
 
             if (!lgPlayer.isAlive() || lgPlayer.getRole() == null) {

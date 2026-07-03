@@ -5,8 +5,12 @@ import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.manager.Manager;
+import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.role.Role;
+import fr.dmall.loupgarou.role.RoleTeam;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -57,17 +61,23 @@ public class ScoreboardManager implements Manager {
 
         Game game = gameManager.getCurrentGame();
 
-        int playerCount = playerManager.getPlayers().size();
+        boolean started = game.getState() == GameState.DAY || game.getState() == GameState.NIGHT;
+
         String cycle = getCycleLabel(game.getState());
+        String duration = started ? formatDuration(System.currentTimeMillis() - game.getStartTimeMillis()) : "-";
+        String episode = started ? String.valueOf(game.getEpisode()) : "-";
+        String border = formatBorder(Bukkit.getWorlds().get(0));
+        String players = formatPlayers(game, playerManager, started);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            applyScoreboard(player, playerCount, cycle);
+            applyScoreboard(player, playerManager, duration, cycle, episode, players, border);
         }
 
     }
 
     @SuppressWarnings("deprecation")
-    private void applyScoreboard(Player player, int playerCount, String cycle) {
+    private void applyScoreboard(Player player, PlayerManager playerManager, String duration, String cycle,
+                                  String episode, String players, String border) {
 
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -79,11 +89,33 @@ public class ScoreboardManager implements Manager {
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        int line = 4;
+        LGPlayer lgPlayer = playerManager.get(player);
+
+        String group = "-";
+        String kills = "-";
+
+        if (lgPlayer != null) {
+
+            Role role = lgPlayer.getRole();
+
+            if (role != null) {
+                group = getGroupLabel(role.getTeam());
+            }
+
+            kills = String.valueOf(lgPlayer.getKills());
+
+        }
+
+        int line = 8;
 
         objective.getScore("§e» §fInformations").setScore(line--);
-        objective.getScore("§7Joueurs: §f" + playerCount).setScore(line--);
+        objective.getScore("§7Durée: §f" + duration).setScore(line--);
         objective.getScore("§7Cycle: §f" + cycle).setScore(line--);
+        objective.getScore("§7Épisode: §f" + episode).setScore(line--);
+        objective.getScore("§7Groupe: §f" + group).setScore(line--);
+        objective.getScore("§7Joueurs: §f" + players).setScore(line--);
+        objective.getScore("§7Bordure: §f" + border).setScore(line--);
+        objective.getScore("§7Kills: §f" + kills).setScore(line--);
 
         player.setScoreboard(scoreboard);
 
@@ -100,6 +132,51 @@ public class ScoreboardManager implements Manager {
         }
 
         return "En attente";
+
+    }
+
+    private String getGroupLabel(RoleTeam team) {
+
+        if (team == RoleTeam.LOUP) {
+            return "Loups";
+        }
+
+        if (team == RoleTeam.VILLAGE) {
+            return "Village";
+        }
+
+        return "Solo";
+
+    }
+
+    private String formatDuration(long elapsedMillis) {
+
+        long totalSeconds = elapsedMillis / 1000L;
+        long hours = totalSeconds / 3600L;
+        long minutes = (totalSeconds % 3600L) / 60L;
+        long seconds = totalSeconds % 60L;
+
+        if (hours > 0) {
+            return String.format("%dh%02dm%02ds", hours, minutes, seconds);
+        }
+
+        return String.format("%02dm%02ds", minutes, seconds);
+
+    }
+
+    private String formatBorder(World world) {
+        return (long) world.getWorldBorder().getSize() + " blocs";
+    }
+
+    private String formatPlayers(Game game, PlayerManager playerManager, boolean started) {
+
+        if (!started) {
+            return String.valueOf(playerManager.getPlayers().size());
+        }
+
+        long alive = game.getPlayers().stream().filter(LGPlayer::isAlive).count();
+
+        return alive + "/" + game.getPlayers().size();
 
     }
 
