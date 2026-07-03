@@ -82,6 +82,10 @@ public class DeathManager implements Manager {
         return pendingKillers.remove(player.getUniqueId());
     }
 
+    public UUID getPendingKiller(Player player) {
+        return pendingKillers.get(player.getUniqueId());
+    }
+
     private void finalizeDeath(Player player) {
 
         pendingTasks.remove(player.getUniqueId());

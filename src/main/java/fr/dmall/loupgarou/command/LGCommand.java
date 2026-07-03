@@ -20,6 +20,7 @@ public class LGCommand implements CommandExecutor {
         register(new RoleSubCommand());
         register(new MeSubCommand());
         register(new SondeSubCommand());
+        register(new InfecterSubCommand());
     }
 
     private void register(SubCommand subCommand) {
