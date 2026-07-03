@@ -18,6 +18,7 @@ public class LGCommand implements CommandExecutor {
         register(new StartSubCommand());
         register(new StopSubCommand());
         register(new RoleSubCommand());
+        register(new MeSubCommand());
     }
 
     private void register(SubCommand subCommand) {

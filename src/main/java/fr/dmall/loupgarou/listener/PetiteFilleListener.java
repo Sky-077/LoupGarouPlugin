@@ -19,9 +19,12 @@ public class PetiteFilleListener implements Listener {
     @EventHandler
     public void onEquipmentChange(EntityEquipmentChangedEvent event) {
 
+        LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] EntityEquipmentChangedEvent déclenché pour " + event.getEntity().getName());
+
         Entity entity = event.getEntity();
 
         if (!(entity instanceof Player)) {
+            LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] Stop : ce n'est pas un joueur.");
             return;
         }
 
@@ -30,7 +33,10 @@ public class PetiteFilleListener implements Listener {
                 || event.getEquipmentChanges().containsKey(EquipmentSlot.LEGS)
                 || event.getEquipmentChanges().containsKey(EquipmentSlot.FEET);
 
+        LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] Slots modifiés : " + event.getEquipmentChanges().keySet());
+
         if (!armorSlotChanged) {
+            LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] Stop : aucun slot d'armure modifié.");
             return;
         }
 
@@ -40,7 +46,10 @@ public class PetiteFilleListener implements Listener {
 
         Game game = gameManager.getCurrentGame();
 
+        LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] État de la partie : " + game.getState());
+
         if (game.getState() != GameState.NIGHT) {
+            LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] Stop : la partie n'est pas en état NIGHT.");
             return;
         }
 
@@ -52,13 +61,25 @@ public class PetiteFilleListener implements Listener {
 
         LGPlayer lgPlayer = playerManager.get(player);
 
-        if (lgPlayer == null || !(lgPlayer.getRole() instanceof PetiteFilleRole)) {
+        if (lgPlayer == null) {
+            LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] Stop : LGPlayer introuvable.");
+            return;
+        }
+
+        LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] Rôle du joueur : " + (lgPlayer.getRole() == null ? "null" : lgPlayer.getRole().getName()));
+
+        if (!(lgPlayer.getRole() instanceof PetiteFilleRole)) {
+            LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] Stop : le rôle n'est pas Petite Fille.");
             return;
         }
 
         PetiteFilleRole role = (PetiteFilleRole) lgPlayer.getRole();
 
-        if (role.hasNoArmor(player)) {
+        boolean noArmor = role.hasNoArmor(player);
+
+        LoupGarouPlugin.getInstance().getLogger().info("[DEBUG] hasNoArmor = " + noArmor);
+
+        if (noArmor) {
             role.applyInvisibility(player);
         } else {
             role.removeInvisibility(player);
