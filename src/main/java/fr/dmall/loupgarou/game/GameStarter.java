@@ -7,9 +7,11 @@ import fr.dmall.loupgarou.role.RoleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +115,7 @@ public class GameStarter {
             Location location = worldManager.findScatterLocation(gameWorld);
             scatterPlayer.teleport(location);
             scatterPlayer.setInvulnerable(true);
+            scatterPlayer.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
 
         }
 

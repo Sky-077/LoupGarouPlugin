@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -113,6 +114,27 @@ public class DeathManager implements Manager {
         player.setInvulnerable(false);
         player.removePotionEffect(PotionEffectType.BLINDNESS);
         player.removePotionEffect(PotionEffectType.SLOWNESS);
+
+        GameManager gameManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(GameManager.class);
+
+        Game game = gameManager.getCurrentGame();
+
+        if (!game.isPvpEnabled()) {
+
+            pendingKillers.remove(player.getUniqueId());
+
+            player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getValue());
+            player.setFireTicks(0);
+            player.setRemainingAir(player.getMaximumAir());
+
+            player.sendTitle("§aVous avez survécu !", "§7Le PVP n'est pas encore activé", 5, 40, 10);
+
+            return;
+
+        }
+
         player.setHealth(0.0);
 
     }
