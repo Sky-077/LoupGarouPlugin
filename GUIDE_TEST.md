@@ -45,6 +45,7 @@
 | `/lg forcereveal` | Force la révélation immédiate des rôles sans attendre 10 min |
 | `/lg forcepvp` | Active immédiatement le PVP sans attendre 30 min |
 | `/lg lobbyspawn` | Définit le spawn du lobby (fin de partie) à la position actuelle de l'OP — persiste dans `config.yml` |
+| `/lg forcevote` | Ouvre immédiatement le vote sans attendre le délai de 45 min |
 
 ---
 
@@ -100,7 +101,7 @@
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
 - [🟢] **Sorcière** : `/lg soigner` et `/lg empoisonner`, chacun 1x/partie
-- [ ] **Chasseur** : `/lg tirer` pendant sa propre agonie, 1x/partie
+- [ ] **Chasseur** : reçoit un arc Puissance IV + 64 flèches à la révélation ; `/lg tirer` pendant sa propre agonie, 1x/partie
 - [ ] **Cupidon** : reçoit un arc simple + livre Puissance V + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
 - [ ] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering
   - [ ] Aucun contrat avant l'activation du PVP (`/lg regle` dit "Aucun contrat actif")

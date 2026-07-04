@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
 import fr.dmall.loupgarou.role.RoleTeam;
+import fr.dmall.loupgarou.role.village.ChasseurRole;
 import fr.dmall.loupgarou.role.village.CupidonRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -16,6 +17,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,6 +172,17 @@ public class GameStarter {
 
     }
 
+    private static ItemStack createPowerBow() {
+
+        ItemStack bow = new ItemStack(Material.BOW);
+        ItemMeta meta = bow.getItemMeta();
+        meta.addEnchant(Enchantment.POWER, 4, true);
+        bow.setItemMeta(meta);
+
+        return bow;
+
+    }
+
     private static ItemStack createSharpnessBook() {
 
         ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
@@ -320,6 +333,9 @@ public class GameStarter {
         if (lgPlayer.getRole() instanceof CupidonRole) {
             player.getInventory().addItem(new ItemStack(Material.BOW));
             player.getInventory().addItem(createPowerBook());
+            player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
+        } else if (lgPlayer.getRole() instanceof ChasseurRole) {
+            player.getInventory().addItem(createPowerBow());
             player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
         } else if (lgPlayer.getRole().getTeam() == RoleTeam.NEUTRAL) {
             player.getInventory().addItem(createSharpnessBook());
