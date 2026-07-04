@@ -342,6 +342,7 @@ public class GameStarter {
         }
 
         game.enablePvp();
+        BountyManager.onPvpEnabled(game);
 
         Bukkit.broadcastMessage("§c⚔ Le PVP est désormais activé !");
 

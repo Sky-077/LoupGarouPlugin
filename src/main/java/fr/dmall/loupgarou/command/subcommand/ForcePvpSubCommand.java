@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.BountyManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
@@ -39,6 +40,7 @@ public class ForcePvpSubCommand extends DebugSubCommand {
         }
 
         game.enablePvp();
+        BountyManager.onPvpEnabled(game);
 
         Bukkit.broadcastMessage("§c⚔ Le PVP est désormais activé !");
 

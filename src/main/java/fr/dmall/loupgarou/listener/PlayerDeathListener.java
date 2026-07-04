@@ -17,12 +17,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.UUID;
 
@@ -84,12 +86,14 @@ public class PlayerDeathListener implements Listener {
                 }
 
                 if (killerLgPlayer.getRole() instanceof ChasseurDePrimesRole) {
-                    fulfillContractIfNeeded((ChasseurDePrimesRole) killerLgPlayer.getRole(), killer, player);
+                    fulfillContractIfNeeded((ChasseurDePrimesRole) killerLgPlayer.getRole(), killer, player, game.getEpisode());
                 }
 
             }
 
         }
+
+        cancelContractsOnOthers(game, lgPlayer, killer);
 
         event.setDeathMessage(null);
 
@@ -111,18 +115,76 @@ public class PlayerDeathListener implements Listener {
 
     }
 
-    private void fulfillContractIfNeeded(ChasseurDePrimesRole role, Player hunter, Player target) {
+    private void fulfillContractIfNeeded(ChasseurDePrimesRole role, Player hunter, Player target, int episode) {
 
         if (!role.isContract(target.getUniqueId()) || role.isFulfilled(target.getUniqueId())) {
             return;
         }
 
-        role.fulfillContract(target.getUniqueId());
+        int contractNumber = role.getContractsIssued();
 
-        hunter.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE, 2));
-        hunter.getInventory().addItem(new ItemStack(Material.DIAMOND, 8));
+        role.fulfillContract(target.getUniqueId(), episode);
+
+        if (contractNumber == 1) {
+            hunter.getInventory().addItem(createPowerBow());
+            hunter.getInventory().addItem(new ItemStack(Material.ARROW, 64));
+        } else {
+            hunter.getInventory().addItem(createFeatherFallingBoots());
+        }
 
         hunter.sendMessage("§6Contrat rempli sur " + target.getName() + " ! Vous recevez du matériel.");
+
+    }
+
+    private void cancelContractsOnOthers(Game game, LGPlayer deceased, Player killer) {
+
+        for (LGPlayer lgHunter : game.getPlayers()) {
+
+            if (!(lgHunter.getRole() instanceof ChasseurDePrimesRole)) {
+                continue;
+            }
+
+            if (killer != null && killer.getUniqueId().equals(lgHunter.getUuid())) {
+                continue;
+            }
+
+            ChasseurDePrimesRole bounty = (ChasseurDePrimesRole) lgHunter.getRole();
+
+            if (!bounty.isContract(deceased.getUuid())) {
+                continue;
+            }
+
+            bounty.cancelContract(deceased.getUuid(), game.getEpisode());
+
+            Player hunterPlayer = Bukkit.getPlayer(lgHunter.getUuid());
+
+            if (hunterPlayer != null) {
+                hunterPlayer.sendMessage("§7Votre cible a été éliminée par quelqu'un d'autre. Contrat annulé, en attente du suivant.");
+            }
+
+        }
+
+    }
+
+    private ItemStack createPowerBow() {
+
+        ItemStack bow = new ItemStack(Material.BOW);
+        ItemMeta meta = bow.getItemMeta();
+        meta.addEnchant(Enchantment.POWER, 4, true);
+        bow.setItemMeta(meta);
+
+        return bow;
+
+    }
+
+    private ItemStack createFeatherFallingBoots() {
+
+        ItemStack boots = new ItemStack(Material.DIAMOND_BOOTS);
+        ItemMeta meta = boots.getItemMeta();
+        meta.addEnchant(Enchantment.FEATHER_FALLING, 3, true);
+        boots.setItemMeta(meta);
+
+        return boots;
 
     }
 

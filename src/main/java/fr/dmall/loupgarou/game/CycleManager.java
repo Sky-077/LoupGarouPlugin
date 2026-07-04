@@ -74,6 +74,8 @@ public class CycleManager implements Manager {
 
             voteManager.onEpisodeChange(game);
 
+            BountyManager.onEpisodeChange(game);
+
         }
 
         if (game.isRevealed()) {

@@ -17,8 +17,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class RoleManager implements Manager {
 
@@ -87,33 +85,6 @@ public class RoleManager implements Manager {
                     : new VillageoisRole();
 
             players.get(i).setRole(role);
-
-        }
-
-        assignContracts(players);
-
-    }
-
-    private void assignContracts(List<LGPlayer> players) {
-
-        for (LGPlayer lgPlayer : players) {
-
-            if (!(lgPlayer.getRole() instanceof ChasseurDePrimesRole)) {
-                continue;
-            }
-
-            List<UUID> candidates = players.stream()
-                    .map(LGPlayer::getUuid)
-                    .filter(uuid -> !uuid.equals(lgPlayer.getUuid()))
-                    .collect(Collectors.toList());
-
-            Collections.shuffle(candidates);
-
-            List<UUID> contracts = candidates.stream()
-                    .limit(ChasseurDePrimesRole.CONTRACT_COUNT)
-                    .collect(Collectors.toList());
-
-            ((ChasseurDePrimesRole) lgPlayer.getRole()).setContracts(contracts);
 
         }
 

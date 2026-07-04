@@ -102,7 +102,14 @@
 - [🟢] **Sorcière** : `/lg soigner` et `/lg empoisonner`, chacun 1x/partie
 - [ ] **Chasseur** : `/lg tirer` pendant sa propre agonie, 1x/partie
 - [ ] **Cupidon** : reçoit un arc simple + livre Puissance V + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
-- [ ] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering ; a bien 2 contrats secrets visibles via `/lg regle` ; tuer une cible de contrat donne 2 pommes dorées + 8 diamants et marque le contrat "rempli"
+- [ ] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering
+  - [ ] Aucun contrat avant l'activation du PVP (`/lg regle` dit "Aucun contrat actif")
+  - [ ] Premier contrat reçu **à l'activation du PVP** (testable via `/lg forcepvp`, pas besoin d'attendre 30 min)
+  - [ ] Tuer la cible du 1er contrat donne un arc Puissance IV + 64 flèches et marque le contrat "rempli"
+  - [ ] Tuer la cible du 2e contrat donne des bottes en diamant Chute Amortie III
+  - [ ] Le second contrat n'arrive **pas** tout de suite après le premier, mais au **lever du jour suivant** (nouvel épisode)
+  - [ ] Si la cible du contrat en cours meurt d'une autre main (PVP, chute...), le contrat est annulé (message au Chasseur de Primes) et le contrat suivant arrive au lever du jour suivant, comme pour un succès
+  - [ ] Une fois les 2 contrats résolus (remplis ou annulés), `/lg regle` affiche "Vous n'avez plus de contrat à accomplir"
 
 ### Cupidon / camp Amoureux (nécessite au moins 3 comptes)
 - [ ] Lien entre deux joueurs du **même camp** : si l'un meurt, l'autre meurt aussi de chagrin (message dédié), pas de changement de camp
