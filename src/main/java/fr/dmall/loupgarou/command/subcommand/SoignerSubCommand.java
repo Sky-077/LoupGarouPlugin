@@ -4,6 +4,7 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.game.HonorManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
@@ -93,6 +94,7 @@ public class SoignerSubCommand implements SubCommand {
 
         sorciere.consumeHeal();
         deathManager.revive(target);
+        HonorManager.gainHonor(lgHealer, healer);
 
         target.sendMessage("§dLa Sorcière vous a sauvé avec sa potion de vie !");
         healer.sendMessage("§dVous avez sauvé " + target.getName() + " avec votre potion de vie !");

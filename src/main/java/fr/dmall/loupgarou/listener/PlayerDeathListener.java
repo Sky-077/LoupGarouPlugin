@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
+import fr.dmall.loupgarou.game.HonorManager;
 import fr.dmall.loupgarou.game.LoveManager;
 import fr.dmall.loupgarou.game.VictoryChecker;
 import fr.dmall.loupgarou.game.WorldManager;
@@ -71,7 +72,14 @@ public class PlayerDeathListener implements Listener {
             LGPlayer killerLgPlayer = playerManager.get(killer);
 
             if (killerLgPlayer != null) {
+
                 killerLgPlayer.addKill();
+
+                if (killerLgPlayer.getEffectiveTeam() != null
+                        && killerLgPlayer.getEffectiveTeam() == lgPlayer.getEffectiveTeam()) {
+                    HonorManager.loseHonor(killerLgPlayer, killer);
+                }
+
             }
 
         }

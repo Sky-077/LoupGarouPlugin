@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +125,8 @@ public class GameStarter {
             scatterPlayer.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
 
             if (lgPlayer.getRole() instanceof CupidonRole) {
-                scatterPlayer.getInventory().addItem(createCupidonBow());
+                scatterPlayer.getInventory().addItem(new ItemStack(Material.BOW));
+                scatterPlayer.getInventory().addItem(createPowerBook());
                 scatterPlayer.getInventory().addItem(new ItemStack(Material.ARROW, 64));
             }
 
@@ -163,14 +164,14 @@ public class GameStarter {
 
     }
 
-    private static ItemStack createCupidonBow() {
+    private static ItemStack createPowerBook() {
 
-        ItemStack bow = new ItemStack(Material.BOW);
-        ItemMeta meta = bow.getItemMeta();
-        meta.addEnchant(Enchantment.POWER, 5, true);
-        bow.setItemMeta(meta);
+        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+        EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
+        meta.addStoredEnchant(Enchantment.POWER, 5, true);
+        book.setItemMeta(meta);
 
-        return bow;
+        return book;
 
     }
 
