@@ -75,16 +75,17 @@ public class ScoreboardManager implements Manager {
         String episode = started ? String.valueOf(game.getEpisode()) : "-";
         String border = formatBorder(scoreboardWorld);
         String players = formatPlayers(game, playerManager, started);
+        boolean revealed = game.isRevealed();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            applyScoreboard(player, playerManager, duration, cycle, episode, players, border);
+            applyScoreboard(player, playerManager, duration, cycle, episode, players, border, revealed);
         }
 
     }
 
     @SuppressWarnings("deprecation")
     private void applyScoreboard(Player player, PlayerManager playerManager, String duration, String cycle,
-                                  String episode, String players, String border) {
+                                  String episode, String players, String border, boolean revealed) {
 
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -104,7 +105,7 @@ public class ScoreboardManager implements Manager {
 
         if (lgPlayer != null) {
 
-            RoleTeam team = lgPlayer.getEffectiveTeam();
+            RoleTeam team = revealed ? lgPlayer.getEffectiveTeam() : null;
 
             if (team != null) {
                 group = getGroupLabel(team);

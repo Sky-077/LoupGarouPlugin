@@ -6,6 +6,7 @@ import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.LoveManager;
 import fr.dmall.loupgarou.game.WorldManager;
+import fr.dmall.loupgarou.listener.AgonyListener;
 import fr.dmall.loupgarou.listener.AutoSmeltListener;
 import fr.dmall.loupgarou.listener.DiamondCounterListener;
 import fr.dmall.loupgarou.listener.LethalDamageListener;
@@ -83,6 +84,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new PvpListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new AgonyListener(),
                 this
         );
 

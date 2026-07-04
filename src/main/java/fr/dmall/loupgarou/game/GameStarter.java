@@ -116,6 +116,9 @@ public class GameStarter {
             }
 
             Location location = worldManager.findScatterLocation(gameWorld);
+            scatterPlayer.getInventory().clear();
+            scatterPlayer.getInventory().setArmorContents(null);
+            scatterPlayer.setGameMode(GameMode.SURVIVAL);
             scatterPlayer.teleport(location);
             scatterPlayer.setInvulnerable(true);
             scatterPlayer.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));

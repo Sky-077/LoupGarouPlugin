@@ -38,6 +38,11 @@ public class VictoryChecker {
 
         if (amoureuxAlive > 0 && loupsAlive == 0 && villageAlive == 0 && soloAlive == 0) {
             endGame("§dLes Amoureux ont gagné ! Ils sont les seuls survivants.");
+            return;
+        }
+
+        if (loupsAlive == 0 && villageAlive == 0 && soloAlive == 0 && amoureuxAlive == 0) {
+            endGame("§7Plus aucun survivant. Partie terminée sans vainqueur.");
         }
 
     }

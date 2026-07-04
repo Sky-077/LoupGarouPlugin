@@ -78,7 +78,7 @@ public class WorldManager implements Manager {
 
         }
 
-        deleteWorldFolder(new File(Bukkit.getWorldContainer(), WORLD_NAME));
+        deleteWorldFolderWithRetry(new File(Bukkit.getWorldContainer(), WORLD_NAME));
 
         WorldCreator creator = new WorldCreator(WORLD_NAME);
         creator.seed(new Random().nextLong());
@@ -95,6 +95,7 @@ public class WorldManager implements Manager {
         border.setCenter(centerX, centerZ);
         border.setSize(borderSize);
 
+        world.setFullTime(0L);
         world.setSpawnFlags(false, true);
 
         gameWorld = world;
@@ -164,6 +165,31 @@ public class WorldManager implements Manager {
         }
 
         return true;
+
+    }
+
+    private void deleteWorldFolderWithRetry(File folder) {
+
+        for (int attempt = 0; attempt < 10 && folder.exists(); attempt++) {
+
+            deleteWorldFolder(folder);
+
+            if (folder.exists()) {
+
+                try {
+                    Thread.sleep(100L);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+            }
+
+        }
+
+        if (folder.exists()) {
+            Bukkit.getLogger().warning("[LoupGarouPlugin] Impossible de supprimer entièrement l'ancien monde "
+                    + WORLD_NAME + ", des fichiers restent verrouillés. La régénération peut contenir des restes de la partie précédente.");
+        }
 
     }
 

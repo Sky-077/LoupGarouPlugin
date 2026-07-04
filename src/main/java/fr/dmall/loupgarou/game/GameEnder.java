@@ -5,10 +5,15 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class GameEnder {
+
+    private static final double LOBBY_SPAWN_X = 3.5;
+    private static final double LOBBY_SPAWN_Y = 70.0;
+    private static final double LOBBY_SPAWN_Z = 2.5;
 
     private GameEnder() {
     }
@@ -34,6 +39,7 @@ public class GameEnder {
         }
 
         World lobbyWorld = Bukkit.getWorlds().get(0);
+        Location lobbySpawn = new Location(lobbyWorld, LOBBY_SPAWN_X, LOBBY_SPAWN_Y, LOBBY_SPAWN_Z);
 
         for (LGPlayer lgPlayer : playerManager.getPlayers()) {
 
@@ -42,7 +48,7 @@ public class GameEnder {
             if (player != null) {
                 player.setInvulnerable(false);
                 player.setGameMode(GameMode.SURVIVAL);
-                player.teleport(lobbyWorld.getSpawnLocation());
+                player.teleport(lobbySpawn);
             }
 
             lgPlayer.resetStats();

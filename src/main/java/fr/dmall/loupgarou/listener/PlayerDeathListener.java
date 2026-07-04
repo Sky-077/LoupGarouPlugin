@@ -7,11 +7,13 @@ import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.game.LoveManager;
 import fr.dmall.loupgarou.game.VictoryChecker;
+import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -107,6 +109,16 @@ public class PlayerDeathListener implements Listener {
 
         if (lgPlayer == null || lgPlayer.isAlive()) {
             return;
+        }
+
+        WorldManager worldManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(WorldManager.class);
+
+        World gameWorld = worldManager.getGameWorld();
+
+        if (gameWorld != null) {
+            event.setRespawnLocation(gameWorld.getSpawnLocation());
         }
 
         Bukkit.getScheduler().runTask(
