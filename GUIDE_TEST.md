@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -96,8 +96,8 @@
 
 ### Rôles (un par un, en conditions réelles avec plusieurs joueurs)
 - [ ] **Villageois** : aucun comportement particulier
-- [ ] **Loup-Garou** : Force I la nuit, retirée le jour
-- [ ] **Père des Loups** : Force I comme un loup + `/lg infecter` transforme bien la victime en Loup-Garou (message privé, pas de broadcast)
+- [ ] **Loup-Garou** : Force I la nuit, retirée le jour ; `/lg regle` liste bien les autres Loups-Garous/Père des Loups de la partie (pas lui-même)
+- [ ] **Père des Loups** : Force I comme un loup + `/lg infecter` transforme bien la victime en Loup-Garou (message privé, pas de broadcast) ; `/lg regle` liste bien les autres loups (le nouveau Loup-Garou infecté doit apparaître dans la liste des autres si on revérifie après)
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
 - [🟢] **Sorcière** : `/lg soigner` et `/lg empoisonner`, chacun 1x/partie
@@ -111,6 +111,7 @@
   - [ ] Le second contrat n'arrive **pas** tout de suite après le premier, mais au **lever du jour suivant** (nouvel épisode)
   - [ ] Si la cible du contrat en cours meurt d'une autre main (PVP, chute...), le contrat est annulé (message au Chasseur de Primes) et le contrat suivant arrive au lever du jour suivant, comme pour un succès
   - [ ] Une fois les 2 contrats résolus (remplis ou annulés), `/lg regle` affiche "Vous n'avez plus de contrat à accomplir"
+- [ ] **Loup Blanc** : reçoit Force I la nuit comme un loup ; `/lg regle` liste bien les Loups-Garous/Père des Loups de la partie ; reçoit le livre Tranchant IV comme tout solo ; camp `Solitaire` dans le scoreboard (pas `Loups`) ; gagne seul même si tous les autres morts sont des loups
 
 ### Cupidon / camp Amoureux (nécessite au moins 3 comptes)
 - [ ] Lien entre deux joueurs du **même camp** : si l'un meurt, l'autre meurt aussi de chagrin (message dédié), pas de changement de camp

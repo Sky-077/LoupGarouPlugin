@@ -4,7 +4,9 @@ import fr.dmall.loupgarou.manager.Manager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.role.loup.LoupGarouRole;
 import fr.dmall.loupgarou.role.loup.PereDesLoupsRole;
+import fr.dmall.loupgarou.role.loup.WolfRole;
 import fr.dmall.loupgarou.role.solo.ChasseurDePrimesRole;
+import fr.dmall.loupgarou.role.solo.LoupBlancRole;
 import fr.dmall.loupgarou.role.village.ChasseurRole;
 import fr.dmall.loupgarou.role.village.CupidonRole;
 import fr.dmall.loupgarou.role.village.PetiteFilleRole;
@@ -17,6 +19,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class RoleManager implements Manager {
 
@@ -34,6 +38,7 @@ public class RoleManager implements Manager {
         RoleFactory.register("chasseur", ChasseurRole::new);
         RoleFactory.register("cupidon", CupidonRole::new);
         RoleFactory.register("chasseur-de-primes", ChasseurDePrimesRole::new);
+        RoleFactory.register("loup-blanc", LoupBlancRole::new);
 
     }
 
@@ -85,6 +90,38 @@ public class RoleManager implements Manager {
                     : new VillageoisRole();
 
             players.get(i).setRole(role);
+
+        }
+
+        assignKnownWolves(players);
+
+    }
+
+    private void assignKnownWolves(List<LGPlayer> players) {
+
+        List<LGPlayer> wolves = players.stream()
+                .filter(lgPlayer -> lgPlayer.getRole() != null && lgPlayer.getRole().getTeam() == RoleTeam.LOUP)
+                .collect(Collectors.toList());
+
+        List<UUID> wolfUuids = wolves.stream()
+                .map(LGPlayer::getUuid)
+                .collect(Collectors.toList());
+
+        for (LGPlayer wolf : wolves) {
+
+            List<UUID> otherWolves = wolfUuids.stream()
+                    .filter(uuid -> !uuid.equals(wolf.getUuid()))
+                    .collect(Collectors.toList());
+
+            ((WolfRole) wolf.getRole()).setKnownWolves(otherWolves);
+
+        }
+
+        for (LGPlayer lgPlayer : players) {
+
+            if (lgPlayer.getRole() instanceof LoupBlancRole) {
+                ((LoupBlancRole) lgPlayer.getRole()).setKnownWolves(wolfUuids);
+            }
 
         }
 

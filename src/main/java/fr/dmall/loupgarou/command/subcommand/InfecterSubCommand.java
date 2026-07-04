@@ -11,11 +11,14 @@ import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
 import fr.dmall.loupgarou.role.loup.LoupGarouRole;
 import fr.dmall.loupgarou.role.loup.PereDesLoupsRole;
+import fr.dmall.loupgarou.role.loup.WolfRole;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class InfecterSubCommand implements SubCommand {
 
@@ -115,11 +118,24 @@ public class InfecterSubCommand implements SubCommand {
             return true;
         }
 
+        List<LGPlayer> existingWolves = game.getPlayers().stream()
+                .filter(p -> p.getRole() instanceof WolfRole)
+                .collect(Collectors.toList());
+
+        List<UUID> existingWolfUuids = existingWolves.stream()
+                .map(LGPlayer::getUuid)
+                .collect(Collectors.toList());
+
         pereDesLoups.consumeInfection();
         deathManager.revive(target);
 
         LoupGarouRole newRole = new LoupGarouRole();
+        newRole.setKnownWolves(existingWolfUuids);
         lgTarget.setRole(newRole);
+
+        for (LGPlayer wolf : existingWolves) {
+            ((WolfRole) wolf.getRole()).addKnownWolf(target.getUniqueId());
+        }
 
         if (game.getState() == GameState.NIGHT) {
             newRole.onNight(target);

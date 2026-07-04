@@ -1,43 +1,24 @@
 package fr.dmall.loupgarou.role.loup;
 
-import fr.dmall.loupgarou.role.Role;
-import fr.dmall.loupgarou.role.RoleTeam;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import java.util.ArrayList;
+import java.util.List;
 
-public class LoupGarouRole extends Role {
+public class LoupGarouRole extends WolfRole {
 
     public LoupGarouRole() {
-        super("Loup-Garou", RoleTeam.LOUP);
-    }
-
-    @Override
-    public void onNight(Player player) {
-
-        player.addPotionEffect(new PotionEffect(
-                PotionEffectType.STRENGTH,
-                PotionEffect.INFINITE_DURATION,
-                0,
-                false,
-                false
-        ));
-
-    }
-
-    @Override
-    public void onDay(Player player) {
-
-        player.removePotionEffect(PotionEffectType.STRENGTH);
-
+        super("Loup-Garou");
     }
 
     @Override
     public String[] getInstructions() {
-        return new String[] {
-                "Vous recevez Force I chaque nuit.",
-                "Éliminez les villageois en combat direct (PVP libre, pas de vote ni de ciblage).",
-        };
+
+        List<String> lines = new ArrayList<>();
+        lines.add("Vous recevez Force I chaque nuit.");
+        lines.add("Éliminez les villageois en combat direct (PVP libre, pas de vote ni de ciblage).");
+        lines.addAll(getWolfPackLines());
+
+        return lines.toArray(new String[0]);
+
     }
 
 }

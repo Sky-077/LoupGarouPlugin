@@ -1,46 +1,27 @@
 package fr.dmall.loupgarou.role.loup;
 
-import fr.dmall.loupgarou.role.Role;
-import fr.dmall.loupgarou.role.RoleTeam;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PereDesLoupsRole extends Role {
+public class PereDesLoupsRole extends WolfRole {
 
     private boolean infectionAvailable = true;
 
     public PereDesLoupsRole() {
-        super("Père des Loups", RoleTeam.LOUP);
-    }
-
-    @Override
-    public void onNight(Player player) {
-
-        player.addPotionEffect(new PotionEffect(
-                PotionEffectType.STRENGTH,
-                PotionEffect.INFINITE_DURATION,
-                0,
-                false,
-                false
-        ));
-
-    }
-
-    @Override
-    public void onDay(Player player) {
-
-        player.removePotionEffect(PotionEffectType.STRENGTH);
-
+        super("Père des Loups");
     }
 
     @Override
     public String[] getInstructions() {
-        return new String[] {
-                "Vous recevez Force I chaque nuit, comme un Loup-Garou.",
-                "Une fois par partie, dans la minute qui suit un coup mortel porté à votre propre victime,",
-                "vous pouvez l'infecter avec /lg infecter <joueur> pour la transformer en Loup-Garou au lieu de la tuer.",
-        };
+
+        List<String> lines = new ArrayList<>();
+        lines.add("Vous recevez Force I chaque nuit, comme un Loup-Garou.");
+        lines.add("Une fois par partie, dans la minute qui suit un coup mortel porté à votre propre victime,");
+        lines.add("vous pouvez l'infecter avec /lg infecter <joueur> pour la transformer en Loup-Garou au lieu de la tuer.");
+        lines.addAll(getWolfPackLines());
+
+        return lines.toArray(new String[0]);
+
     }
 
     public boolean isInfectionAvailable() {
