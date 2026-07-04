@@ -12,6 +12,7 @@ public class LGPlayer {
     private boolean alive;
     private int kills;
     private int diamonds;
+    private int honor;
     private boolean joined;
 
     private Role role;
@@ -51,6 +52,14 @@ public class LGPlayer {
         diamonds += amount;
     }
 
+    public int getHonor() {
+        return honor;
+    }
+
+    public void setHonor(int honor) {
+        this.honor = Math.max(-3, Math.min(3, honor));
+    }
+
     public Role getRole() {
         return role;
     }
@@ -85,6 +94,7 @@ public class LGPlayer {
         this.alive = true;
         this.kills = 0;
         this.diamonds = 0;
+        this.honor = 0;
         this.joined = false;
         this.role = null;
         this.teamOverride = null;

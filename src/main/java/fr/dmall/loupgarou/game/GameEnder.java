@@ -46,6 +46,7 @@ public class GameEnder {
             if (player != null) {
                 player.setInvulnerable(false);
                 player.setGameMode(GameMode.SURVIVAL);
+                HonorManager.clearModifier(player);
                 player.teleport(lobbySpawn);
             }
 

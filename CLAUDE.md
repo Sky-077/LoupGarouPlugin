@@ -68,6 +68,14 @@ Camps (`RoleTeam`) : `VILLAGE`, `LOUP`, `NEUTRAL` (solo, prévu mais aucun rôle
 
 Le spawn où les joueurs sont renvoyés en fin de partie (victoire ou `/lg stop`) n'est plus deviné à partir du monde par défaut (`world.getSpawnLocation()` s'est révélé peu fiable chez l'utilisateur — Y en dur à la bedrock, ou coordonnées codées en dur jamais bonnes malgré plusieurs tentatives via F3). À la place : `/lg lobbyspawn` (OP) sauvegarde la position exacte du joueur qui l'exécute (monde + XYZ + yaw/pitch) dans `config.yml`, persistant entre redémarrages du serveur. `GameEnder` et `WorldManager.prepareGameWorld()` (pour les joueurs restés dans l'ancien `lg_uhc`) utilisent tous les deux `LobbySpawnManager.getSpawn()`. **Tant que `/lg lobbyspawn` n'a jamais été exécuté**, ça retombe sur `Bukkit.getWorlds().get(0).getSpawnLocation()` (l'ancien comportement, potentiellement peu fiable) — **penser à demander à l'utilisateur de lancer `/lg lobbyspawn` une fois depuis un endroit sûr avant de considérer ce bug définitivement clos**.
 
+## Système d'honneur (`HonorManager`) — infrastructure seulement, rien ne le déclenche encore
+
+- Jauge **individuelle** par joueur (`LGPlayer.honor`, -3 à +3, clampée dans `setHonor()`).
+- `HonorManager.gainHonor(lgPlayer, player)` / `loseHonor(lgPlayer, player)` : font varier la jauge d'1 point et recalculent l'effet de cœur.
+- Effet aux extrêmes, basé sur `getEffectiveTeam()` : à **+3**, un Villageois gagne un cœur (+2 PV max) et un Loup en perd un (-2 PV max) ; à **-3** c'est l'inverse (Villageois puni, Loup récompensé). Implémenté via un `AttributeModifier` nommé (`NamespacedKey "honor_hearts"`) sur `Attribute.MAX_HEALTH`, recalculé à chaque changement (donc réversible si l'honneur repasse sous le seuil). Aucun effet pour les Amoureux/solos.
+- `GameEnder.end()` nettoie le modificateur (`HonorManager.clearModifier()`) et `LGPlayer.resetStats()` remet l'honneur à 0 en fin de partie.
+- **Rien n'appelle `gainHonor`/`loseHonor` pour l'instant** — prévu pour un futur système de vote ("on en gagne en votant... on en perd en ne votant pas") et d'autres actions pour/contre le village, pas encore définies par l'utilisateur. Brancher ces appels quand ces systèmes existeront.
+
 ## Conditions de victoire (`VictoryChecker`)
 
 Basées sur `LGPlayer.getEffectiveTeam()` (pas `role.getTeam()` directement, pour prendre en compte les Amoureux) :
