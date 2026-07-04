@@ -37,11 +37,6 @@ public class InfecterSubCommand implements SubCommand {
             return true;
         }
 
-        if (args.length < 2) {
-            sender.sendMessage("§cUsage : /lg infecter <joueur>");
-            return true;
-        }
-
         Player infector = (Player) sender;
 
         PlayerManager playerManager = LoupGarouPlugin.getInstance()
@@ -86,6 +81,11 @@ public class InfecterSubCommand implements SubCommand {
 
         if (!pereDesLoups.isInfectionAvailable()) {
             sender.sendMessage("§cVous avez déjà utilisé votre pouvoir d'infection cette partie.");
+            return true;
+        }
+
+        if (args.length < 2) {
+            sender.sendMessage("§cUsage : /lg infecter <joueur>");
             return true;
         }
 

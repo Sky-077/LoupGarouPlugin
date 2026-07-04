@@ -32,11 +32,6 @@ public class SondeSubCommand implements SubCommand {
             return true;
         }
 
-        if (args.length < 2) {
-            sender.sendMessage("§cUsage : /lg sonder <joueur>");
-            return true;
-        }
-
         Player viewer = (Player) sender;
 
         PlayerManager playerManager = LoupGarouPlugin.getInstance()
@@ -77,6 +72,11 @@ public class SondeSubCommand implements SubCommand {
 
         if (!voyante.isPowerAvailable()) {
             sender.sendMessage("§cVous avez déjà utilisé votre pouvoir ce cycle.");
+            return true;
+        }
+
+        if (args.length < 2) {
+            sender.sendMessage("§cUsage : /lg sonder <joueur>");
             return true;
         }
 

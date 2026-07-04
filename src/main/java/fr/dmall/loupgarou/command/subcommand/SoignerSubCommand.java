@@ -32,11 +32,6 @@ public class SoignerSubCommand implements SubCommand {
             return true;
         }
 
-        if (args.length < 2) {
-            sender.sendMessage("§cUsage : /lg soigner <joueur>");
-            return true;
-        }
-
         Player healer = (Player) sender;
 
         PlayerManager playerManager = LoupGarouPlugin.getInstance()
@@ -76,6 +71,11 @@ public class SoignerSubCommand implements SubCommand {
 
         if (!sorciere.isHealAvailable()) {
             sender.sendMessage("§cVous avez déjà utilisé votre potion de vie cette partie.");
+            return true;
+        }
+
+        if (args.length < 2) {
+            sender.sendMessage("§cUsage : /lg soigner <joueur>");
             return true;
         }
 

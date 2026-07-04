@@ -32,11 +32,6 @@ public class TirerSubCommand implements SubCommand {
             return true;
         }
 
-        if (args.length < 2) {
-            sender.sendMessage("§cUsage : /lg tirer <joueur>");
-            return true;
-        }
-
         Player hunter = (Player) sender;
 
         PlayerManager playerManager = LoupGarouPlugin.getInstance()
@@ -81,6 +76,11 @@ public class TirerSubCommand implements SubCommand {
 
         if (!chasseur.isShotAvailable()) {
             sender.sendMessage("§cVous avez déjà utilisé votre riposte cette partie.");
+            return true;
+        }
+
+        if (args.length < 2) {
+            sender.sendMessage("§cUsage : /lg tirer <joueur>");
             return true;
         }
 

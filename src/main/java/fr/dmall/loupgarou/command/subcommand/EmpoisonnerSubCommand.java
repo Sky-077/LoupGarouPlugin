@@ -32,11 +32,6 @@ public class EmpoisonnerSubCommand implements SubCommand {
             return true;
         }
 
-        if (args.length < 2) {
-            sender.sendMessage("§cUsage : /lg empoisonner <joueur>");
-            return true;
-        }
-
         Player poisoner = (Player) sender;
 
         PlayerManager playerManager = LoupGarouPlugin.getInstance()
@@ -76,6 +71,11 @@ public class EmpoisonnerSubCommand implements SubCommand {
 
         if (!sorciere.isPoisonAvailable()) {
             sender.sendMessage("§cVous avez déjà utilisé votre potion de mort cette partie.");
+            return true;
+        }
+
+        if (args.length < 2) {
+            sender.sendMessage("§cUsage : /lg empoisonner <joueur>");
             return true;
         }
 
