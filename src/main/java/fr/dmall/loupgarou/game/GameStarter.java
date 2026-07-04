@@ -26,6 +26,7 @@ public class GameStarter {
     private static final long INVINCIBILITY_DURATION_TICKS = 20L * 30L; // 30 secondes
     private static final long PVP_DELAY_TICKS = 20L * 60L * 30L; // 30 minutes
     private static final long ROLE_REVEAL_DELAY_TICKS = 20L * 60L * 10L; // 10 minutes
+    private static final long VOTE_START_DELAY_TICKS = 20L * 60L * 45L; // 45 minutes
 
     private GameStarter() {
     }
@@ -207,6 +208,30 @@ public class GameStarter {
                 () -> enablePvp(game, startedAt),
                 PVP_DELAY_TICKS
         );
+
+        Bukkit.getScheduler().runTaskLater(
+                LoupGarouPlugin.getInstance(),
+                () -> startVoting(game, startedAt),
+                VOTE_START_DELAY_TICKS
+        );
+
+    }
+
+    private static void startVoting(Game game, long startedAt) {
+
+        if (game.getStartTimeMillis() != startedAt) {
+            return;
+        }
+
+        if (game.getState() != GameState.DAY && game.getState() != GameState.NIGHT) {
+            return;
+        }
+
+        VoteManager voteManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(VoteManager.class);
+
+        voteManager.startVoting(game);
 
     }
 

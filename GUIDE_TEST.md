@@ -121,6 +121,18 @@
 - [🟢] Les débris antiques donnent directement un éclat de netherite
 - [🟢] Le compteur de diamants (`X/17` dans le scoreboard) s'incrémente correctement, y compris avec Fortune
 
+### Système de vote (démarre 45 min après le vrai début, dure 3 épisodes)
+- [ ] Les 4 maisons de vote apparaissent bien autour du centre de la bordure (à ~150 blocs), chacune avec une enclume et un jukebox
+- [ ] Les maisons/jukebox/enclumes ne peuvent pas être détruits pendant la partie
+- [ ] Clic droit sur un jukebox **avant** l'ouverture du vote : message "le vote n'est pas ouvert", pas de menu
+- [ ] Clic droit sur un jukebox **pendant** le vote : ouvre un menu avec une tête par joueur vivant (sauf soi-même) + un item "Passer"
+- [ ] Voter pour un joueur, repasser dans le jukebox et changer son vote : le dernier choix est bien celui pris en compte
+- [ ] À la fin de chaque épisode de vote : honneur +1 pour ceux qui ont voté, inchangé pour ceux qui ont passé, -1 pour ceux qui n'ont rien fait (Villageois et Loups traités pareil)
+- [ ] Le joueur le plus voté voit son vrai rôle apparaître dans le chat, mélangé avec 2 autres noms de rôles au hasard (sans indiquer lequel est le vrai)
+- [ ] En cas d'égalité au nombre de votes, un des joueurs à égalité est choisi (pas de crash)
+- [ ] Après 3 épisodes de vote, le vote se désactive (jukebox redevient inactif)
+- [ ] Le vote et les votes en cours sont bien réinitialisés entre deux parties
+
 ### Fin de partie / spawn du lobby
 - [ ] `/lg lobbyspawn` sauvegarde bien la position exacte (monde + XYZ) de l'OP qui l'exécute
 - [ ] Après une victoire ou un `/lg stop`, tous les joueurs atterrissent bien à cet endroit précis (pas dans un bloc, pas dans le vide)

@@ -65,7 +65,15 @@ public class CycleManager implements Manager {
     private void onPhaseChange(Game game, GameState newState) {
 
         if (newState == GameState.DAY) {
+
             game.incrementEpisode();
+
+            VoteManager voteManager = LoupGarouPlugin.getInstance()
+                    .getManagerRegistry()
+                    .getManager(VoteManager.class);
+
+            voteManager.onEpisodeChange(game);
+
         }
 
         if (game.isRevealed()) {

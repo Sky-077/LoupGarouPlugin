@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.role.RoleFactory;
 import fr.dmall.loupgarou.role.RoleManager;
 import org.bukkit.command.CommandSender;
 
@@ -85,6 +86,17 @@ public class RoleSubCommand implements SubCommand {
                 return true;
             }
 
+            case "available": {
+
+                sender.sendMessage("§6===== Rôles disponibles =====");
+
+                for (String name : RoleFactory.getRegisteredNames()) {
+                    sender.sendMessage(" §7- §e" + name);
+                }
+
+                return true;
+            }
+
             case "list": {
 
                 Map<String, Integer> gameRoles = roleManager.getGameRoles();
@@ -114,6 +126,7 @@ public class RoleSubCommand implements SubCommand {
         sender.sendMessage("§e/lg role remove <role>");
         sender.sendMessage("§e/lg role list");
         sender.sendMessage("§e/lg role clear");
+        sender.sendMessage("§e/lg role available");
     }
 
 }

@@ -4,6 +4,7 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.WorldCreator;
@@ -14,7 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -30,6 +33,9 @@ public class WorldManager implements Manager {
     private static final int POINTS_PER_RING = 6;
     private static final int RING_STEP = 400;
 
+    private static final int VOTE_HOUSE_RADIUS = 150;
+    private static final int VOTE_HOUSE_HEIGHT = 4;
+
     private static final Set<Biome> FORBIDDEN_BIOMES = Set.of(
             Biome.OCEAN, Biome.DEEP_OCEAN, Biome.WARM_OCEAN, Biome.LUKEWARM_OCEAN,
             Biome.DEEP_LUKEWARM_OCEAN, Biome.COLD_OCEAN, Biome.DEEP_COLD_OCEAN,
@@ -43,6 +49,9 @@ public class WorldManager implements Manager {
     private World gameWorld;
     private int centerX;
     private int centerZ;
+
+    private final List<Location> voteJukeboxes = new ArrayList<>();
+    private final List<int[]> voteHouseBounds = new ArrayList<>();
 
     @Override
     public void enable() {
@@ -104,7 +113,97 @@ public class WorldManager implements Manager {
 
         gameWorld = world;
 
+        buildVoteHouses(world);
+
         return world;
+
+    }
+
+    public boolean isVoteJukebox(Location location) {
+
+        return voteJukeboxes.stream().anyMatch(loc ->
+                loc.getWorld().equals(location.getWorld())
+                        && loc.getBlockX() == location.getBlockX()
+                        && loc.getBlockY() == location.getBlockY()
+                        && loc.getBlockZ() == location.getBlockZ());
+
+    }
+
+    public boolean isInsideVoteHouse(Location location) {
+
+        for (int[] bounds : voteHouseBounds) {
+
+            if (location.getBlockX() >= bounds[0] && location.getBlockX() <= bounds[1]
+                    && location.getBlockY() >= bounds[2] && location.getBlockY() <= bounds[3]
+                    && location.getBlockZ() >= bounds[4] && location.getBlockZ() <= bounds[5]) {
+                return true;
+            }
+
+        }
+
+        return false;
+
+    }
+
+    private void buildVoteHouses(World world) {
+
+        voteJukeboxes.clear();
+        voteHouseBounds.clear();
+
+        int[][] offsets = {
+                { VOTE_HOUSE_RADIUS, 0 },
+                { -VOTE_HOUSE_RADIUS, 0 },
+                { 0, VOTE_HOUSE_RADIUS },
+                { 0, -VOTE_HOUSE_RADIUS },
+        };
+
+        for (int[] offset : offsets) {
+            buildVoteHouse(world, centerX + offset[0], centerZ + offset[1]);
+        }
+
+    }
+
+    private void buildVoteHouse(World world, int houseX, int houseZ) {
+
+        int baseY = world.getHighestBlockYAt(houseX, houseZ) + 1;
+
+        for (int dx = -2; dx <= 2; dx++) {
+
+            for (int dz = -2; dz <= 2; dz++) {
+
+                int x = houseX + dx;
+                int z = houseZ + dz;
+
+                world.getBlockAt(x, baseY - 1, z).setType(Material.OAK_PLANKS);
+                world.getBlockAt(x, baseY + VOTE_HOUSE_HEIGHT, z).setType(Material.OAK_PLANKS);
+
+                boolean edge = (dx == -2 || dx == 2 || dz == -2 || dz == 2);
+
+                if (edge) {
+
+                    for (int dy = 0; dy < VOTE_HOUSE_HEIGHT; dy++) {
+                        world.getBlockAt(x, baseY + dy, z).setType(Material.OAK_LOG);
+                    }
+
+                }
+
+            }
+
+        }
+
+        world.getBlockAt(houseX, baseY, houseZ + 2).setType(Material.AIR);
+        world.getBlockAt(houseX, baseY + 1, houseZ + 2).setType(Material.AIR);
+
+        world.getBlockAt(houseX - 1, baseY, houseZ).setType(Material.ANVIL);
+        world.getBlockAt(houseX + 1, baseY, houseZ).setType(Material.JUKEBOX);
+
+        voteJukeboxes.add(new Location(world, houseX + 1, baseY, houseZ));
+
+        voteHouseBounds.add(new int[] {
+                houseX - 2, houseX + 2,
+                baseY - 1, baseY + VOTE_HOUSE_HEIGHT,
+                houseZ - 2, houseZ + 2
+        });
 
     }
 
