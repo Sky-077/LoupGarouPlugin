@@ -23,6 +23,10 @@ public class GameEnder {
                 .getManagerRegistry()
                 .getManager(PlayerManager.class);
 
+        LoveManager loveManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(LoveManager.class);
+
         Game game = gameManager.getCurrentGame();
 
         for (String message : messages) {
@@ -47,6 +51,7 @@ public class GameEnder {
 
         game.clearPlayers();
         game.setState(GameState.WAITING);
+        loveManager.reset();
 
     }
 

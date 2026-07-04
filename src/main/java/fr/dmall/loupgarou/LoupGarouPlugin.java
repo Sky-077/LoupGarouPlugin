@@ -4,6 +4,7 @@ import fr.dmall.loupgarou.command.LGCommand;
 import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.game.LoveManager;
 import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.listener.AutoSmeltListener;
 import fr.dmall.loupgarou.listener.DiamondCounterListener;
@@ -39,6 +40,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry.register(new CycleManager());
         managerRegistry.register(new ScoreboardManager());
         managerRegistry.register(new DeathManager());
+        managerRegistry.register(new LoveManager());
 
         managerRegistry.enableAll();
 

@@ -8,7 +8,6 @@ import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.manager.Manager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
-import fr.dmall.loupgarou.role.Role;
 import fr.dmall.loupgarou.role.RoleTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -105,10 +104,10 @@ public class ScoreboardManager implements Manager {
 
         if (lgPlayer != null) {
 
-            Role role = lgPlayer.getRole();
+            RoleTeam team = lgPlayer.getEffectiveTeam();
 
-            if (role != null) {
-                group = getGroupLabel(role.getTeam());
+            if (team != null) {
+                group = getGroupLabel(team);
             }
 
             kills = String.valueOf(lgPlayer.getKills());
@@ -154,6 +153,10 @@ public class ScoreboardManager implements Manager {
 
         if (team == RoleTeam.VILLAGE) {
             return "Village";
+        }
+
+        if (team == RoleTeam.AMOUREUX) {
+            return "Amoureux";
         }
 
         return "Solitaire";

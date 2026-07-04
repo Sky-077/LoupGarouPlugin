@@ -4,6 +4,7 @@ public enum RoleTeam {
 
     VILLAGE,
     LOUP,
-    NEUTRAL
+    NEUTRAL,
+    AMOUREUX
 
 }

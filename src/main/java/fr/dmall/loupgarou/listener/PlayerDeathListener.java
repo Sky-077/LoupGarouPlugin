@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
+import fr.dmall.loupgarou.game.LoveManager;
 import fr.dmall.loupgarou.game.VictoryChecker;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
@@ -82,6 +83,12 @@ public class PlayerDeathListener implements Listener {
         } else {
             Bukkit.broadcastMessage("§c☠ " + player.getName() + " est mort ! §7(Rôle : " + roleName + ")");
         }
+
+        LoveManager loveManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(LoveManager.class);
+
+        loveManager.handleDeath(player);
 
         VictoryChecker.check();
 

@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou.player;
 
 import fr.dmall.loupgarou.role.Role;
+import fr.dmall.loupgarou.role.RoleTeam;
 
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ public class LGPlayer {
     private boolean joined;
 
     private Role role;
+    private RoleTeam teamOverride;
 
     public LGPlayer(UUID uuid) {
         this.uuid = uuid;
@@ -57,6 +59,20 @@ public class LGPlayer {
         this.role = role;
     }
 
+    public RoleTeam getEffectiveTeam() {
+
+        if (teamOverride != null) {
+            return teamOverride;
+        }
+
+        return (role != null) ? role.getTeam() : null;
+
+    }
+
+    public void setTeamOverride(RoleTeam teamOverride) {
+        this.teamOverride = teamOverride;
+    }
+
     public boolean isJoined() {
         return joined;
     }
@@ -71,6 +87,7 @@ public class LGPlayer {
         this.diamonds = 0;
         this.joined = false;
         this.role = null;
+        this.teamOverride = null;
     }
 
 }

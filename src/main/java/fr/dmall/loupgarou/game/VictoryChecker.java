@@ -24,14 +24,20 @@ public class VictoryChecker {
         long loupsAlive = countAlive(game, RoleTeam.LOUP);
         long villageAlive = countAlive(game, RoleTeam.VILLAGE);
         long soloAlive = countAlive(game, RoleTeam.NEUTRAL);
+        long amoureuxAlive = countAlive(game, RoleTeam.AMOUREUX);
 
-        if (loupsAlive == 0 && soloAlive == 0) {
+        if (loupsAlive == 0 && soloAlive == 0 && amoureuxAlive == 0 && villageAlive > 0) {
             endGame("§aLe Village a gagné ! Tous les Loups-Garous et les joueurs solitaires ont été éliminés.");
             return;
         }
 
-        if (villageAlive == 0 && soloAlive == 0) {
+        if (villageAlive == 0 && soloAlive == 0 && amoureuxAlive == 0 && loupsAlive > 0) {
             endGame("§cLes Loups-Garous ont gagné ! Tous les villageois et les joueurs solitaires ont été éliminés.");
+            return;
+        }
+
+        if (amoureuxAlive > 0 && loupsAlive == 0 && villageAlive == 0 && soloAlive == 0) {
+            endGame("§dLes Amoureux ont gagné ! Ils sont les seuls survivants.");
         }
 
     }
@@ -40,7 +46,7 @@ public class VictoryChecker {
 
         return game.getPlayers().stream()
                 .filter(LGPlayer::isAlive)
-                .filter(lgPlayer -> lgPlayer.getRole() != null && lgPlayer.getRole().getTeam() == team)
+                .filter(lgPlayer -> lgPlayer.getEffectiveTeam() == team)
                 .count();
 
     }

@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -34,6 +34,7 @@
 | `/lg soigner <joueur>` | Sorcière | Potion de vie : sauve un joueur en train de mourir, 1x/partie |
 | `/lg empoisonner <joueur>` | Sorcière | Potion de mort : tue instantanément un joueur, 1x/partie |
 | `/lg tirer <joueur>` | Chasseur | Riposte une dernière fois pendant sa propre minute de sursis avant de mourir, 1x/partie |
+| `/lg lier <joueur1> <joueur2>` | Cupidon | Lie deux joueurs par l'amour, 1x/partie |
 
 ### Commandes de debug (réservées aux OP)
 
@@ -67,6 +68,7 @@
 - [ ] Chaque joueur est téléporté à un endroit différent, sur un point de terrain sûr (pas dans le vide, pas dans l'eau/lave)
 - [🟢] Invulnérabilité active pendant les 30 premières secondes, puis désactivée automatiquement
 - [ ] `/lg stop` pendant la phase de scattering/invincibilité annule bien tout proprement (pas de bug de tâche différée qui se déclenche plus tard)
+- [ ] Chaque joueur reçoit bien un stack de 64 steaks cuits au moment du scattering
 
 ### Révélation des rôles (10 min après le vrai début)
 - [🔴] Avant la révélation : `/lg me`, `/lg regle`, `/lg sonder`, `/lg infecter`, `/lg soigner`, `/lg empoisonner`, `/lg tirer` renvoient tous "les rôles n'ont pas encore été révélés"
@@ -79,6 +81,8 @@
 - [ ] Avant l'activation : un coup PVP annulé ne déclenche **pas** le système de mort différée (pas de "mort" fantôme)
 - [ ] À 30 min : le PVP s'active automatiquement pour tout le monde
 - [🟢] `/lg forcepvp` (OP) active le PVP immédiatement
+- [ ] Tant que le PVP n'est pas activé : un joueur qui subirait normalement une mort réelle (chute, lave, faim...) est soigné à pleine vie à la place ("Vous avez survécu !"), quelle que soit la cause
+- [ ] Une fois le PVP activé : la mort redevient réelle dans les mêmes conditions
 
 ### Système de mort en deux temps
 - [ ] Un coup mortel annule les dégâts, rend le joueur invulnérable, et le tue réellement 1 minute plus tard
@@ -95,11 +99,20 @@
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
 - [🟢] **Sorcière** : `/lg soigner` et `/lg empoisonner`, chacun 1x/partie
 - [ ] **Chasseur** : `/lg tirer` pendant sa propre agonie, 1x/partie
+- [ ] **Cupidon** : spawn bien avec un arc Puissance V + 64 flèches ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
+
+### Cupidon / camp Amoureux (nécessite au moins 3 comptes)
+- [ ] Lien entre deux joueurs du **même camp** : si l'un meurt, l'autre meurt aussi de chagrin (message dédié), pas de changement de camp
+- [ ] Lien entre deux joueurs de **camps opposés** (ex: Villageois + Loup-Garou) : les deux amoureux ET le Cupidon rejoignent le nouveau camp "Amoureux" (vérifier le "Groupe" dans le scoreboard des 3 joueurs)
+- [ ] Le camp Amoureux gagne s'il est le dernier camp survivant (message de victoire dédié)
+- [ ] Si les deux amoureux (camps opposés) meurent tous les deux, le Cupidon redevient un simple Villageois (vérifier `/lg me` et le scoreboard)
+- [ ] Le lien amoureux ne survit pas d'une partie à l'autre (reset propre via `/lg stop` ou victoire)
 
 ### Conditions de victoire
 - [🟢] Village gagne quand tous les Loups (et solos) sont morts — message de victoire + partie `FINISHED`
 - [ ] Loups gagnent quand tous les Villageois (et solos) sont morts — message de victoire + partie `FINISHED`
 - [ ] Vérifier qu'une infection (Père des Loups) qui fait basculer l'équilibre déclenche bien la victoire immédiatement
+- [ ] Les Amoureux (camps opposés) gagnent quand ils sont les seuls survivants (voir section Cupidon)
 
 ### Autosmelting et diamants
 - [🟢] Fer/or/cuivre bruts minés donnent directement le lingot

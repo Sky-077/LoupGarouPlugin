@@ -4,14 +4,17 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
+import fr.dmall.loupgarou.role.village.CupidonRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +120,11 @@ public class GameStarter {
             scatterPlayer.setInvulnerable(true);
             scatterPlayer.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
 
+            if (lgPlayer.getRole() instanceof CupidonRole) {
+                scatterPlayer.getInventory().addItem(createCupidonBow());
+                scatterPlayer.getInventory().addItem(new ItemStack(Material.ARROW, 64));
+            }
+
         }
 
         for (LGPlayer lgPlayer : playerManager.getPlayers()) {
@@ -148,6 +156,17 @@ public class GameStarter {
                 () -> beginGame(game, players, cycleManager),
                 INVINCIBILITY_DURATION_TICKS
         );
+
+    }
+
+    private static ItemStack createCupidonBow() {
+
+        ItemStack bow = new ItemStack(Material.BOW);
+        ItemMeta meta = bow.getItemMeta();
+        meta.addEnchant(Enchantment.POWER, 5, true);
+        bow.setItemMeta(meta);
+
+        return bow;
 
     }
 
