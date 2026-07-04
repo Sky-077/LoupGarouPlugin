@@ -20,7 +20,7 @@
 
 ## Architecture générale
 
-- **Pattern Manager** : chaque système implémente `Manager` (`enable()`/`disable()`), enregistré dans `ManagerRegistry` au démarrage (`LoupGarouPlugin.onEnable()`). Managers actuels : `GameManager`, `WorldManager`, `PlayerManager`, `RoleManager`, `CycleManager`, `ScoreboardManager`, `DeathManager`, `LoveManager`.
+- **Pattern Manager** : chaque système implémente `Manager` (`enable()`/`disable()`), enregistré dans `ManagerRegistry` au démarrage (`LoupGarouPlugin.onEnable()`). Managers actuels : `GameManager`, `WorldManager`, `PlayerManager`, `RoleManager`, `CycleManager`, `ScoreboardManager`, `DeathManager`, `LoveManager`, `LobbySpawnManager`.
 - **Commandes** : `/lg <sous-commande>` via `LGCommand`, qui route vers des classes `SubCommand` (interface `getName()`/`getDescription()`/`execute()`). Les commandes de debug étendent `DebugSubCommand` (abstraite, vérifie `sender.isOp()` avant d'exécuter).
 - **Rôles** : classe abstraite `Role` (nom, `RoleTeam`, hooks `onGameStart`, `onDeath`, `onDay`, `onNight`, `getInstructions()` pour le texte d'explication envoyé au joueur, `sendInstructions()`). `RoleFactory` = registre statique nom→constructeur. `RoleManager` gère le pool de rôles configuré (`/lg role add/remove/list/clear`) et les distribue aléatoirement (`assignRoles`), en complétant avec des Villageois.
 - **Joueurs** : `LGPlayer` (UUID, `alive`, `kills`, `diamonds`, `joined`, `role`, `teamOverride`) géré par `PlayerManager`. `getEffectiveTeam()` retourne `teamOverride` si présent, sinon `role.getTeam()` — permet aux Amoureux de camps opposés de changer de camp sans toucher à la classe `Role`.
@@ -37,7 +37,7 @@
 5. Partie "vraiment" commencée (`markStarted()`, `DAY`/`NIGHT` selon l'heure du monde).
 6. **10 minutes après le vrai début** : révélation des rôles (`revealRoles`) — message d'explication + activation immédiate du pouvoir jour/nuit en cours. **Avant la révélation, tous les pouvoirs de rôle sont bloqués** (`/lg me`, `/lg regle`, `/lg sonder`, `/lg infecter`, `/lg soigner`, `/lg empoisonner`, `/lg tirer`, `/lg lier`, invisibilité Petite Fille, buffs jour/nuit). **Le camp (`Groupe`) n'apparaît dans le scoreboard qu'une fois `game.isRevealed()` vrai** (avant, affiche `-`). `/lg forcereveal` (OP) force la révélation immédiate.
 7. **30 minutes après le vrai début** : le PVP s'active (`enablePvp`). Avant ça, tout dégât normalement mortel soigne le joueur à la place ("Vous avez survécu !") au lieu de le tuer, quelle que soit la cause. `/lg forcepvp` (OP) force l'activation immédiate.
-8. Fin de partie (victoire d'un camp, plus aucun survivant, ou `/lg stop`) → `GameEnder.end()` : diffuse le message, remet tous les joueurs en survie au spawn du monde précédent, reset les stats (`LGPlayer.resetStats()`) et le `LoveManager`, repasse l'état à `WAITING`. **Le spawn du monde précédent est actuellement en dur** (constantes `LOBBY_SPAWN_X/Y/Z` dans `GameEnder.java`, valeur donnée par l'utilisateur via F3) car le spawn brut du monde (`world.getSpawnLocation()`) et même une recherche de terrain (`getHighestBlockYAt`) se sont révélés peu fiables chez lui (voir section bugs en cours plus bas — **toujours pas résolu**).
+8. Fin de partie (victoire d'un camp, plus aucun survivant, ou `/lg stop`) → `GameEnder.end()` : diffuse le message, remet tous les joueurs en survie au spawn du lobby (`LobbySpawnManager.getSpawn()`), reset les stats (`LGPlayer.resetStats()`) et le `LoveManager`, repasse l'état à `WAITING`.
 
 Toutes les tâches différées (révélation, PVP, invincibilité) se protègent contre un `/lg stop` ou un redémarrage entre-temps via un contrôle `game.getStartTimeMillis() == startedAt` et/ou `game.getState()`.
 
@@ -64,6 +64,10 @@ Toutes les tâches différées (révélation, PVP, invincibilité) se protègent
 
 Camps (`RoleTeam`) : `VILLAGE`, `LOUP`, `NEUTRAL` (solo, prévu mais aucun rôle ne l'utilise encore), `AMOUREUX`.
 
+## Spawn du lobby (`LobbySpawnManager`)
+
+Le spawn où les joueurs sont renvoyés en fin de partie (victoire ou `/lg stop`) n'est plus deviné à partir du monde par défaut (`world.getSpawnLocation()` s'est révélé peu fiable chez l'utilisateur — Y en dur à la bedrock, ou coordonnées codées en dur jamais bonnes malgré plusieurs tentatives via F3). À la place : `/lg lobbyspawn` (OP) sauvegarde la position exacte du joueur qui l'exécute (monde + XYZ + yaw/pitch) dans `config.yml`, persistant entre redémarrages du serveur. `GameEnder` et `WorldManager.prepareGameWorld()` (pour les joueurs restés dans l'ancien `lg_uhc`) utilisent tous les deux `LobbySpawnManager.getSpawn()`. **Tant que `/lg lobbyspawn` n'a jamais été exécuté**, ça retombe sur `Bukkit.getWorlds().get(0).getSpawnLocation()` (l'ancien comportement, potentiellement peu fiable) — **penser à demander à l'utilisateur de lancer `/lg lobbyspawn` une fois depuis un endroit sûr avant de considérer ce bug définitivement clos**.
+
 ## Conditions de victoire (`VictoryChecker`)
 
 Basées sur `LGPlayer.getEffectiveTeam()` (pas `role.getTeam()` directement, pour prendre en compte les Amoureux) :
@@ -88,14 +92,10 @@ L'utilisateur a testé seul (via `/lg forcestart` avec 1 joueur) et remonté une
 - Le monde de partie démarrait parfois de nuit selon le temps réel écoulé pendant les tests → l'heure est maintenant forcée à 0 (jour) à la génération (`world.setFullTime(0)`), décision confirmée par l'utilisateur.
 - Suppression de l'ancien monde `lg_uhc` qui échouait silencieusement sur Windows (fichiers de région verrouillés juste après `unloadWorld`), laissant réapparaître d'anciennes constructions/chunks → ajout d'un retry (`deleteWorldFolderWithRetry`, 10 tentatives, 100ms d'écart, log d'avertissement si échec persistant).
 
-**Non résolu — bug ouvert, prioritaire à la reprise :**
-- **Spawn au lobby en fin de partie toujours incorrect.** Historique des tentatives, toutes insuffisantes :
-  1. `Bukkit.getWorlds().get(0).getSpawnLocation()` brut → le joueur atterrissait à Y=-63 (quasi bedrock, confirmé via F3 : monde `minecraft:overworld`, bloc `0 -63 0`).
-  2. `Math.max(spawn brut, getHighestBlockYAt(...))` → incohérent, tantôt sous terre tantôt en l'air flottant (le Y brut stocké dans le monde n'est pas fiable).
-  3. Recherche en spirale avec `getHighestBlockYAt(x, z, HeightMap.MOTION_BLOCKING_NO_LEAVES)` (ignorant le Y brut) → toujours coincé dans un bloc (écran entièrement bloqué, pas de ciel visible).
-  4. Sur demande de l'utilisateur, coordonnées codées en dur dans `GameEnder.java` (constantes `LOBBY_SPAWN_X/Y/Z`) : d'abord `0, 68, 0` (deviné, toujours dans un bloc), puis `3, 70, 2` (donné via F3 par l'utilisateur en principe depuis un point sûr) → **toujours pas au bon endroit** d'après le dernier retour.
-  - **Prochaine étape** : demander à l'utilisateur de refaire le test de fin de partie, ouvrir F3 immédiatement après le téléport, et donner le **nom du monde affiché** + les **coordonnées X/Y/Z réelles obtenues** (pas celles qu'il pense avoir données) — pour vérifier si `Bukkit.getWorlds().get(0)` correspond vraiment au monde qu'il croit (hypothèse non encore vérifiée : peut-être que ce n'est pas le bon monde, ou qu'un autre code retéléporte le joueur après coup).
-  - Piste non explorée : `WorldManager.prepareGameWorld()` (ligne ~74) téléporte aussi d'éventuels joueurs restés dans l'ancien `lg_uhc` vers `fallback.getSpawnLocation()` — même fragilité potentielle, pas encore alignée avec les coordonnées en dur de `GameEnder`.
+**Spawn au lobby en fin de partie — changement d'approche (2026-07-04) :**
+- Deviner des coordonnées (spawn brut du monde, recherche de terrain, coordonnées codées en dur via F3) s'est révélé infructueux après 4 tentatives successives (voir historique dans l'ancien commit si besoin).
+- Remplacé par une commande `/lg lobbyspawn` (voir section "Spawn du lobby" plus haut) : l'utilisateur définit lui-même la position exacte en se plaçant dessus, plus de devinette.
+- **À vérifier à la prochaine session** : demander à l'utilisateur d'exécuter `/lg lobbyspawn` une fois depuis un endroit sûr, puis de refaire un test de fin de partie pour confirmer que ça atterrit au bon endroit.
 
 ## Idées / étapes pas encore commencées
 

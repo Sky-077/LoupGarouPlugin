@@ -6,14 +6,9 @@ import fr.dmall.loupgarou.player.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class GameEnder {
-
-    private static final double LOBBY_SPAWN_X = 3.5;
-    private static final double LOBBY_SPAWN_Y = 70.0;
-    private static final double LOBBY_SPAWN_Z = 2.5;
 
     private GameEnder() {
     }
@@ -32,14 +27,17 @@ public class GameEnder {
                 .getManagerRegistry()
                 .getManager(LoveManager.class);
 
+        LobbySpawnManager lobbySpawnManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(LobbySpawnManager.class);
+
         Game game = gameManager.getCurrentGame();
 
         for (String message : messages) {
             Bukkit.broadcastMessage(message);
         }
 
-        World lobbyWorld = Bukkit.getWorlds().get(0);
-        Location lobbySpawn = new Location(lobbyWorld, LOBBY_SPAWN_X, LOBBY_SPAWN_Y, LOBBY_SPAWN_Z);
+        Location lobbySpawn = lobbySpawnManager.getSpawn();
 
         for (LGPlayer lgPlayer : playerManager.getPlayers()) {
 

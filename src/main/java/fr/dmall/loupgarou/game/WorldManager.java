@@ -1,5 +1,6 @@
 package fr.dmall.loupgarou.game;
 
+import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -65,13 +66,16 @@ public class WorldManager implements Manager {
 
     public World prepareGameWorld() {
 
-        World fallback = Bukkit.getWorlds().get(0);
+        LobbySpawnManager lobbySpawnManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(LobbySpawnManager.class);
+
         World existing = Bukkit.getWorld(WORLD_NAME);
 
         if (existing != null) {
 
             for (Player player : existing.getPlayers()) {
-                player.teleport(fallback.getSpawnLocation());
+                player.teleport(lobbySpawnManager.getSpawn());
             }
 
             Bukkit.unloadWorld(existing, false);

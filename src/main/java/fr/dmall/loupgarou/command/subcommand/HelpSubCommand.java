@@ -37,6 +37,7 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§e/lg leave §7- Annule son inscription");
         sender.sendMessage("§e/lg forcereveal §7- [Debug] Force la révélation immédiate des rôles");
         sender.sendMessage("§e/lg lier <joueur1> <joueur2> §7- Lie deux joueurs par l'amour (Cupidon)");
+        sender.sendMessage("§e/lg lobbyspawn §7- [OP] Définit le spawn du lobby à votre position actuelle");
 
         return true;
     }

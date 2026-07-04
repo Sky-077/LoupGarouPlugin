@@ -43,6 +43,7 @@
 | `/lg forcestart` | Force le lancement de la partie sans minimum de joueurs inscrits |
 | `/lg forcereveal` | Force la révélation immédiate des rôles sans attendre 10 min |
 | `/lg forcepvp` | Active immédiatement le PVP sans attendre 30 min |
+| `/lg lobbyspawn` | Définit le spawn du lobby (fin de partie) à la position actuelle de l'OP — persiste dans `config.yml` |
 
 ---
 
@@ -119,6 +120,12 @@
 - [🟢] Un outil Silk Touch sur un minerai ne déclenche **pas** l'autosmelt (le bloc de minerai reste intact)
 - [🟢] Les débris antiques donnent directement un éclat de netherite
 - [🟢] Le compteur de diamants (`X/17` dans le scoreboard) s'incrémente correctement, y compris avec Fortune
+
+### Fin de partie / spawn du lobby
+- [ ] `/lg lobbyspawn` sauvegarde bien la position exacte (monde + XYZ) de l'OP qui l'exécute
+- [ ] Après une victoire ou un `/lg stop`, tous les joueurs atterrissent bien à cet endroit précis (pas dans un bloc, pas dans le vide)
+- [ ] Le spawn configuré persiste après un redémarrage du serveur (relire `config.yml`)
+- [ ] Tant que `/lg lobbyspawn` n'a jamais été utilisé, ça retombe sur l'ancien comportement (`Bukkit.getWorlds().get(0).getSpawnLocation()`)
 
 ### Scoreboard
 - [🟢] Toutes les lignes s'affichent et se mettent à jour correctement : durée, cycle, épisode, groupe, joueurs vivants/total, bordure, kills, diamants
