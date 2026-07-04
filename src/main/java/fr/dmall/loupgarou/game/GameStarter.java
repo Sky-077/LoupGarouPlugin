@@ -4,6 +4,7 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
+import fr.dmall.loupgarou.role.RoleTeam;
 import fr.dmall.loupgarou.role.village.CupidonRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -124,12 +125,6 @@ public class GameStarter {
             scatterPlayer.setInvulnerable(true);
             scatterPlayer.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
 
-            if (lgPlayer.getRole() instanceof CupidonRole) {
-                scatterPlayer.getInventory().addItem(new ItemStack(Material.BOW));
-                scatterPlayer.getInventory().addItem(createPowerBook());
-                scatterPlayer.getInventory().addItem(new ItemStack(Material.ARROW, 64));
-            }
-
         }
 
         for (LGPlayer lgPlayer : playerManager.getPlayers()) {
@@ -169,6 +164,17 @@ public class GameStarter {
         ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
         EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
         meta.addStoredEnchant(Enchantment.POWER, 5, true);
+        book.setItemMeta(meta);
+
+        return book;
+
+    }
+
+    private static ItemStack createSharpnessBook() {
+
+        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+        EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
+        meta.addStoredEnchant(Enchantment.SHARPNESS, 4, true);
         book.setItemMeta(meta);
 
         return book;
@@ -295,6 +301,7 @@ public class GameStarter {
             }
 
             lgPlayer.getRole().sendInstructions(player);
+            giveRoleItems(lgPlayer, player);
 
             if (isNight) {
                 lgPlayer.getRole().onNight(player);
@@ -305,6 +312,18 @@ public class GameStarter {
         }
 
         Bukkit.broadcastMessage("§6Les rôles sont désormais révélés !");
+
+    }
+
+    private static void giveRoleItems(LGPlayer lgPlayer, Player player) {
+
+        if (lgPlayer.getRole() instanceof CupidonRole) {
+            player.getInventory().addItem(new ItemStack(Material.BOW));
+            player.getInventory().addItem(createPowerBook());
+            player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
+        } else if (lgPlayer.getRole().getTeam() == RoleTeam.NEUTRAL) {
+            player.getInventory().addItem(createSharpnessBook());
+        }
 
     }
 

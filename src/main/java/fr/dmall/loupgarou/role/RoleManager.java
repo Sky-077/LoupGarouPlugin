@@ -4,6 +4,7 @@ import fr.dmall.loupgarou.manager.Manager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.role.loup.LoupGarouRole;
 import fr.dmall.loupgarou.role.loup.PereDesLoupsRole;
+import fr.dmall.loupgarou.role.solo.ChasseurDePrimesRole;
 import fr.dmall.loupgarou.role.village.ChasseurRole;
 import fr.dmall.loupgarou.role.village.CupidonRole;
 import fr.dmall.loupgarou.role.village.PetiteFilleRole;
@@ -16,6 +17,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class RoleManager implements Manager {
 
@@ -32,6 +35,7 @@ public class RoleManager implements Manager {
         RoleFactory.register("sorciere", SorciereRole::new);
         RoleFactory.register("chasseur", ChasseurRole::new);
         RoleFactory.register("cupidon", CupidonRole::new);
+        RoleFactory.register("chasseur-de-primes", ChasseurDePrimesRole::new);
 
     }
 
@@ -83,6 +87,33 @@ public class RoleManager implements Manager {
                     : new VillageoisRole();
 
             players.get(i).setRole(role);
+
+        }
+
+        assignContracts(players);
+
+    }
+
+    private void assignContracts(List<LGPlayer> players) {
+
+        for (LGPlayer lgPlayer : players) {
+
+            if (!(lgPlayer.getRole() instanceof ChasseurDePrimesRole)) {
+                continue;
+            }
+
+            List<UUID> candidates = players.stream()
+                    .map(LGPlayer::getUuid)
+                    .filter(uuid -> !uuid.equals(lgPlayer.getUuid()))
+                    .collect(Collectors.toList());
+
+            Collections.shuffle(candidates);
+
+            List<UUID> contracts = candidates.stream()
+                    .limit(ChasseurDePrimesRole.CONTRACT_COUNT)
+                    .collect(Collectors.toList());
+
+            ((ChasseurDePrimesRole) lgPlayer.getRole()).setContracts(contracts);
 
         }
 

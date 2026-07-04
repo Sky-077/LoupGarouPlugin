@@ -3,6 +3,8 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.role.RoleTeam;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class VictoryChecker {
 
@@ -41,9 +43,33 @@ public class VictoryChecker {
             return;
         }
 
+        if (soloAlive == 1 && loupsAlive == 0 && villageAlive == 0 && amoureuxAlive == 0) {
+            announceSoloVictory(game);
+            return;
+        }
+
         if (loupsAlive == 0 && villageAlive == 0 && soloAlive == 0 && amoureuxAlive == 0) {
             endGame("§7Plus aucun survivant. Partie terminée sans vainqueur.");
         }
+
+    }
+
+    private static void announceSoloVictory(Game game) {
+
+        LGPlayer winner = game.getPlayers().stream()
+                .filter(LGPlayer::isAlive)
+                .filter(lgPlayer -> lgPlayer.getEffectiveTeam() == RoleTeam.NEUTRAL)
+                .findFirst()
+                .orElse(null);
+
+        if (winner == null) {
+            return;
+        }
+
+        Player player = Bukkit.getPlayer(winner.getUuid());
+        String name = (player != null) ? player.getName() : "Un solitaire";
+
+        endGame("§6" + name + " a gagné en tant que solitaire ! Il est le dernier survivant.");
 
     }
 

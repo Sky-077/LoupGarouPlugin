@@ -12,14 +12,17 @@ import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
+import fr.dmall.loupgarou.role.solo.ChasseurDePrimesRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -80,6 +83,10 @@ public class PlayerDeathListener implements Listener {
                     HonorManager.loseHonor(killerLgPlayer, killer);
                 }
 
+                if (killerLgPlayer.getRole() instanceof ChasseurDePrimesRole) {
+                    fulfillContractIfNeeded((ChasseurDePrimesRole) killerLgPlayer.getRole(), killer, player);
+                }
+
             }
 
         }
@@ -101,6 +108,21 @@ public class PlayerDeathListener implements Listener {
         loveManager.handleDeath(player);
 
         VictoryChecker.check();
+
+    }
+
+    private void fulfillContractIfNeeded(ChasseurDePrimesRole role, Player hunter, Player target) {
+
+        if (!role.isContract(target.getUniqueId()) || role.isFulfilled(target.getUniqueId())) {
+            return;
+        }
+
+        role.fulfillContract(target.getUniqueId());
+
+        hunter.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE, 2));
+        hunter.getInventory().addItem(new ItemStack(Material.DIAMOND, 8));
+
+        hunter.sendMessage("§6Contrat rempli sur " + target.getName() + " ! Vous recevez du matériel.");
 
     }
 

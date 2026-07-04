@@ -20,10 +20,11 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
+| `/lg role available` | Liste tous les rôles utilisables avec la bonne orthographe |
 
 ### Pouvoirs de rôle (utilisables uniquement une fois les rôles révélés, 10 min après le vrai début)
 
@@ -100,7 +101,8 @@
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
 - [🟢] **Sorcière** : `/lg soigner` et `/lg empoisonner`, chacun 1x/partie
 - [ ] **Chasseur** : `/lg tirer` pendant sa propre agonie, 1x/partie
-- [ ] **Cupidon** : spawn bien avec un arc Puissance V + 64 flèches ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
+- [ ] **Cupidon** : reçoit un arc simple + livre Puissance V + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
+- [ ] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering ; a bien 2 contrats secrets visibles via `/lg regle` ; tuer une cible de contrat donne 2 pommes dorées + 8 diamants et marque le contrat "rempli"
 
 ### Cupidon / camp Amoureux (nécessite au moins 3 comptes)
 - [ ] Lien entre deux joueurs du **même camp** : si l'un meurt, l'autre meurt aussi de chagrin (message dédié), pas de changement de camp
@@ -109,11 +111,17 @@
 - [ ] Si les deux amoureux (camps opposés) meurent tous les deux, le Cupidon redevient un simple Villageois (vérifier `/lg me` et le scoreboard)
 - [ ] Le lien amoureux ne survit pas d'une partie à l'autre (reset propre via `/lg stop` ou victoire)
 
+### Rôles solo (camp NEUTRAL)
+- [ ] Tout rôle solo (ex: Chasseur de Primes) reçoit à la révélation un livre Tranchant IV, pas de bow/livre Cupidon
+- [ ] Un solitaire gagne **seul** : il doit être l'unique joueur restant (Village, Loups, Amoureux et tous les autres solitaires éliminés) — message de victoire nominatif
+- [ ] Avec plusieurs joueurs solo en même temps : ils doivent s'éliminer entre eux aussi, la partie ne se termine pas tant qu'il en reste plus d'un
+
 ### Conditions de victoire
 - [🟢] Village gagne quand tous les Loups (et solos) sont morts — message de victoire + partie `FINISHED`
 - [ ] Loups gagnent quand tous les Villageois (et solos) sont morts — message de victoire + partie `FINISHED`
 - [ ] Vérifier qu'une infection (Père des Loups) qui fait basculer l'équilibre déclenche bien la victoire immédiatement
 - [ ] Les Amoureux (camps opposés) gagnent quand ils sont les seuls survivants (voir section Cupidon)
+- [ ] Les solitaires gagnent quand ils sont les seuls survivants (voir section Rôles solo)
 
 ### Autosmelting et diamants
 - [🟢] Fer/or/cuivre bruts minés donnent directement le lingot
@@ -132,6 +140,13 @@
 - [ ] En cas d'égalité au nombre de votes, un des joueurs à égalité est choisi (pas de crash)
 - [ ] Après 3 épisodes de vote, le vote se désactive (jukebox redevient inactif)
 - [ ] Le vote et les votes en cours sont bien réinitialisés entre deux parties
+
+### Honneur (au-delà du vote)
+- [ ] Sorcière qui soigne quelqu'un (`/lg soigner`) gagne +1 honneur
+- [ ] Un joueur qui tue un allié de son propre camp (Village tue Village, ou Loup tue Loup) perd -1 honneur
+- [ ] À +3 d'honneur : Villageois gagne un cœur, Loup en perd un ; à -3 c'est l'inverse (vérifier via `/lg regle` ou en comptant les cœurs à l'écran)
+- [ ] L'effet de cœur disparaît si l'honneur redescend sous le seuil (pas un bonus figé)
+- [ ] L'honneur et l'effet de cœur sont bien réinitialisés entre deux parties
 
 ### Fin de partie / spawn du lobby
 - [ ] `/lg lobbyspawn` sauvegarde bien la position exacte (monde + XYZ) de l'OP qui l'exécute
