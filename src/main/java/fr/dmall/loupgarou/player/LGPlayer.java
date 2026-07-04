@@ -65,4 +65,12 @@ public class LGPlayer {
         this.joined = joined;
     }
 
+    public void resetStats() {
+        this.alive = true;
+        this.kills = 0;
+        this.diamonds = 0;
+        this.joined = false;
+        this.role = null;
+    }
+
 }

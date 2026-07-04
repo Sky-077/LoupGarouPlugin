@@ -20,8 +20,8 @@ public class VoyanteRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Chaque nuit, vous pouvez sonder un joueur pour découvrir son rôle avec /lg sonder <joueur>.",
-                "Ce pouvoir n'est utilisable qu'une fois par nuit.",
+                "Vous pouvez sonder un joueur, de jour comme de nuit, pour découvrir son rôle avec /lg sonder <joueur>.",
+                "Ce pouvoir n'est utilisable qu'une fois par cycle jour/nuit.",
         };
     }
 

@@ -84,6 +84,7 @@ public class GameStarter {
 
         Game game = gameManager.getCurrentGame();
 
+        game.resetForNewMatch();
         game.clearPlayers();
 
         List<LGPlayer> players = new ArrayList<>(joinedPlayers);

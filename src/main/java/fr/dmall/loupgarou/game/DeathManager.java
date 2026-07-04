@@ -4,6 +4,8 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
@@ -52,6 +54,11 @@ public class DeathManager implements Manager {
 
         player.setInvulnerable(true);
 
+        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) DYING_DURATION_TICKS, 0, false, true));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, (int) DYING_DURATION_TICKS, 3, false, true));
+
+        player.sendTitle("§4Vous agonisez...", "§7Vous allez mourir dans une minute", 10, 60, 10);
+
         BukkitTask task = Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),
                 () -> finalizeDeath(player),
@@ -75,6 +82,9 @@ public class DeathManager implements Manager {
         pendingKillers.remove(uuid);
 
         player.setInvulnerable(false);
+        player.removePotionEffect(PotionEffectType.BLINDNESS);
+        player.removePotionEffect(PotionEffectType.SLOWNESS);
+        player.sendTitle("§aVous avez été sauvé !", "", 5, 40, 10);
 
     }
 
@@ -101,6 +111,8 @@ public class DeathManager implements Manager {
         pendingTasks.remove(player.getUniqueId());
 
         player.setInvulnerable(false);
+        player.removePotionEffect(PotionEffectType.BLINDNESS);
+        player.removePotionEffect(PotionEffectType.SLOWNESS);
         player.setHealth(0.0);
 
     }

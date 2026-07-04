@@ -7,7 +7,6 @@ public enum GameState {
     INVINCIBILITY,
     DAY,
     NIGHT,
-    MEETUP,
-    FINISHED
+    MEETUP
 
 }

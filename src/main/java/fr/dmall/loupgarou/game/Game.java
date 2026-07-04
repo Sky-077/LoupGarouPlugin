@@ -35,6 +35,11 @@ public class Game {
         this.revealed = false;
     }
 
+    public void resetForNewMatch() {
+        this.revealed = false;
+        this.pvpEnabled = false;
+    }
+
     public boolean isRevealed() {
         return revealed;
     }

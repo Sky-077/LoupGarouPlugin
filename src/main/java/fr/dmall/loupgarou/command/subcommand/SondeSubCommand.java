@@ -21,7 +21,7 @@ public class SondeSubCommand implements SubCommand {
 
     @Override
     public String getDescription() {
-        return "Sonde un joueur pour connaître son rôle (Voyante, la nuit uniquement).";
+        return "Sonde un joueur pour connaître son rôle (Voyante, une fois par cycle jour/nuit).";
     }
 
     @Override
@@ -68,15 +68,15 @@ public class SondeSubCommand implements SubCommand {
             return true;
         }
 
-        if (game.getState() != GameState.NIGHT) {
-            sender.sendMessage("§cVous ne pouvez sonder un joueur que la nuit.");
+        if (game.getState() != GameState.DAY && game.getState() != GameState.NIGHT) {
+            sender.sendMessage("§cVous ne pouvez pas sonder en dehors d'une partie en cours.");
             return true;
         }
 
         VoyanteRole voyante = (VoyanteRole) role;
 
         if (!voyante.isPowerAvailable()) {
-            sender.sendMessage("§cVous avez déjà utilisé votre pouvoir cette nuit.");
+            sender.sendMessage("§cVous avez déjà utilisé votre pouvoir ce cycle.");
             return true;
         }
 

@@ -12,8 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class DiamondCounterListener implements Listener {
+
+    private static final int DIAMOND_LIMIT = 17;
 
     @EventHandler
     public void onBlockDrop(BlockDropItemEvent event) {
@@ -42,9 +45,27 @@ public class DiamondCounterListener implements Listener {
 
         for (Item item : event.getItems()) {
 
-            if (item.getItemStack().getType() == Material.DIAMOND) {
-                lgPlayer.addDiamonds(item.getItemStack().getAmount());
+            ItemStack stack = item.getItemStack();
+
+            if (stack.getType() != Material.DIAMOND) {
+                continue;
             }
+
+            int remaining = DIAMOND_LIMIT - lgPlayer.getDiamonds();
+
+            if (remaining <= 0) {
+                item.remove();
+                continue;
+            }
+
+            int amount = Math.min(stack.getAmount(), remaining);
+
+            if (amount != stack.getAmount()) {
+                stack.setAmount(amount);
+                item.setItemStack(stack);
+            }
+
+            lgPlayer.addDiamonds(amount);
 
         }
 

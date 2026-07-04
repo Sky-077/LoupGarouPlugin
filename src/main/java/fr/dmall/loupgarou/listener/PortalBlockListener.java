@@ -24,7 +24,7 @@ public class PortalBlockListener implements Listener {
 
         Game game = gameManager.getCurrentGame();
 
-        if (game.getState() == GameState.WAITING || game.getState() == GameState.FINISHED) {
+        if (game.getState() == GameState.WAITING) {
             return;
         }
 

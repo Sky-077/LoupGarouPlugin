@@ -2,10 +2,9 @@ package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.Game;
+import fr.dmall.loupgarou.game.GameEnder;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
-import fr.dmall.loupgarou.player.LGPlayer;
-import fr.dmall.loupgarou.player.PlayerManager;
 import org.bukkit.command.CommandSender;
 
 public class StopSubCommand implements SubCommand {
@@ -34,17 +33,7 @@ public class StopSubCommand implements SubCommand {
             return true;
         }
 
-        game.setState(GameState.WAITING);
-
-        PlayerManager playerManager = LoupGarouPlugin.getInstance()
-                .getManagerRegistry()
-                .getManager(PlayerManager.class);
-
-        for (LGPlayer lgPlayer : playerManager.getPlayers()) {
-            lgPlayer.setJoined(false);
-        }
-
-        sender.sendMessage("§cLa partie a été arrêtée.");
+        GameEnder.end("§cLa partie a été arrêtée.");
 
         return true;
     }

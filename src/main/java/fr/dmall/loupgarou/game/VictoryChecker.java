@@ -3,7 +3,6 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.role.RoleTeam;
-import org.bukkit.Bukkit;
 
 public class VictoryChecker {
 
@@ -27,12 +26,12 @@ public class VictoryChecker {
         long soloAlive = countAlive(game, RoleTeam.NEUTRAL);
 
         if (loupsAlive == 0 && soloAlive == 0) {
-            endGame(game, "§aLe Village a gagné ! Tous les Loups-Garous et les joueurs solitaires ont été éliminés.");
+            endGame("§aLe Village a gagné ! Tous les Loups-Garous et les joueurs solitaires ont été éliminés.");
             return;
         }
 
         if (villageAlive == 0 && soloAlive == 0) {
-            endGame(game, "§cLes Loups-Garous ont gagné ! Tous les villageois et les joueurs solitaires ont été éliminés.");
+            endGame("§cLes Loups-Garous ont gagné ! Tous les villageois et les joueurs solitaires ont été éliminés.");
         }
 
     }
@@ -46,13 +45,13 @@ public class VictoryChecker {
 
     }
 
-    private static void endGame(Game game, String message) {
+    private static void endGame(String message) {
 
-        game.setState(GameState.FINISHED);
-
-        Bukkit.broadcastMessage("§6==================================================");
-        Bukkit.broadcastMessage(message);
-        Bukkit.broadcastMessage("§6==================================================");
+        GameEnder.end(
+                "§6==================================================",
+                message,
+                "§6=================================================="
+        );
 
     }
 
