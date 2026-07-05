@@ -241,7 +241,7 @@
   - [ ] **Copie de l'Ange** : reste Solitaire par défaut (Déchu) ; s'il choisit ensuite Gardien via `/lg ange`, son camp change bien pour rejoindre son protégé (pas de verrouillage forcé pour ce rôle précis, contrairement aux autres)
   - [ ] Pour tous les autres rôles (Villageois, Sorcière, Voyante, Petite Fille, Salvateur, Ancien, Idiot du Village, Bienfaiteur) : camp verrouillé Solitaire en permanence malgré le nouveau rôle
 - [ ] **Joueur de Flûte** : reçoit le livre Tranchant IV (comme tout solo), pas de Flûte de départ (doit la fabriquer)
-  - [ ] Craft d'une Flûte : 8 lingots d'or autour d'un bâton (recette 3x3) → 1 Flûte nommée "§6Flûte"
+  - [ ] Craft d'une Flûte : 8 lingots d'or autour d'un bâton (recette 3x3) → 1 Corne de Chèvre nommée "§6Flûte"
   - [ ] Tant qu'il porte une Flûte dans son inventaire (pas besoin de l'avoir en main), charme tous les joueurs vivants à moins de 20 blocs à 1% toutes les 4 secondes (aucune info donnée aux charmés, mécanisme silencieux)
   - [ ] Sans Flûte dans l'inventaire, le charme passif s'arrête immédiatement
   - [ ] Frapper un joueur au corps-à-corps donne +10% de charme instantané, une seule fois par joueur (un second coup sur le même joueur ne fait rien)
