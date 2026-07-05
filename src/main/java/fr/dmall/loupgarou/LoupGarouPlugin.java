@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou;
 
 import fr.dmall.loupgarou.command.LGCommand;
+import fr.dmall.loupgarou.game.CorruptionManager;
 import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.GameManager;
@@ -44,6 +45,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry.register(new CycleManager());
         managerRegistry.register(new ScoreboardManager());
         managerRegistry.register(new DeathManager());
+        managerRegistry.register(new CorruptionManager());
         managerRegistry.register(new LoveManager());
         managerRegistry.register(new LobbySpawnManager());
         managerRegistry.register(new VoteManager());

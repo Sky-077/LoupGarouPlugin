@@ -15,7 +15,7 @@ public class ChasseurRole extends Role {
     public String[] getInstructions() {
         return new String[] {
                 "Vous recevez un arc enchanté Puissance IV et des flèches.",
-                "Quand vous recevez un coup mortel, vous disposez d'une minute avant de mourir réellement.",
+                "Quand vous recevez un coup mortel, vous disposez de 15 secondes avant de mourir réellement.",
                 "Pendant ce délai, ripostez une dernière fois avec /lg tirer <joueur> (1 fois par partie).",
         };
     }

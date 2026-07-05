@@ -5,8 +5,6 @@ import java.util.List;
 
 public class PereDesLoupsRole extends WolfRole {
 
-    private boolean infectionAvailable = true;
-
     public PereDesLoupsRole() {
         super("Père des Loups");
     }
@@ -16,20 +14,13 @@ public class PereDesLoupsRole extends WolfRole {
 
         List<String> lines = new ArrayList<>();
         lines.add("Vous recevez Force I chaque nuit, comme un Loup-Garou.");
-        lines.add("Une fois par partie, dans la minute qui suit un coup mortel porté à votre propre victime,");
-        lines.add("vous pouvez l'infecter avec /lg infecter <joueur> pour la transformer en Loup-Garou au lieu de la tuer.");
+        lines.add("En restant à proximité d'un joueur, vous le corrompez bien plus vite qu'un Loup-Garou classique (1% par seconde).");
+        lines.add("Quand un joueur corrompu à 100% meurt de la main d'un loup, vous recevez un message cliquable (10s) :");
+        lines.add("§a/lg infecter <joueur> §7pour le transformer en Loup-Garou, ou §c/lg laissermourir <joueur> §7pour le laisser mourir.");
         lines.addAll(getWolfPackLines());
 
         return lines.toArray(new String[0]);
 
-    }
-
-    public boolean isInfectionAvailable() {
-        return infectionAvailable;
-    }
-
-    public void consumeInfection() {
-        infectionAvailable = false;
     }
 
 }

@@ -35,6 +35,10 @@ public class GameEnder {
                 .getManagerRegistry()
                 .getManager(VoteManager.class);
 
+        CorruptionManager corruptionManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(CorruptionManager.class);
+
         Game game = gameManager.getCurrentGame();
 
         for (String message : messages) {
@@ -73,6 +77,7 @@ public class GameEnder {
         game.clearPlayers();
         loveManager.reset();
         voteManager.reset();
+        corruptionManager.resetAll();
 
     }
 

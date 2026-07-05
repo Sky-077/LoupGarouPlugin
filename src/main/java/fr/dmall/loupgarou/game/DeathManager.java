@@ -2,6 +2,12 @@ package fr.dmall.loupgarou.game;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
+import fr.dmall.loupgarou.player.LGPlayer;
+import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.role.loup.PereDesLoupsRole;
+import fr.dmall.loupgarou.role.loup.WolfRole;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -11,17 +17,21 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class DeathManager implements Manager {
 
-    private static final long DYING_DURATION_TICKS = 20L * 60L; // 1 minute
+    private static final long DYING_DURATION_TICKS = 20L * 15L; // 15 secondes
+    private static final long CONVERSION_OFFER_TICKS = 20L * 10L; // 10 secondes
 
     private final Map<UUID, BukkitTask> pendingTasks = new HashMap<>();
     private final Map<UUID, UUID> pendingKillers = new HashMap<>();
     private final Map<UUID, ItemStack[]> hiddenArmor = new HashMap<>();
     private final Map<UUID, ItemStack> hiddenMainHand = new HashMap<>();
+    private final Set<UUID> conversionOffers = new HashSet<>();
 
     @Override
     public void enable() {
@@ -39,6 +49,7 @@ public class DeathManager implements Manager {
         pendingKillers.clear();
         hiddenArmor.clear();
         hiddenMainHand.clear();
+        conversionOffers.clear();
 
     }
 
@@ -69,7 +80,7 @@ public class DeathManager implements Manager {
         player.getInventory().setArmorContents(new ItemStack[4]);
         player.getInventory().setItemInMainHand(null);
 
-        player.sendTitle("§4Vous agonisez...", "§7Vous allez mourir dans une minute", 10, 60, 10);
+        player.sendTitle("§4Vous agonisez...", "§7Vous allez mourir dans 15 secondes", 10, 60, 10);
 
         BukkitTask task = Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),
@@ -92,6 +103,7 @@ public class DeathManager implements Manager {
         }
 
         pendingKillers.remove(uuid);
+        conversionOffers.remove(uuid);
 
         player.setInvulnerable(false);
         player.removePotionEffect(PotionEffectType.BLINDNESS);
@@ -124,12 +136,6 @@ public class DeathManager implements Manager {
 
         pendingTasks.remove(player.getUniqueId());
 
-        player.setInvulnerable(false);
-        player.removePotionEffect(PotionEffectType.BLINDNESS);
-        player.removePotionEffect(PotionEffectType.SLOWNESS);
-        player.removePotionEffect(PotionEffectType.INVISIBILITY);
-        restoreEquipment(player);
-
         GameManager gameManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
                 .getManager(GameManager.class);
@@ -137,6 +143,12 @@ public class DeathManager implements Manager {
         Game game = gameManager.getCurrentGame();
 
         if (!game.isPvpEnabled()) {
+
+            player.setInvulnerable(false);
+            player.removePotionEffect(PotionEffectType.BLINDNESS);
+            player.removePotionEffect(PotionEffectType.SLOWNESS);
+            player.removePotionEffect(PotionEffectType.INVISIBILITY);
+            restoreEquipment(player);
 
             pendingKillers.remove(player.getUniqueId());
 
@@ -150,7 +162,136 @@ public class DeathManager implements Manager {
 
         }
 
+        if (shouldOfferConversion(player)) {
+            offerConversion(player);
+            return;
+        }
+
+        finalizeRealDeath(player);
+
+    }
+
+    private boolean shouldOfferConversion(Player player) {
+
+        CorruptionManager corruptionManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(CorruptionManager.class);
+
+        if (!corruptionManager.isFullyCorrupted(player.getUniqueId())) {
+            return false;
+        }
+
+        UUID killerUuid = pendingKillers.get(player.getUniqueId());
+
+        if (killerUuid == null) {
+            return false;
+        }
+
+        Player killer = Bukkit.getPlayer(killerUuid);
+
+        if (killer == null) {
+            return false;
+        }
+
+        PlayerManager playerManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(PlayerManager.class);
+
+        LGPlayer lgKiller = playerManager.get(killer);
+
+        if (lgKiller == null || !(lgKiller.getRole() instanceof WolfRole)) {
+            return false;
+        }
+
+        return findAlivePereDesLoups() != null;
+
+    }
+
+    private LGPlayer findAlivePereDesLoups() {
+
+        GameManager gameManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(GameManager.class);
+
+        Game game = gameManager.getCurrentGame();
+
+        for (LGPlayer lgPlayer : game.getPlayers()) {
+
+            if (lgPlayer.isAlive() && lgPlayer.getRole() instanceof PereDesLoupsRole) {
+                return lgPlayer;
+            }
+
+        }
+
+        return null;
+
+    }
+
+    private void offerConversion(Player player) {
+
+        UUID uuid = player.getUniqueId();
+
+        conversionOffers.add(uuid);
+
+        LGPlayer lgPereDesLoups = findAlivePereDesLoups();
+        Player pereDesLoups = (lgPereDesLoups != null) ? Bukkit.getPlayer(lgPereDesLoups.getUuid()) : null;
+
+        if (pereDesLoups != null) {
+
+            TextComponent message = new TextComponent("§5" + player.getName() + " est corrompu à 100% ! ");
+            TextComponent infect = new TextComponent("§a[Infecter]");
+            infect.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/lg infecter " + player.getName()));
+            TextComponent decline = new TextComponent(" §c[Laisser mourir]");
+            decline.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/lg laissermourir " + player.getName()));
+            message.addExtra(infect);
+            message.addExtra(decline);
+
+            pereDesLoups.spigot().sendMessage(message);
+            pereDesLoups.sendMessage("§5Vous avez 10 secondes pour décider.");
+
+        }
+
+        BukkitTask task = Bukkit.getScheduler().runTaskLater(
+                LoupGarouPlugin.getInstance(),
+                () -> {
+                    if (conversionOffers.remove(uuid)) {
+                        finalizeRealDeath(player);
+                    }
+                },
+                CONVERSION_OFFER_TICKS
+        );
+
+        pendingTasks.put(uuid, task);
+
+    }
+
+    private void finalizeRealDeath(Player player) {
+
+        pendingTasks.remove(player.getUniqueId());
+
+        player.setInvulnerable(false);
+        player.removePotionEffect(PotionEffectType.BLINDNESS);
+        player.removePotionEffect(PotionEffectType.SLOWNESS);
+        player.removePotionEffect(PotionEffectType.INVISIBILITY);
+        restoreEquipment(player);
+
         player.setHealth(0.0);
+
+    }
+
+    public boolean hasConversionOffer(Player player) {
+        return conversionOffers.contains(player.getUniqueId());
+    }
+
+    public void consumeConversionOffer(Player player) {
+        conversionOffers.remove(player.getUniqueId());
+    }
+
+    public void declineConversion(Player player) {
+
+        if (conversionOffers.remove(player.getUniqueId())) {
+            finalizeRealDeath(player);
+        }
 
     }
 

@@ -31,10 +31,11 @@
 | Commande | Rôle | Description |
 |---|---|---|
 | `/lg sonder <joueur>` | Voyante | Découvre le rôle d'un joueur, la nuit, 1x/nuit |
-| `/lg infecter <joueur>` | Père des Loups | Transforme sa propre victime (en train de mourir) en Loup-Garou, 1x/partie |
+| `/lg infecter <joueur>` | Père des Loups | Accepte de transformer un joueur corrompu à 100% en Loup-Garou (offre cliquable reçue en jeu, 10s, quand un tel joueur meurt de la main d'un loup) |
+| `/lg laissermourir <joueur>` | Père des Loups | Refuse l'infection et laisse mourir le joueur corrompu à 100% (même offre) |
 | `/lg soigner <joueur>` | Sorcière | Potion de vie : sauve un joueur en train de mourir, 1x/partie |
 | `/lg empoisonner <joueur>` | Sorcière | Potion de mort : tue instantanément un joueur, 1x/partie |
-| `/lg tirer <joueur>` | Chasseur | Riposte une dernière fois pendant sa propre minute de sursis avant de mourir, 1x/partie |
+| `/lg tirer <joueur>` | Chasseur | Riposte une dernière fois pendant sa propre fenêtre de 15s de sursis avant de mourir, 1x/partie |
 | `/lg lier <joueur1> <joueur2>` | Cupidon | Lie deux joueurs par l'amour, 1x/partie |
 | `/lg ange <dechu\|gardien>` | Ange | Choisit sa forme (cible aléatoire assignée), 1x/partie |
 | `/lg regen` | Ange Gardien | Donne Régénération I (1 min) à son protégé sous 4 cœurs, 1x/partie |
@@ -76,7 +77,8 @@
 - [ ] Chaque joueur reçoit bien un stack de 64 steaks cuits au moment du scattering
 
 ### Révélation des rôles (10 min après le vrai début)
-- [🔴] Avant la révélation : `/lg me`, `/lg regle`, `/lg sonder`, `/lg infecter`, `/lg soigner`, `/lg empoisonner`, `/lg tirer` renvoient tous "les rôles n'ont pas encore été révélés"
+- [🔴] Avant la révélation : `/lg me`, `/lg regle`, `/lg sonder`, `/lg soigner`, `/lg empoisonner`, `/lg tirer` renvoient tous "les rôles n'ont pas encore été révélés"
+- [ ] Avant la révélation : la corruption des loups ne progresse pas (aucun gain même en restant collé à la victime)
 - [ ] Avant la révélation : le Loup-Garou n'a **pas** la Force la nuit, la Petite Fille ne peut **pas** activer l'invisibilité en retirant son armure
 - [ ] À la révélation (10 min) : chaque joueur reçoit le message d'explication de son rôle, et le pouvoir jour/nuit s'active immédiatement si applicable (Force du Loup si c'est la nuit, etc.)
 - [🟢] `/lg forcereveal` (OP) déclenche bien la révélation immédiatement et désactive le minuteur automatique (pas de double révélation à 10 min)
@@ -90,16 +92,32 @@
 - [ ] Une fois le PVP activé : la mort redevient réelle dans les mêmes conditions
 
 ### Système de mort en deux temps
-- [ ] Un coup mortel annule les dégâts, rend le joueur invulnérable, et le tue réellement 1 minute plus tard
+- [ ] Un coup mortel annule les dégâts, rend le joueur invulnérable, et le tue réellement 15 secondes plus tard
 - [ ] Le message de mort (avec rôle révélé) et le kill crédité au bon joueur
 - [🟢] Le respawn remet bien le joueur en mode spectateur
-- [🟠] `/lg soigner` (Sorcière) et `/lg infecter` (Père des Loups) fonctionnent bien pendant cette fenêtre d'une minute
+- [🟠] `/lg soigner` (Sorcière) fonctionne bien pendant cette fenêtre de 15 secondes
 - [ ] `/lg tirer` (Chasseur) fonctionne bien pendant sa propre fenêtre de mort différée
+
+### Corruption des loups et conversion (`/lg infecter` a changé de fonctionnement : il n'infecte plus la propre victime pendant l'agonie, mais accepte l'offre de conversion envoyée au Père des Loups)
+- [ ] Un Loup-Garou qui reste à moins de 6 blocs d'un joueur (non-loup) le corrompt de 1% toutes les 5 secondes
+- [ ] Un Père des Loups qui reste à moins de 6 blocs d'un joueur le corrompt bien plus vite : 1% par seconde
+- [ ] Plusieurs loups proches de la même victime cumulent bien leurs contributions (progression plus rapide)
+- [ ] La victime ne reçoit **aucun message/indicateur** de sa progression de corruption (mécanisme silencieux)
+- [ ] La corruption ne redescend jamais, elle stagne juste si aucun loup n'est à proximité
+- [ ] Le Loup Blanc ne participe **pas** à la corruption (solo, hors meute)
+- [ ] Quand un joueur corrompu à 100% meurt de la main d'un Loup-Garou ou Père des Loups (pas un autre camp) : sa mort réelle est suspendue, et c'est le **Père des Loups** (pas la victime) qui reçoit un message cliquable dans le chat pendant 10 secondes ("Infecter" / "Laisser mourir")
+- [ ] Si aucun Père des Loups n'est vivant au moment du kill : la victime meurt normalement, aucune offre n'est envoyée
+- [ ] En cliquant "Infecter" (ou `/lg infecter <joueur>`) dans les 10s : la victime devient Loup-Garou, reprend sa vie/équipement, rejoint la liste des loups connus (et réciproquement), `/lg regle` reflète le nouveau rôle
+- [ ] En cliquant "Laisser mourir" (ou `/lg laissermourir <joueur>`) : la mort réelle a lieu immédiatement, sans attendre la fin des 10s
+- [ ] Sans réponse du Père des Loups dans les 10s : la mort réelle a bien lieu normalement (comportement par défaut)
+- [ ] La victime elle-même ne reçoit aucun message pendant ce délai (silencieux jusqu'au résultat final)
+- [ ] Une conversion réussie relance bien `VictoryChecker` (le camp d'origine peut perdre la partie si c'était son dernier membre)
+- [ ] La corruption est bien réinitialisée en fin de partie (`/lg stop` ou victoire)
 
 ### Rôles (un par un, en conditions réelles avec plusieurs joueurs)
 - [ ] **Villageois** : aucun comportement particulier
 - [ ] **Loup-Garou** : Force I la nuit, retirée le jour ; `/lg regle` liste bien les autres Loups-Garous/Père des Loups de la partie (pas lui-même)
-- [ ] **Père des Loups** : Force I comme un loup + `/lg infecter` transforme bien la victime en Loup-Garou (message privé, pas de broadcast) ; `/lg regle` liste bien les autres loups (le nouveau Loup-Garou infecté doit apparaître dans la liste des autres si on revérifie après)
+- [ ] **Père des Loups** : Force I comme un loup, corrompt les autres joueurs plus vite qu'un Loup-Garou classique (voir section Corruption) ; `/lg regle` liste bien les autres loups
 - [ ] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups **et** Loup Blanc
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
@@ -139,7 +157,7 @@
 ### Conditions de victoire
 - [🟢] Village gagne quand tous les Loups (et solos) sont morts — message de victoire + partie `FINISHED`
 - [ ] Loups gagnent quand tous les Villageois (et solos) sont morts — message de victoire + partie `FINISHED`
-- [ ] Vérifier qu'une infection (Père des Loups) qui fait basculer l'équilibre déclenche bien la victoire immédiatement
+- [ ] Vérifier qu'une conversion par corruption qui fait basculer l'équilibre déclenche bien la victoire immédiatement
 - [ ] Les Amoureux (camps opposés) gagnent quand ils sont les seuls survivants (voir section Cupidon)
 - [ ] Les solitaires gagnent quand ils sont les seuls survivants (voir section Rôles solo)
 
@@ -185,4 +203,4 @@
 
 - Le monde `lg_uhc` est supprimé et régénéré à chaque partie — ne rien construire dedans entre deux tests.
 - Il faut relancer `./gradlew build` et redéployer le `.jar` avant de tester, sinon le serveur tourne avec une version obsolète du plugin.
-- Beaucoup de ces tests nécessitent plusieurs comptes Minecraft connectés simultanément (scattering, PVP, sonder, infecter...) — les commandes de debug OP permettent de contourner certains délais mais pas le besoin d'avoir plusieurs joueurs pour les interactions à deux.
+- Beaucoup de ces tests nécessitent plusieurs comptes Minecraft connectés simultanément (scattering, PVP, sonder, corruption des loups...) — les commandes de debug OP permettent de contourner certains délais mais pas le besoin d'avoir plusieurs joueurs pour les interactions à deux.

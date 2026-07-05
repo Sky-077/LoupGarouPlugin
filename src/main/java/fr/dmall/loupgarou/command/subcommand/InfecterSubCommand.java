@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.CorruptionManager;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
@@ -29,7 +30,7 @@ public class InfecterSubCommand implements SubCommand {
 
     @Override
     public String getDescription() {
-        return "Transforme votre victime en Loup-Garou au lieu de la laisser mourir (Père des Loups, une fois par partie).";
+        return "Transforme un joueur corrompu à 100% en Loup-Garou au lieu de le laisser mourir (Père des Loups).";
     }
 
     @Override
@@ -46,14 +47,6 @@ public class InfecterSubCommand implements SubCommand {
                 .getManagerRegistry()
                 .getManager(PlayerManager.class);
 
-        GameManager gameManager = LoupGarouPlugin.getInstance()
-                .getManagerRegistry()
-                .getManager(GameManager.class);
-
-        DeathManager deathManager = LoupGarouPlugin.getInstance()
-                .getManagerRegistry()
-                .getManager(DeathManager.class);
-
         LGPlayer lgInfector = playerManager.get(infector);
 
         if (lgInfector == null || !lgInfector.isAlive()) {
@@ -65,25 +58,6 @@ public class InfecterSubCommand implements SubCommand {
 
         if (!(role instanceof PereDesLoupsRole)) {
             sender.sendMessage("§cVous n'êtes pas le Père des Loups.");
-            return true;
-        }
-
-        Game game = gameManager.getCurrentGame();
-
-        if (game.getState() != GameState.DAY && game.getState() != GameState.NIGHT) {
-            sender.sendMessage("§cVous ne pouvez pas infecter en dehors d'une partie en cours.");
-            return true;
-        }
-
-        if (!game.isRevealed()) {
-            sender.sendMessage("§cLes rôles n'ont pas encore été révélés.");
-            return true;
-        }
-
-        PereDesLoupsRole pereDesLoups = (PereDesLoupsRole) role;
-
-        if (!pereDesLoups.isInfectionAvailable()) {
-            sender.sendMessage("§cVous avez déjà utilisé votre pouvoir d'infection cette partie.");
             return true;
         }
 
@@ -99,15 +73,12 @@ public class InfecterSubCommand implements SubCommand {
             return true;
         }
 
-        if (!deathManager.isDying(target)) {
-            sender.sendMessage("§cCe joueur n'est pas en train de mourir.");
-            return true;
-        }
+        DeathManager deathManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(DeathManager.class);
 
-        UUID pendingKiller = deathManager.getPendingKiller(target);
-
-        if (pendingKiller == null || !pendingKiller.equals(infector.getUniqueId())) {
-            sender.sendMessage("§cVous ne pouvez infecter que votre propre victime.");
+        if (!deathManager.hasConversionOffer(target)) {
+            sender.sendMessage("§cCe joueur n'attend pas de décision d'infection.");
             return true;
         }
 
@@ -118,6 +89,15 @@ public class InfecterSubCommand implements SubCommand {
             return true;
         }
 
+        GameManager gameManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(GameManager.class);
+
+        Game game = gameManager.getCurrentGame();
+
+        deathManager.consumeConversionOffer(target);
+        deathManager.revive(target);
+
         List<LGPlayer> existingWolves = game.getPlayers().stream()
                 .filter(p -> p.getRole() instanceof WolfRole)
                 .collect(Collectors.toList());
@@ -126,9 +106,6 @@ public class InfecterSubCommand implements SubCommand {
                 .map(LGPlayer::getUuid)
                 .collect(Collectors.toList());
 
-        pereDesLoups.consumeInfection();
-        deathManager.revive(target);
-
         LoupGarouRole newRole = new LoupGarouRole();
         newRole.setKnownWolves(existingWolfUuids);
         lgTarget.setRole(newRole);
@@ -136,6 +113,12 @@ public class InfecterSubCommand implements SubCommand {
         for (LGPlayer wolf : existingWolves) {
             ((WolfRole) wolf.getRole()).addKnownWolf(target.getUniqueId());
         }
+
+        CorruptionManager corruptionManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(CorruptionManager.class);
+
+        corruptionManager.reset(target.getUniqueId());
 
         if (game.getState() == GameState.NIGHT) {
             newRole.onNight(target);

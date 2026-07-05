@@ -25,7 +25,8 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§e/lg role §7- Configure les rôles (add/remove/list/clear)");
         sender.sendMessage("§e/lg me §7- Affiche votre rôle actuel");
         sender.sendMessage("§e/lg sonder <joueur> §7- Sonde un joueur (Voyante, la nuit)");
-        sender.sendMessage("§e/lg infecter <joueur> §7- Infecte votre victime (Père des Loups)");
+        sender.sendMessage("§e/lg infecter <joueur> §7- Accepte de transformer un joueur corrompu à 100% en Loup-Garou (Père des Loups)");
+        sender.sendMessage("§e/lg laissermourir <joueur> §7- Refuse et laisse mourir un joueur corrompu à 100% (Père des Loups)");
         sender.sendMessage("§e/lg regle §7- Réaffiche l'explication de votre rôle");
         sender.sendMessage("§e/lg soigner <joueur> §7- Potion de vie (Sorcière)");
         sender.sendMessage("§e/lg empoisonner <joueur> §7- Potion de mort (Sorcière)");
