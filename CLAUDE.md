@@ -70,13 +70,14 @@ Toutes les tâches différées (révélation, PVP, vote, invincibilité) se prot
 - Tous les pseudos sont **masqués pour tout le monde**, y compris entre membres de la meute eux-mêmes (le message affiche juste "[Meute] <texte>", aucune attribution) — volontairement plus strict que la connaissance de `knownWolves` (qui reste inchangée pour les autres pouvoirs), pour garder un doute sur qui parle réellement (utile si le Loup Blanc se glisse dans la conversation).
 - Diffusion directe (pas de stockage d'historique) à tous les destinataires éligibles encore vivants au moment de l'envoi ; aucun rôle en dehors de cette liste ne reçoit quoi que ce soit.
 
-## Rôles implémentés (18)
+## Rôles implémentés (19)
 
 | Rôle | Team | Pouvoir |
 |---|---|---|
 | Villageois | VILLAGE | Aucun |
 | Loup-Garou | LOUP | Force I la nuit. Corrompt les joueurs proches (1%/5s, voir Corruption). Reçoit Speed I + Absorption I (2♥, 1 min) après un kill — **sauf** en tuant le Chasseur. Bonus de dégâts du Chasseur contre lui (voir Chasseur) |
 | Père des Loups | LOUP | Comme Loup-Garou, mais corrompt 5x plus vite (1%/s) et reçoit l'offre d'infection quand une victime corrompue à 100% meurt d'un loup (voir Corruption) |
+| Grand Méchant Loup | LOUP | Comme Loup-Garou (mêmes aspects : corruption, meute, `/lg loups`), mais garde Force I en permanence jour et nuit — `onDay()` surchargé pour appliquer Force I au lieu de la retirer |
 | Petite Fille | VILLAGE | Invisibilité 5 min en retirant toute son armure la nuit (1x/nuit) |
 | Voyante | VILLAGE | `/lg sonder <joueur>` révèle rôle+équipe, jour ou nuit (1x/cycle) |
 | Salvateur | VILLAGE | `/lg proteger <joueur>` (1x/épisode) accorde Résistance I + 50% de réduction des dégâts de chute (`SalvateurProtectionListener`) au joueur ciblé jusqu'à la fin de l'épisode courant (nettoyé via `onDay()`, appelé à chaque nouvel épisode) ; le joueur protégé n'est jamais informé |
@@ -136,5 +137,5 @@ Voir [GUIDE_TEST.md](GUIDE_TEST.md) pour la liste complète à jour des commande
 
 ## Idées / étapes pas encore commencées
 
-- Autres rôles potentiels du LG UHC de TheGuill (Bouc émissaire, Grand Méchant Loup, Loup-Garou Craintif, Loup-Garou Perfide, Vilain Petit Loup, etc.) — décrits par l'utilisateur, à implémenter un par un. **Note** : le Loup-Garou Perfide, une fois implémenté, doit être ajouté à la liste des rôles pouvant voir/générer les particules d'invisibilité du Feu Follet et de la Petite Fille (`StealthVisionManager`).
+- Autres rôles potentiels du LG UHC de TheGuill (Bouc émissaire, Loup-Garou Craintif, Loup-Garou Perfide, Vilain Petit Loup, etc.) — décrits par l'utilisateur, à implémenter un par un. **Note** : le Loup-Garou Perfide, une fois implémenté, doit être ajouté à la liste des rôles pouvant voir/générer les particules d'invisibilité du Feu Follet et de la Petite Fille (`StealthVisionManager`).
 - Le résumé initial du projet (avant l'intervention de Claude) est dans `resume-projet-loupgarou.md` côté utilisateur (hors repo) — contient l'historique ChatGPT → Claude jusqu'à l'étape 10.

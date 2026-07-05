@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`, `joueur-de-flute`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `grand-mechant-loup`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`, `joueur-de-flute`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -146,7 +146,8 @@
 - [🟢] **Villageois** : aucun comportement particulier
 - [🟢] **Loup-Garou** : Force I la nuit, retirée le jour ; `/lg regle` liste bien les autres Loups-Garous/Père des Loups de la partie (pas lui-même)
 - [ ] **Père des Loups** : Force I comme un loup, corrompt les autres joueurs plus vite qu'un Loup-Garou classique (voir section Corruption) ; `/lg regle` liste bien les autres loups
-- [ ] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups **et** Loup Blanc
+- [ ] **Grand Méchant Loup** : Force I en **permanence**, jour et nuit (contrairement au Loup-Garou classique qui la perd le jour) ; tous les autres aspects d'un loup normal fonctionnent (corruption, `/lg loups`, liste des loups connus, bonus de kill Speed/Absorption)
+- [ ] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups, Grand Méchant Loup **et** Loup Blanc
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
 - [ ] **Salvateur** : `/lg proteger <joueur>` applique Résistance I + 50% de réduction des dégâts de chute à la cible, 1x/épisode
