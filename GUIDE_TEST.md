@@ -15,6 +15,7 @@
 | `/lg me` | Affiche son propre rôle (bloqué tant que les rôles ne sont pas révélés) |
 | `/lg regle` | Réaffiche l'explication de son rôle (bloqué tant que non révélé) |
 | `/lg bordure <taille>` | Configure la taille de la bordure pour la prochaine partie (sans argument : affiche la valeur actuelle) |
+| `/lg color <joueur1> <joueur2> ...>` | Ouvre un menu (16 laines colorées) pour colorer le pseudo (au-dessus de la tête + liste Tab) des joueurs listés, visible uniquement par soi-même |
 
 ### Configuration des rôles avant une partie
 
@@ -141,6 +142,17 @@
 - [ ] Aucun autre joueur (Villageois, Voyante, solos autres que Loup Blanc...) ne reçoit le message
 - [ ] Le pseudo de l'expéditeur n'apparaît **jamais**, même pour les autres Loups-Garous/Père des Loups (masqué à tout le monde, y compris entre membres de la meute) — le message affiche juste "[Meute] <texte>"
 - [ ] Un joueur mort (loup ou Petite Fille) ne reçoit plus les messages
+
+### Coloration de pseudo (`/lg color <joueur1> <joueur2> ...>`, nécessite plusieurs comptes)
+- [ ] Utilisable par n'importe quel joueur (pas besoin d'OP), à tout moment (pas seulement en partie)
+- [ ] `/lg color` sans argument (ou nom de joueur invalide) affiche un message d'erreur clair, aucun menu ne s'ouvre
+- [ ] `/lg color <joueur>` ouvre un menu avec 16 laines colorées
+- [ ] `/lg color <joueur1> <joueur2>` (plusieurs cibles) applique la couleur choisie aux deux joueurs en un seul clic
+- [ ] Cliquer une laine colore bien le pseudo du/des joueur(s) ciblé(s) au-dessus de leur tête **et** dans la liste des joueurs (Tab)
+- [ ] La couleur choisie n'est visible que par celui qui a fait `/lg color` — un autre joueur qui regarde la même cible ne voit aucun changement
+- [ ] Refaire `/lg color <joueur>` avec une autre couleur remplace bien l'ancienne (le joueur n'apparaît jamais dans deux couleurs à la fois)
+- [ ] La couleur reste appliquée après un cycle jour/nuit et après la fin d'une partie (`/lg stop` ou victoire) — pas de nettoyage automatique
+- [ ] Se déconnecter puis se reconnecter fait perdre les couleurs précédemment choisies (limitation connue, scoreboard personnel recréé à la reconnexion)
 
 ### Rôles (un par un, en conditions réelles avec plusieurs joueurs)
 - [🟢] **Villageois** : aucun comportement particulier

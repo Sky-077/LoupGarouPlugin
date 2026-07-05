@@ -17,6 +17,7 @@ import fr.dmall.loupgarou.listener.AgonyListener;
 import fr.dmall.loupgarou.listener.AncienResistanceListener;
 import fr.dmall.loupgarou.listener.AutoSmeltListener;
 import fr.dmall.loupgarou.listener.ChasseurStrengthListener;
+import fr.dmall.loupgarou.listener.ColorMenuListener;
 import fr.dmall.loupgarou.listener.DiamondCounterListener;
 import fr.dmall.loupgarou.listener.FeuFolletListener;
 import fr.dmall.loupgarou.listener.InvisibilityListener;
@@ -148,6 +149,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new VilainPetitLoupListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new ColorMenuListener(),
                 this
         );
 

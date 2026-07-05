@@ -134,6 +134,13 @@ Basées sur `LGPlayer.getEffectiveTeam()` (pas `role.getTeam()` directement, pou
 - **Un solitaire** gagne s'il est **seul** solo restant (`soloAlive == 1`) et que tous les autres camps sont à 0.
 - Si plus aucun camp n'a de survivant (cas rare, ex: dernier solo qui meurt), la partie se termine sans vainqueur plutôt que de rester bloquée.
 
+## Coloration de pseudo (`/lg color`, `NameColorManager`)
+
+- Accessible à **tout joueur** (pas besoin d'OP), à tout moment (pas restreint à une phase de partie précise). `/lg color <joueur1> <joueur2> ...>` ouvre un menu (16 laines colorées) ; cliquer une laine applique la couleur correspondante au pseudo (au-dessus de la tête + liste Tab) de chaque joueur listé.
+- **La couleur n'est visible que par celui qui l'a choisie** : chaque joueur possède déjà son propre `Scoreboard` personnel (`ScoreboardManager.getOrCreateScoreboard`, un par joueur, jamais partagé) — `NameColorManager` enregistre une `Team` colorée par couleur directement sur CE scoreboard précis (`lg_color_<couleur>`), donc les autres joueurs (qui ont leur propre scoreboard séparé) ne voient jamais ce choix.
+- Un joueur ne peut appartenir qu'à une seule `Team` par scoreboard : `NameColorManager.setColor` retire l'entrée de son ancienne équipe colorée (sur le scoreboard de cet observateur) avant de l'ajouter à la nouvelle.
+- Couleur **permanente jusqu'à nouvel appel** de `/lg color` sur ce joueur (pas de retrait automatique, y compris en fin de partie — `GameEnder` n'y touche pas). **Limite connue** : comme le scoreboard personnel est recréé de zéro à chaque reconnexion (`ScoreboardManager.removePlayer` purge le cache au `PlayerQuitEvent`), les couleurs choisies sont perdues si l'observateur se déconnecte puis se reconnecte.
+
 ## Commandes
 
 Voir [GUIDE_TEST.md](GUIDE_TEST.md) pour la liste complète à jour des commandes et la checklist de ce qui a été testé ou non en jeu réel.

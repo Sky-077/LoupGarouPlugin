@@ -95,7 +95,7 @@ public class ScoreboardManager implements Manager {
 
     }
 
-    private Scoreboard getOrCreateScoreboard(Player player) {
+    public Scoreboard getOrCreateScoreboard(Player player) {
 
         return scoreboards.computeIfAbsent(player.getUniqueId(), uuid -> {
 
