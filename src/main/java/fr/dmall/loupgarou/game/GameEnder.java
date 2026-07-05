@@ -3,11 +3,14 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.role.village.SalvateurRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.UUID;
 
 public class GameEnder {
 
@@ -72,6 +75,17 @@ public class GameEnder {
         Location lobbySpawn = lobbySpawnManager.getSpawn();
 
         for (LGPlayer lgPlayer : playerManager.getPlayers()) {
+
+            if (lgPlayer.getRole() instanceof SalvateurRole) {
+
+                UUID protectedUuid = ((SalvateurRole) lgPlayer.getRole()).getProtectedUuid();
+                Player protege = (protectedUuid != null) ? Bukkit.getPlayer(protectedUuid) : null;
+
+                if (protege != null) {
+                    protege.removePotionEffect(PotionEffectType.RESISTANCE);
+                }
+
+            }
 
             Player player = Bukkit.getPlayer(lgPlayer.getUuid());
 

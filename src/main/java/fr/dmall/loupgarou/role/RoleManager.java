@@ -11,6 +11,7 @@ import fr.dmall.loupgarou.role.solo.LoupBlancRole;
 import fr.dmall.loupgarou.role.village.ChasseurRole;
 import fr.dmall.loupgarou.role.village.CupidonRole;
 import fr.dmall.loupgarou.role.village.PetiteFilleRole;
+import fr.dmall.loupgarou.role.village.SalvateurRole;
 import fr.dmall.loupgarou.role.village.SorciereRole;
 import fr.dmall.loupgarou.role.village.VillageoisRole;
 import fr.dmall.loupgarou.role.village.VoyanteRole;
@@ -41,6 +42,7 @@ public class RoleManager implements Manager {
         RoleFactory.register("chasseur-de-primes", ChasseurDePrimesRole::new);
         RoleFactory.register("loup-blanc", LoupBlancRole::new);
         RoleFactory.register("ange", AngeRole::new);
+        RoleFactory.register("salvateur", SalvateurRole::new);
 
     }
 
