@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -42,6 +42,7 @@
 | `/lg proteger <joueur>` | Salvateur | Protège un joueur (Résistance I + 50% dégâts de chute) jusqu'à la fin de l'épisode, 1x/épisode |
 | `/lg loups <message>` | Loup-Garou, Père des Loups, Loup Blanc | Chat privé de la meute, la nuit uniquement — lu aussi par la Petite Fille (lecture seule), tous les pseudos masqués pour tout le monde |
 | `/lg conferer <joueur>` | Bienfaiteur | Offre 1 cœur permanent, délivré discrètement 3 minutes plus tard, à 3 joueurs différents max, 1x/5min |
+| `/lg folie` | Feu Follet | Active la Folie Incendiaire (Speed I 1 min, met le feu au corps-à-corps), 1x/10min |
 
 ### Commandes de debug (réservées aux OP)
 
@@ -214,6 +215,16 @@
 - [ ] Tout rôle solo (ex: Chasseur de Primes) reçoit à la révélation un livre Tranchant IV, pas de bow/livre Cupidon
 - [ ] Un solitaire gagne **seul** : il doit être l'unique joueur restant (Village, Loups, Amoureux et tous les autres solitaires éliminés) — message de victoire nominatif
 - [ ] Avec plusieurs joueurs solo en même temps : ils doivent s'éliminer entre eux aussi, la partie ne se termine pas tant qu'il en reste plus d'un
+- [ ] **Feu Follet** : reçoit le livre Tranchant IV (comme tout solo) + une Plume nommée "§bPlume du Feu Follet"
+  - [ ] Retirer toute son armure à n'importe quel moment (jour ou nuit) déclenche l'invisibilité **permanente**, sans limite de durée ni de fréquence (contrairement à la Petite Fille)
+  - [ ] Remettre au moins une pièce d'armure annule immédiatement l'invisibilité
+  - [ ] Si déjà sans armure au moment de la révélation, l'invisibilité s'active tout de suite (pas besoin de retirer/remettre une pièce pour déclencher l'événement)
+  - [ ] Pendant l'invisibilité, seuls les joueurs Petite Fille (vivants) voient des particules à sa position ; les autres joueurs ne voient rien
+  - [ ] Le Feu Follet voit aussi les particules d'une Petite Fille actuellement invisible (grâce à son propre pouvoir)
+  - [ ] `/lg folie` : active Speed I pendant 1 minute et met le feu (5s) à tout joueur frappé au corps-à-corps pendant cette minute ; n'affecte pas les dégâts à l'arc/projectile ; 1x/10 minutes réelles
+  - [ ] Clic droit avec la Plume : téléporte 50 blocs dans la direction visée (s'arrête avant un mur/obstacle rencontré en chemin), 1x/10 minutes réelles, message si pas encore rechargée
+  - [ ] Chaque début de nuit : révèle le rôle d'un joueur aléatoire à moins de 50 blocs (message privé) ; si personne à portée, message dédié et aucune info cette nuit-là
+  - [ ] Tous les effets (Invisibilité, Speed) sont bien nettoyés en fin de partie, pas de fuite après `/lg stop`
 
 ### Conditions de victoire
 - [🟢] Village gagne quand tous les Loups (et solos) sont morts — message de victoire + partie `FINISHED`

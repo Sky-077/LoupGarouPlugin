@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
 import fr.dmall.loupgarou.role.RoleTeam;
+import fr.dmall.loupgarou.role.solo.FeuFolletRole;
 import fr.dmall.loupgarou.role.solo.LoupBlancRole;
 import fr.dmall.loupgarou.role.village.BienfaiteurRole;
 import fr.dmall.loupgarou.role.village.ChasseurRole;
@@ -216,6 +217,17 @@ public class GameStarter {
 
     }
 
+    private static ItemStack createFeuFolletFeather() {
+
+        ItemStack feather = new ItemStack(Material.FEATHER);
+        ItemMeta meta = feather.getItemMeta();
+        meta.setDisplayName("§bPlume du Feu Follet");
+        feather.setItemMeta(meta);
+
+        return feather;
+
+    }
+
     private static void beginGame(Game game, List<LGPlayer> players, CycleManager cycleManager) {
 
         if (game.getState() != GameState.INVINCIBILITY) {
@@ -342,6 +354,10 @@ public class GameStarter {
                 LoupBlancManager.applyHearts(player);
             }
 
+            if (lgPlayer.getRole() instanceof FeuFolletRole) {
+                ((FeuFolletRole) lgPlayer.getRole()).checkInitialInvisibility(player);
+            }
+
             if (isNight) {
                 lgPlayer.getRole().onNight(player);
             } else {
@@ -368,6 +384,10 @@ public class GameStarter {
             player.getInventory().addItem(createProtectionBook());
         } else if (lgPlayer.getRole().getTeam() == RoleTeam.NEUTRAL) {
             player.getInventory().addItem(createSharpnessBook());
+        }
+
+        if (lgPlayer.getRole() instanceof FeuFolletRole) {
+            player.getInventory().addItem(createFeuFolletFeather());
         }
 
     }

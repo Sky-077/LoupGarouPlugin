@@ -7,6 +7,7 @@ import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.LobbySpawnManager;
 import fr.dmall.loupgarou.game.LoveManager;
+import fr.dmall.loupgarou.game.StealthVisionManager;
 import fr.dmall.loupgarou.game.VoteManager;
 import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.listener.AgonyListener;
@@ -14,6 +15,7 @@ import fr.dmall.loupgarou.listener.AncienResistanceListener;
 import fr.dmall.loupgarou.listener.AutoSmeltListener;
 import fr.dmall.loupgarou.listener.ChasseurStrengthListener;
 import fr.dmall.loupgarou.listener.DiamondCounterListener;
+import fr.dmall.loupgarou.listener.FeuFolletListener;
 import fr.dmall.loupgarou.listener.LethalDamageListener;
 import fr.dmall.loupgarou.listener.PetiteFilleListener;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
@@ -52,6 +54,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry.register(new LoveManager());
         managerRegistry.register(new LobbySpawnManager());
         managerRegistry.register(new VoteManager());
+        managerRegistry.register(new StealthVisionManager());
 
         managerRegistry.enableAll();
 
@@ -119,6 +122,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new AncienResistanceListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new FeuFolletListener(),
                 this
         );
 
