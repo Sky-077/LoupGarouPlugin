@@ -48,6 +48,7 @@ public class LoupBlancRole extends Role {
         List<String> lines = new ArrayList<>();
         lines.add("Vous êtes solitaire : vous gagnez seul en étant l'unique survivant, même face aux Loups.");
         lines.add("Vous recevez la Force I chaque nuit, comme un loup.");
+        lines.add("Vous obtenez 15 cœurs de vie à la révélation des rôles.");
         lines.add("Vous connaissez l'identité des Loups-Garous, mais vous devrez tous les éliminer (eux comme les autres) pour gagner.");
 
         if (knownWolves.isEmpty()) {

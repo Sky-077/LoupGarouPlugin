@@ -5,6 +5,7 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
 import fr.dmall.loupgarou.role.RoleTeam;
+import fr.dmall.loupgarou.role.solo.LoupBlancRole;
 import fr.dmall.loupgarou.role.village.ChasseurRole;
 import fr.dmall.loupgarou.role.village.CupidonRole;
 import org.bukkit.Bukkit;
@@ -316,6 +317,10 @@ public class GameStarter {
 
             lgPlayer.getRole().sendInstructions(player);
             giveRoleItems(lgPlayer, player);
+
+            if (lgPlayer.getRole() instanceof LoupBlancRole) {
+                LoupBlancManager.applyHearts(player);
+            }
 
             if (isNight) {
                 lgPlayer.getRole().onNight(player);

@@ -61,6 +61,7 @@ public class GameEnder {
                 HonorManager.clearModifier(player);
                 AngeManager.clearHearts(player);
                 PoisonManager.clearPoison(player);
+                LoupBlancManager.clearHearts(player);
 
                 if (player.isDead()) {
                     player.spigot().respawn();
