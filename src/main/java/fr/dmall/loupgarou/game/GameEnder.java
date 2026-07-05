@@ -7,8 +7,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
 public class GameEnder {
+
+    private static final PotionEffectType[] GAME_POTION_EFFECTS = {
+            PotionEffectType.STRENGTH,
+            PotionEffectType.SPEED,
+            PotionEffectType.ABSORPTION,
+            PotionEffectType.WEAKNESS,
+            PotionEffectType.REGENERATION,
+            PotionEffectType.BLINDNESS,
+            PotionEffectType.SLOWNESS,
+            PotionEffectType.INVISIBILITY,
+    };
 
     private GameEnder() {
     }
@@ -39,6 +51,14 @@ public class GameEnder {
                 .getManagerRegistry()
                 .getManager(CorruptionManager.class);
 
+        DeathManager deathManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(DeathManager.class);
+
+        WorldManager worldManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(WorldManager.class);
+
         Game game = gameManager.getCurrentGame();
 
         for (String message : messages) {
@@ -63,6 +83,10 @@ public class GameEnder {
                 PoisonManager.clearPoison(player);
                 LoupBlancManager.clearHearts(player);
 
+                for (PotionEffectType effect : GAME_POTION_EFFECTS) {
+                    player.removePotionEffect(effect);
+                }
+
                 if (player.isDead()) {
                     player.spigot().respawn();
                 }
@@ -80,6 +104,8 @@ public class GameEnder {
         loveManager.reset();
         voteManager.reset();
         corruptionManager.resetAll();
+        deathManager.resetAll();
+        worldManager.clearGameWorld();
 
     }
 

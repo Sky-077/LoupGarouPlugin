@@ -16,7 +16,6 @@ public class LoveManager implements Manager {
     private UUID loverA;
     private UUID loverB;
     private UUID cupidon;
-    private boolean crossedCamps;
 
     @Override
     public void enable() {
@@ -31,7 +30,6 @@ public class LoveManager implements Manager {
         loverA = null;
         loverB = null;
         cupidon = null;
-        crossedCamps = false;
     }
 
     public void link(LGPlayer a, LGPlayer b, LGPlayer cupidonPlayer) {
@@ -40,21 +38,10 @@ public class LoveManager implements Manager {
         loverB = b.getUuid();
         cupidon = cupidonPlayer.getUuid();
 
-        RoleTeam teamA = a.getEffectiveTeam();
-        RoleTeam teamB = b.getEffectiveTeam();
+        a.setTeamOverride(RoleTeam.AMOUREUX);
+        b.setTeamOverride(RoleTeam.AMOUREUX);
+        cupidonPlayer.setTeamOverride(RoleTeam.AMOUREUX);
 
-        crossedCamps = teamA != null && teamB != null && teamA != teamB;
-
-        if (crossedCamps) {
-            a.setTeamOverride(RoleTeam.AMOUREUX);
-            b.setTeamOverride(RoleTeam.AMOUREUX);
-            cupidonPlayer.setTeamOverride(RoleTeam.AMOUREUX);
-        }
-
-    }
-
-    public boolean isCrossedCamps() {
-        return crossedCamps;
     }
 
     public UUID getPartner(UUID uuid) {
@@ -104,7 +91,7 @@ public class LoveManager implements Manager {
 
     private void tryRevertCupidon(PlayerManager playerManager) {
 
-        if (!crossedCamps || cupidon == null) {
+        if (cupidon == null) {
             return;
         }
 

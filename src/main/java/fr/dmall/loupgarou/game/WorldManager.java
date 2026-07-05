@@ -3,6 +3,8 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -20,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class WorldManager implements Manager {
@@ -73,27 +76,41 @@ public class WorldManager implements Manager {
         return gameWorld;
     }
 
+    public void clearGameWorld() {
+        gameWorld = null;
+    }
+
+    public int getCenterX() {
+        return centerX;
+    }
+
+    public int getCenterZ() {
+        return centerZ;
+    }
+
     public World prepareGameWorld() {
 
         LobbySpawnManager lobbySpawnManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
                 .getManager(LobbySpawnManager.class);
 
-        World existing = Bukkit.getWorld(WORLD_NAME);
+        if (gameWorld != null) {
 
-        if (existing != null) {
-
-            for (Player player : existing.getPlayers()) {
+            for (Player player : gameWorld.getPlayers()) {
                 player.teleport(lobbySpawnManager.getSpawn());
             }
 
-            Bukkit.unloadWorld(existing, false);
+            Bukkit.unloadWorld(gameWorld, false);
 
         }
 
-        deleteWorldFolderWithRetry(new File(Bukkit.getWorldContainer(), WORLD_NAME));
+        // Nom unique à chaque partie : évite de dépendre de la suppression de l'ancien dossier
+        // (sur Windows, les fichiers de région restent parfois verrouillés juste après unloadWorld).
+        String newWorldName = WORLD_NAME + "_" + System.currentTimeMillis();
 
-        WorldCreator creator = new WorldCreator(WORLD_NAME);
+        cleanupOldWorldFolders(newWorldName);
+
+        WorldCreator creator = new WorldCreator(newWorldName);
         creator.seed(new Random().nextLong());
         creator.environment(World.Environment.NORMAL);
         creator.generateStructures(false);
@@ -114,8 +131,37 @@ public class WorldManager implements Manager {
         gameWorld = world;
 
         buildVoteHouses(world);
+        pregenerateScatterArea(world);
 
         return world;
+
+    }
+
+    private void pregenerateScatterArea(World world) {
+
+        int centerChunkX = centerX >> 4;
+        int centerChunkZ = centerZ >> 4;
+
+        // Même rayon que findScatterLocation (90% de la bordure) : c'est là que les joueurs atterrissent réellement.
+        int radius = (int) ((borderSize / 2.0) * 0.9) / 16;
+
+        List<CompletableFuture<Chunk>> futures = new ArrayList<>();
+
+        for (int dx = -radius; dx <= radius; dx++) {
+
+            for (int dz = -radius; dz <= radius; dz++) {
+                futures.add(world.getChunkAtAsync(centerChunkX + dx, centerChunkZ + dz, true));
+            }
+
+        }
+
+        long startedAt = System.currentTimeMillis();
+        int chunkCount = futures.size();
+
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() ->
+                Bukkit.getLogger().info("[LoupGarouPlugin] Pré-génération de " + chunkCount + " chunks terminée en "
+                        + (System.currentTimeMillis() - startedAt) + "ms.")
+        );
 
     }
 
@@ -179,12 +225,8 @@ public class WorldManager implements Manager {
 
                 boolean edge = (dx == -2 || dx == 2 || dz == -2 || dz == 2);
 
-                if (edge) {
-
-                    for (int dy = 0; dy < VOTE_HOUSE_HEIGHT; dy++) {
-                        world.getBlockAt(x, baseY + dy, z).setType(Material.OAK_LOG);
-                    }
-
+                for (int dy = 0; dy < VOTE_HOUSE_HEIGHT; dy++) {
+                    world.getBlockAt(x, baseY + dy, z).setType(edge ? Material.OAK_LOG : Material.AIR);
                 }
 
             }
@@ -207,15 +249,37 @@ public class WorldManager implements Manager {
 
     }
 
+    private static final int SCATTER_ATTEMPTS = 10;
+
     public Location findScatterLocation(World world) {
 
         double radius = (borderSize / 2.0) * 0.9;
 
-        int blockX = centerX + (int) ((Math.random() * 2 - 1) * radius);
-        int blockZ = centerZ + (int) ((Math.random() * 2 - 1) * radius);
-        int blockY = world.getHighestBlockYAt(blockX, blockZ) + 1;
+        Location fallback = null;
 
-        return new Location(world, blockX + 0.5, blockY, blockZ + 0.5);
+        for (int attempt = 0; attempt < SCATTER_ATTEMPTS; attempt++) {
+
+            int blockX = centerX + (int) ((Math.random() * 2 - 1) * radius);
+            int blockZ = centerZ + (int) ((Math.random() * 2 - 1) * radius);
+
+            world.getChunkAt(blockX >> 4, blockZ >> 4);
+
+            int blockY = world.getHighestBlockYAt(blockX, blockZ, HeightMap.MOTION_BLOCKING_NO_LEAVES);
+            Material ground = world.getBlockAt(blockX, blockY, blockZ).getType();
+
+            Location location = new Location(world, blockX + 0.5, blockY + 1, blockZ + 0.5);
+
+            if (ground != Material.WATER && ground != Material.LAVA) {
+                return location;
+            }
+
+            if (fallback == null) {
+                fallback = location;
+            }
+
+        }
+
+        return fallback;
 
     }
 
@@ -271,27 +335,17 @@ public class WorldManager implements Manager {
 
     }
 
-    private void deleteWorldFolderWithRetry(File folder) {
+    private void cleanupOldWorldFolders(String excludeName) {
 
-        for (int attempt = 0; attempt < 10 && folder.exists(); attempt++) {
+        File container = Bukkit.getWorldContainer();
+        File[] candidates = container.listFiles((dir, name) -> name.startsWith(WORLD_NAME + "_") && !name.equals(excludeName));
 
-            deleteWorldFolder(folder);
-
-            if (folder.exists()) {
-
-                try {
-                    Thread.sleep(100L);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-
-            }
-
+        if (candidates == null) {
+            return;
         }
 
-        if (folder.exists()) {
-            Bukkit.getLogger().warning("[LoupGarouPlugin] Impossible de supprimer entièrement l'ancien monde "
-                    + WORLD_NAME + ", des fichiers restent verrouillés. La régénération peut contenir des restes de la partie précédente.");
+        for (File folder : candidates) {
+            deleteWorldFolder(folder);
         }
 
     }

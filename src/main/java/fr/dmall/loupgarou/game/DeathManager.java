@@ -43,6 +43,24 @@ public class DeathManager implements Manager {
 
     @Override
     public void disable() {
+        resetAll();
+    }
+
+    public void resetAll() {
+
+        for (UUID uuid : pendingTasks.keySet()) {
+
+            Player player = Bukkit.getPlayer(uuid);
+
+            if (player != null) {
+                player.setInvulnerable(false);
+                player.removePotionEffect(PotionEffectType.BLINDNESS);
+                player.removePotionEffect(PotionEffectType.SLOWNESS);
+                player.removePotionEffect(PotionEffectType.INVISIBILITY);
+                restoreEquipment(player);
+            }
+
+        }
 
         for (BukkitTask task : pendingTasks.values()) {
             task.cancel();

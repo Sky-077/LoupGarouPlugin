@@ -31,6 +31,13 @@ public class HonorManager {
 
     }
 
+    public static void setHonor(LGPlayer lgPlayer, Player player, int honor) {
+
+        lgPlayer.setHonor(honor);
+        applyHeartEffect(lgPlayer, player);
+
+    }
+
     public static void clearModifier(Player player) {
 
         AttributeInstance maxHealth = player.getAttribute(Attribute.MAX_HEALTH);

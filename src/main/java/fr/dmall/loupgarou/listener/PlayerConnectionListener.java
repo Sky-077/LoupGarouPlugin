@@ -2,6 +2,7 @@ package fr.dmall.loupgarou.listener;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.scoreboard.ScoreboardManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -24,6 +25,14 @@ public class PlayerConnectionListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
+
         playerManager.remove(event.getPlayer());
+
+        ScoreboardManager scoreboardManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(ScoreboardManager.class);
+
+        scoreboardManager.removePlayer(event.getPlayer().getUniqueId());
+
     }
 }

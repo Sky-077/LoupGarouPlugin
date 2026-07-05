@@ -10,6 +10,7 @@ import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -18,8 +19,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -35,6 +38,10 @@ public class VoteListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
 
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        if (event.getHand() != EquipmentSlot.HAND) {
             return;
         }
 
@@ -170,23 +177,38 @@ public class VoteListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
 
+        if (isProtectedVoteHouse(event.getBlock().getLocation())) {
+            event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+
+        if (isProtectedVoteHouse(event.getBlock().getLocation())) {
+            event.setCancelled(true);
+        }
+
+    }
+
+    private boolean isProtectedVoteHouse(Location location) {
+
         GameManager gameManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
                 .getManager(GameManager.class);
 
         Game game = gameManager.getCurrentGame();
 
-        if (game.getState() != GameState.DAY && game.getState() != GameState.NIGHT) {
-            return;
+        if (game.getState() == GameState.WAITING) {
+            return false;
         }
 
         WorldManager worldManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
                 .getManager(WorldManager.class);
 
-        if (worldManager.isInsideVoteHouse(event.getBlock().getLocation())) {
-            event.setCancelled(true);
-        }
+        return worldManager.isInsideVoteHouse(location);
 
     }
 

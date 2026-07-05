@@ -17,12 +17,18 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.UUID;
+
 public class ScoreboardManager implements Manager {
 
     private static final String OBJECTIVE_NAME = "lg_uhc";
     private static final int DIAMOND_TARGET = 17;
 
     private BukkitTask task;
+    private final Map<UUID, Scoreboard> scoreboards = new HashMap<>();
 
     @Override
     public void enable() {
@@ -48,6 +54,12 @@ public class ScoreboardManager implements Manager {
             player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
         }
 
+        scoreboards.clear();
+
+    }
+
+    public void removePlayer(UUID uuid) {
+        scoreboards.remove(uuid);
     }
 
     private void update() {
@@ -83,19 +95,37 @@ public class ScoreboardManager implements Manager {
 
     }
 
-    @SuppressWarnings("deprecation")
+    private Scoreboard getOrCreateScoreboard(Player player) {
+
+        return scoreboards.computeIfAbsent(player.getUniqueId(), uuid -> {
+
+            Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+
+            Objective objective = scoreboard.registerNewObjective(
+                    OBJECTIVE_NAME,
+                    "dummy",
+                    "§8§lLoup-Garou §f§lUHC"
+            );
+
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+            player.setScoreboard(scoreboard);
+
+            return scoreboard;
+
+        });
+
+    }
+
     private void applyScoreboard(Player player, PlayerManager playerManager, String duration, String cycle,
                                   String episode, String players, String border, boolean revealed) {
 
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        Scoreboard scoreboard = getOrCreateScoreboard(player);
+        Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
 
-        Objective objective = scoreboard.registerNewObjective(
-                OBJECTIVE_NAME,
-                "dummy",
-                "§8§lLoup-Garou §f§lUHC"
-        );
-
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        for (String entry : new HashSet<>(scoreboard.getEntries())) {
+            scoreboard.resetScores(entry);
+        }
 
         LGPlayer lgPlayer = playerManager.get(player);
 
@@ -127,8 +157,6 @@ public class ScoreboardManager implements Manager {
         objective.getScore("§7Bordure: §f" + border).setScore(line--);
         objective.getScore("§7Kills: §f" + kills).setScore(line--);
         objective.getScore("§bDiamants: §f" + diamonds).setScore(line--);
-
-        player.setScoreboard(scoreboard);
 
     }
 

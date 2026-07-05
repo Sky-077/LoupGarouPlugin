@@ -49,6 +49,7 @@
 | `/lg forcepvp` | Active immédiatement le PVP sans attendre 30 min |
 | `/lg lobbyspawn` | Définit le spawn du lobby (fin de partie) à la position actuelle de l'OP — persiste dans `config.yml` |
 | `/lg forcevote` | Ouvre immédiatement le vote sans attendre le délai de 45 min |
+| `/lg honneur <joueur> [valeur]` | Sans valeur : affiche l'honneur du joueur. Avec valeur (-3 à 3) : le règle directement et recalcule l'effet de cœur |
 
 ---
 
@@ -62,8 +63,8 @@
 - [🟢] Vérifier que les commandes de debug (`forcestart`, `forcereveal`, `forcepvp`) sont bien refusées à un joueur non-OP
 
 ### Génération du monde
-- [🟢] Le monde `lg_uhc` est bien régénéré (ancien terrain supprimé) à chaque `/lg start`
-- [] La bordure appliquée correspond bien à la valeur configurée via `/lg bordure`
+- [ ] Le monde de partie est bien vierge à chaque `/lg start`, sans trace de constructions/objets d'une partie précédente (corrigé : chaque partie utilise désormais un nom de monde unique — timestamp en suffixe — au lieu de réutiliser/supprimer le même dossier, qui pouvait rester verrouillé sous Windows et laisser resurgir l'ancien monde) — à revalider
+- [🟢] La bordure appliquée correspond bien à la valeur configurée via `/lg bordure`
 - [🟢] La recherche de zone évite bien les biomes interdits (océan, île champignon, glace/neige) au centre de la bordure — vérifier visuellement en `/lg forcestart` + explorer
 - [🟢] Aucune structure ne génère (village, temple, mineshaft, forteresse...)
 - [🟢] Aucun mob hostile/neutre (creeper, zombie, squelette, araignée, enderman...) ne spawn naturellement ; les animaux passifs (vache, cochon, poule) spawnent bien
@@ -71,39 +72,40 @@
 - [🟢] Le temps de génération du monde au lancement (peut geler le serveur une ou deux secondes)
 
 ### Scattering et invincibilité
-- [ ] Chaque joueur est téléporté à un endroit différent, sur un point de terrain sûr (pas dans le vide, pas dans l'eau/lave)
+- [ ] Chaque joueur est téléporté à un endroit différent, sur un point de terrain sûr (pas dans le vide, pas dans l'eau/lave) — corrigé : évite maintenant les feuilles d'arbre, force le chargement du chunk, retente jusqu'à 10 fois si eau/lave — à revalider
 - [🟢] Invulnérabilité active pendant les 30 premières secondes, puis désactivée automatiquement
-- [ ] `/lg stop` pendant la phase de scattering/invincibilité annule bien tout proprement (pas de bug de tâche différée qui se déclenche plus tard)
-- [ ] Chaque joueur reçoit bien un stack de 64 steaks cuits au moment du scattering
+- [🟢] `/lg stop` pendant la phase de scattering/invincibilité annule bien tout proprement (pas de bug de tâche différée qui se déclenche plus tard)
+- [🟢] Chaque joueur reçoit bien un stack de 64 steaks cuits au moment du scattering
+- [ ] La vie, la faim et le feu sont bien réinitialisés au scattering (corrigé : ne l'étaient pas, un joueur pouvait démarrer la partie suivante avec la vie/faim de la fin de la précédente) — à revalider
 
 ### Révélation des rôles (10 min après le vrai début)
-- [🔴] Avant la révélation : `/lg me`, `/lg regle`, `/lg sonder`, `/lg soigner`, `/lg empoisonner`, `/lg tirer` renvoient tous "les rôles n'ont pas encore été révélés"
+- [🟢] Avant la révélation : `/lg me`, `/lg regle`, `/lg sonder`, `/lg soigner`, `/lg empoisonner`, `/lg tirer` renvoient tous "les rôles n'ont pas encore été révélés"
 - [ ] Avant la révélation : la corruption des loups ne progresse pas (aucun gain même en restant collé à la victime)
-- [ ] Avant la révélation : le Loup-Garou n'a **pas** la Force la nuit, la Petite Fille ne peut **pas** activer l'invisibilité en retirant son armure
-- [ ] À la révélation (10 min) : chaque joueur reçoit le message d'explication de son rôle, et le pouvoir jour/nuit s'active immédiatement si applicable (Force du Loup si c'est la nuit, etc.)
+- [🟢] Avant la révélation : le Loup-Garou n'a **pas** la Force la nuit, la Petite Fille ne peut **pas** activer l'invisibilité en retirant son armure
+- [🟢] À la révélation (10 min) : chaque joueur reçoit le message d'explication de son rôle, et le pouvoir jour/nuit s'active immédiatement si applicable (Force du Loup si c'est la nuit, etc.)
 - [🟢] `/lg forcereveal` (OP) déclenche bien la révélation immédiatement et désactive le minuteur automatique (pas de double révélation à 10 min)
 
 ### PVP différé (30 min après le vrai début)
 - [ ] Avant l'activation : un coup porté entre deux joueurs de la partie est bien annulé (aucun dégât, message affiché à l'attaquant)
-- [ ] Avant l'activation : un coup PVP annulé ne déclenche **pas** le système de mort différée (pas de "mort" fantôme)
-- [ ] À 30 min : le PVP s'active automatiquement pour tout le monde
+- [🟢] Avant l'activation : un coup PVP annulé ne déclenche **pas** le système de mort différée (pas de "mort" fantôme)
+- [🟢] À 30 min : le PVP s'active automatiquement pour tout le monde
 - [🟢] `/lg forcepvp` (OP) active le PVP immédiatement
-- [ ] Tant que le PVP n'est pas activé : un joueur qui subirait normalement une mort réelle (chute, lave, faim...) est soigné à pleine vie à la place ("Vous avez survécu !"), quelle que soit la cause
-- [ ] Une fois le PVP activé : la mort redevient réelle dans les mêmes conditions
+- [🟢] Tant que le PVP n'est pas activé : un joueur qui subirait normalement une mort réelle (chute, lave, faim...) est soigné à pleine vie à la place ("Vous avez survécu !"), quelle que soit la cause
+- [🟢] Une fois le PVP activé : la mort redevient réelle dans les mêmes conditions
 
 ### Système de mort en deux temps
-- [ ] Un coup mortel annule les dégâts, rend le joueur invulnérable, et le tue réellement 15 secondes plus tard (+ jusqu'à 10s supplémentaires si une offre de soin ou de conversion est en cours, voir sections dédiées)
-- [ ] Le message de mort (avec rôle révélé) et le kill crédité au bon joueur
+- [🟢] Un coup mortel annule les dégâts, rend le joueur invulnérable, et le tue réellement 15 secondes plus tard (+ jusqu'à 10s supplémentaires si une offre de soin ou de conversion est en cours, voir sections dédiées)
+- [🟢] Le message de mort (avec rôle révélé) et le kill crédité au bon joueur
 - [🟢] Le respawn remet bien le joueur en mode spectateur
 - [ ] `/lg tirer` (Chasseur) fonctionne bien pendant sa propre fenêtre de mort différée
 
 ### Potion de vie de la Sorcière (offre automatique, remplace l'ancien `/lg soigner` disponible à tout moment)
-- [ ] Si une Sorcière vivante n'a pas encore utilisé sa potion de vie : à la fin de l'agonie (15s) de tout joueur qui n'est pas éligible à l'infection, la mort réelle est suspendue et la Sorcière reçoit un message cliquable "[Soigner]" pendant 10 secondes
-- [ ] En cliquant (ou via `/lg soigner <joueur>`) dans les 10s : le joueur est sauvé (revit, équipement restauré), la Sorcière gagne +1 honneur, sa potion de vie est consommée
-- [ ] Sans réaction de la Sorcière dans les 10s : la mort réelle a bien lieu normalement
-- [ ] Si aucune Sorcière n'est vivante, ou si sa potion de vie est déjà utilisée : aucune offre n'est envoyée, la mort réelle a lieu immédiatement à la fin de l'agonie
-- [ ] La Sorcière peut recevoir l'offre pour sa propre mort et se sauver elle-même (`/lg soigner <sonNom>`)
-- [ ] `/lg soigner <joueur>` échoue ("n'attend pas de décision de soin") si utilisé en dehors de cette fenêtre de 10s
+- [🟢] Si une Sorcière vivante n'a pas encore utilisé sa potion de vie : à la fin de l'agonie (15s) de tout joueur qui n'est pas éligible à l'infection, la mort réelle est suspendue et la Sorcière reçoit un message cliquable "[Soigner]" pendant 10 secondes
+- [🟢] En cliquant (ou via `/lg soigner <joueur>`) dans les 10s : le joueur est sauvé (revit, équipement restauré), la Sorcière gagne +1 honneur, sa potion de vie est consommée
+- [🟢] Sans réaction de la Sorcière dans les 10s : la mort réelle a bien lieu normalement
+- [🟢] Si aucune Sorcière n'est vivante, ou si sa potion de vie est déjà utilisée : aucune offre n'est envoyée, la mort réelle a lieu immédiatement à la fin de l'agonie
+- [🟢] La Sorcière peut recevoir l'offre pour sa propre mort et se sauver elle-même (`/lg soigner <sonNom>`)
+- [🟢] `/lg soigner <joueur>` échoue ("n'attend pas de décision de soin") si utilisé en dehors de cette fenêtre de 10s
 
 ### Potion de mort de la Sorcière (retire 2 cœurs définitifs, ne tue plus instantanément)
 - [ ] `/lg empoisonner <joueur>` retire bien 2 cœurs de vie maximum de façon permanente (barre de cœurs réduite, visible immédiatement) au lieu de tuer instantanément
@@ -128,31 +130,31 @@
 - [ ] La corruption est bien réinitialisée en fin de partie (`/lg stop` ou victoire)
 
 ### Rôles (un par un, en conditions réelles avec plusieurs joueurs)
-- [ ] **Villageois** : aucun comportement particulier
-- [ ] **Loup-Garou** : Force I la nuit, retirée le jour ; `/lg regle` liste bien les autres Loups-Garous/Père des Loups de la partie (pas lui-même)
+- [🟢] **Villageois** : aucun comportement particulier
+- [🟢] **Loup-Garou** : Force I la nuit, retirée le jour ; `/lg regle` liste bien les autres Loups-Garous/Père des Loups de la partie (pas lui-même)
 - [ ] **Père des Loups** : Force I comme un loup, corrompt les autres joueurs plus vite qu'un Loup-Garou classique (voir section Corruption) ; `/lg regle` liste bien les autres loups
 - [ ] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups **et** Loup Blanc
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
-- [ ] **Sorcière** : `/lg soigner` (offre automatique à 10s) et `/lg empoisonner` (2 cœurs définitifs), chacun 1x/partie
-- [ ] **Chasseur** : reçoit un arc Puissance IV + 64 flèches à la révélation
+- [🟢] **Sorcière** : `/lg soigner` (offre automatique à 10s) et `/lg empoisonner` (2 cœurs définitifs), chacun 1x/partie
+- [🟢] **Chasseur** : reçoit un arc Puissance IV + 64 flèches à la révélation
   - [ ] Bonus de dégâts contre le camp des Loups-Garous : commence à Force 0.5 (+1.5 dégâts au corps-à-corps uniquement, pas à l'arc), augmente de 0.1 par Loup-Garou/Père des Loups tué, plafonné à Force I (+3 dégâts)
   - [ ] `/lg tirer <joueur>` pendant sa propre agonie fait perdre 6 cœurs à la cible (pas de mort instantanée garantie), 1x/partie
-  - [ ] `/lg tirer` refuse de cibler son propre tueur ("vous ne pouvez pas tirer sur votre propre tueur")
-  - [ ] Si un Loup-Garou ou un Père des Loups tue le Chasseur, il ne reçoit **pas** le bonus Speed I + Absorption I habituel (le Loup Blanc, lui, le reçoit normalement)
-- [ ] **Cupidon** : reçoit un arc simple + livre Puissance III + Punch I + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
-- [ ] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering
-  - [ ] Aucun contrat avant l'activation du PVP (`/lg regle` dit "Aucun contrat actif")
+  -[ ] `/lg tirer` refuse de cibler son propre tueur ("vous ne pouvez pas tirer sur votre propre tueur")
+  -[ ] Si un Loup-Garou ou un Père des Loups tue le Chasseur, il ne reçoit **pas** le bonus Speed I + Absorption I habituel (le Loup Blanc, lui, le reçoit normalement)
+- [🟢] **Cupidon** : reçoit un arc simple + livre Puissance III + Punch I + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
+- [🟢] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering
+  - [🟢] Aucun contrat avant l'activation du PVP (`/lg regle` dit "Aucun contrat actif")
   - [ ] Premier contrat reçu **à l'activation du PVP** (testable via `/lg forcepvp`, pas besoin d'attendre 30 min)
   - [ ] Tuer la cible du 1er contrat donne un arc Puissance IV + 64 flèches et marque le contrat "rempli"
   - [ ] Tuer la cible du 2e contrat donne des bottes en diamant Chute Amortie III
   - [ ] Le second contrat n'arrive **pas** tout de suite après le premier, mais au **lever du jour suivant** (nouvel épisode)
   - [ ] Si la cible du contrat en cours meurt d'une autre main (PVP, chute...), le contrat est annulé (message au Chasseur de Primes) et le contrat suivant arrive au lever du jour suivant, comme pour un succès
   - [ ] Une fois les 2 contrats résolus (remplis ou annulés), `/lg regle` affiche "Vous n'avez plus de contrat à accomplir"
-- [ ] **Loup Blanc** : reçoit Force I la nuit comme un loup ; `/lg regle` liste bien les Loups-Garous/Père des Loups de la partie ; reçoit le livre Tranchant IV comme tout solo ; camp `Solitaire` dans le scoreboard (pas `Loups`) ; gagne seul même si tous les autres morts sont des loups
-  - [ ] Obtient bien 15 cœurs (30 PV) au moment de la révélation des rôles, plein de vie à cet instant
-  - [ ] Le bonus de cœurs est bien nettoyé en fin de partie (`/lg stop` ou victoire), retour à 10 cœurs normaux au lobby
-- [ ] **Ange** : reçoit le livre Tranchant IV comme tout solo ; à la révélation, `/lg regle` invite à choisir sa forme
+- [🟢] **Loup Blanc** : reçoit Force I la nuit comme un loup ; `/lg regle` liste bien les Loups-Garous/Père des Loups de la partie ; reçoit le livre Tranchant IV comme tout solo ; camp `Solitaire` dans le scoreboard (pas `Loups`) ; gagne seul même si tous les autres morts sont des loups
+  - [🟢] Obtient bien 15 cœurs (30 PV) au moment de la révélation des rôles, plein de vie à cet instant
+  - [🟢] Le bonus de cœurs est bien nettoyé en fin de partie (`/lg stop` ou victoire), retour à 10 cœurs normaux au lobby
+- [🟢] **Ange** : reçoit le livre Tranchant IV comme tout solo ; à la révélation, `/lg regle` invite à choisir sa forme
   - [ ] `/lg ange dechu` : passe à 12 cœurs, une cible vivante aléatoire est assignée (rôle révélé dans le message et via `/lg regle`)
   - [ ] Tuer sa cible (crédité comme tueur) fait passer l'Ange Déchu à 15 cœurs (message dédié) ; gagne seul
   - [ ] `/lg ange gardien` : passe à 15 cœurs, un protégé vivant aléatoire est assigné (rôle révélé) ; l'Ange rejoint le camp effectif de son protégé (`teamOverride`, vérifier le scoreboard)
@@ -161,11 +163,11 @@
   - [ ] Impossible de choisir une forme deux fois, ou avant la révélation des rôles
   - [ ] En fin de partie, le bonus/malus de cœurs et la Faiblesse sont bien nettoyés (`AngeManager.clearHearts`)
 
-### Cupidon / camp Amoureux (nécessite au moins 3 comptes)
-- [ ] Lien entre deux joueurs du **même camp** : si l'un meurt, l'autre meurt aussi de chagrin (message dédié), pas de changement de camp
-- [ ] Lien entre deux joueurs de **camps opposés** (ex: Villageois + Loup-Garou) : les deux amoureux ET le Cupidon rejoignent le nouveau camp "Amoureux" (vérifier le "Groupe" dans le scoreboard des 3 joueurs)
-- [ ] Le camp Amoureux gagne s'il est le dernier camp survivant (message de victoire dédié)
-- [ ] Si les deux amoureux (camps opposés) meurent tous les deux, le Cupidon redevient un simple Villageois (vérifier `/lg me` et le scoreboard)
+### Cupidon / camp Amoureux (nécessite au moins 3 comptes) — comportement revu : le camp Amoureux se forme désormais systématiquement, peu importe que les deux liés soient du même camp ou de camps opposés
+- [ ] Lien entre deux joueurs, **même camp ou camps opposés** : les deux amoureux ET le Cupidon rejoignent systématiquement le nouveau camp "Amoureux" (vérifier le "Groupe" dans le scoreboard des 3 joueurs)
+- [ ] Si l'un des deux amoureux meurt (n'importe quelle cause), l'autre meurt instantanément de chagrin (message dédié) — garantit qu'ils ne peuvent gagner qu'ensemble
+- [ ] Le camp Amoureux gagne s'il est le dernier camp survivant (message de victoire dédié) ; le Cupidon n'a pas besoin de survivre pour que les deux amoureux gagnent
+- [ ] Si les deux amoureux meurent tous les deux, le Cupidon redevient un simple Villageois (vérifier `/lg me` et le scoreboard)
 - [ ] Le lien amoureux ne survit pas d'une partie à l'autre (reset propre via `/lg stop` ou victoire)
 
 ### Rôles solo (camp NEUTRAL)
@@ -187,39 +189,65 @@
 - [🟢] Le compteur de diamants (`X/17` dans le scoreboard) s'incrémente correctement, y compris avec Fortune
 
 ### Système de vote (démarre 45 min après le vrai début, dure 3 épisodes)
-- [ ] Les 4 maisons de vote apparaissent bien autour du centre de la bordure (à ~150 blocs), chacune avec une enclume et un jukebox
-- [ ] Les maisons/jukebox/enclumes ne peuvent pas être détruits pendant la partie
-- [ ] Clic droit sur un jukebox **avant** l'ouverture du vote : message "le vote n'est pas ouvert", pas de menu
-- [ ] Clic droit sur un jukebox **pendant** le vote : ouvre un menu avec une tête par joueur vivant (sauf soi-même) + un item "Passer"
-- [ ] Voter pour un joueur, repasser dans le jukebox et changer son vote : le dernier choix est bien celui pris en compte
+- [🟢] Les 4 maisons de vote apparaissent bien autour du centre de la bordure (à ~150 blocs), chacune avec une enclume et un jukebox
+- [ ] Les maisons/jukebox/enclumes ne peuvent pas être détruits, y compris pendant le scattering/l'invincibilité (corrigé : la protection ne s'activait qu'en `DAY`/`NIGHT`, pas avant) — à revalider
+- [🟢] Clic droit sur un jukebox **avant** l'ouverture du vote : message "le vote n'est pas ouvert", pas de menu
+- [🟢] Clic droit sur un jukebox **pendant** le vote : ouvre un menu avec une tête par joueur vivant (sauf soi-même) + un item "Passer"
+- [🟢] Voter pour un joueur, repasser dans le jukebox et changer son vote : le dernier choix est bien celui pris en compte
 - [ ] À la fin de chaque épisode de vote : honneur +1 pour ceux qui ont voté, inchangé pour ceux qui ont passé, -1 pour ceux qui n'ont rien fait (Villageois et Loups traités pareil)
 - [ ] Le joueur le plus voté voit son vrai rôle apparaître dans le chat, mélangé avec 2 autres noms de rôles au hasard (sans indiquer lequel est le vrai)
 - [ ] En cas d'égalité au nombre de votes, un des joueurs à égalité est choisi (pas de crash)
 - [ ] Après 3 épisodes de vote, le vote se désactive (jukebox redevient inactif)
-- [ ] Le vote et les votes en cours sont bien réinitialisés entre deux parties
+- [🟢] Le vote et les votes en cours sont bien réinitialisés entre deux parties
 
 ### Honneur (au-delà du vote)
-- [ ] Sorcière qui soigne quelqu'un (`/lg soigner`) gagne +1 honneur
+- [🟢] Sorcière qui soigne quelqu'un (`/lg soigner`) gagne +1 honneur
 - [ ] Un joueur qui tue un allié de son propre camp (Village tue Village, ou Loup tue Loup) perd -1 honneur
-- [ ] À +3 d'honneur : Villageois gagne un cœur, Loup en perd un ; à -3 c'est l'inverse (vérifier via `/lg regle` ou en comptant les cœurs à l'écran)
-- [ ] L'effet de cœur disparaît si l'honneur redescend sous le seuil (pas un bonus figé)
-- [ ] L'honneur et l'effet de cœur sont bien réinitialisés entre deux parties
+- [🟢] À +3 d'honneur : Villageois gagne un cœur, Loup en perd un ; à -3 c'est l'inverse (vérifier via `/lg regle` ou en comptant les cœurs à l'écran)
+- [🟢] L'effet de cœur disparaît si l'honneur redescend sous le seuil (pas un bonus figé)
+- [🟢] L'honneur et l'effet de cœur sont bien réinitialisés entre deux parties
 
 ### Fin de partie / spawn du lobby
-- [ ] `/lg lobbyspawn` sauvegarde bien la position exacte (monde + XYZ) de l'OP qui l'exécute
-- [ ] Après une victoire ou un `/lg stop`, tous les joueurs atterrissent bien à cet endroit précis (pas dans un bloc, pas dans le vide)
-- [ ] Le spawn configuré persiste après un redémarrage du serveur (relire `config.yml`)
-- [ ] Tant que `/lg lobbyspawn` n'a jamais été utilisé, ça retombe sur l'ancien comportement (`Bukkit.getWorlds().get(0).getSpawnLocation()`)
+- [🟢] Après une victoire ou un `/lg stop`, tous les joueurs atterrissent bien à cet endroit précis (pas dans un bloc, pas dans le vide)
+- [🟢] Le spawn configuré persiste après un redémarrage du serveur (relire `config.yml`)
+- [🟢] Tant que `/lg lobbyspawn` n'a jamais été utilisé, ça retombe sur l'ancien comportement (`Bukkit.getWorlds().get(0).getSpawnLocation()`)
 
 ### Scoreboard
 - [🟢] Toutes les lignes s'affichent et se mettent à jour correctement : durée, cycle, épisode, groupe, joueurs vivants/total, bordure, kills, diamants
 - [🟢] L'épisode s'incrémente à chaque lever du jour
-- [ ] Le "Groupe" affiché est personnel à chaque joueur (Village/Loups/Solitaire) et vide/"-" avant la révélation
+- [🟢] Le "Groupe" affiché est personnel à chaque joueur (Village/Loups/Solitaire) et vide/"-" avant la révélation
+- [ ] La ligne "Bordure" ne garde plus l'ancienne valeur de la partie précédente une fois revenu au lobby (corrigé : la référence au monde de partie est libérée en fin de partie) — à revalider
+
+### Performance
+- [ ] La RAM du serveur reste stable sur plusieurs parties d'affilée (corrigé : `ScoreboardManager` recréait un `Scoreboard` complet chaque seconde pour chaque joueur, jamais libéré par Bukkit — un seul scoreboard est maintenant réutilisé par joueur) — à revalider sur une session longue avec plusieurs parties
 
 ---
 
 ## Notes
 
-- Le monde `lg_uhc` est supprimé et régénéré à chaque partie — ne rien construire dedans entre deux tests.
+- Chaque partie utilise désormais un monde avec un nom unique (suffixe timestamp) au lieu de réutiliser/supprimer le même dossier — ne rien construire dedans entre deux tests, l'ancien dossier est nettoyé au mieux (best-effort) à la génération du suivant.
 - Il faut relancer `./gradlew build` et redéployer le `.jar` avant de tester, sinon le serveur tourne avec une version obsolète du plugin.
 - Beaucoup de ces tests nécessitent plusieurs comptes Minecraft connectés simultanément (scattering, PVP, sonder, corruption des loups...) — les commandes de debug OP permettent de contourner certains délais mais pas le besoin d'avoir plusieurs joueurs pour les interactions à deux.
+
+
+## Bugs corrigés cette session — à revalider en jeu
+
+- Maisons de vote bloquées par du feuillage à l'intérieur, impossible à casser → `buildVoteHouse` vide maintenant explicitement tout l'intérieur à la construction au lieu de laisser ce qu'il y avait déjà (arbre compris).
+- Double message "le vote n'est pas ouvert actuellement" au clic sur le jukebox → `PlayerInteractEvent` se déclenchait une fois par main (principale + secondaire), filtré sur la main principale uniquement.
+- Après une 2ᵉ partie : plus de dégâts reçus/infligés, touche espace bloquée, jusqu'à quitter/rejoindre le serveur → un joueur encore en agonie (ou avec une offre de soin/infection en cours) au moment où la partie se termine restait marqué "en train de mourir" pour de bon. `DeathManager` nettoie maintenant systématiquement tout état en cours à la fin de partie (`resetAll()`).
+- Effet de Force (ou autre effet de rôle : Vitesse, Absorption...) conservé d'une partie précédente (ex: Ange qui garde la Force du Loup-Garou joué avant) → ces effets n'étaient jamais retirés en fin de partie si encore actifs (partie terminée en pleine nuit). `GameEnder` les retire tous désormais.
+- Scoreboard (ligne Bordure) qui ne se resetait plus → voir section Scoreboard ci-dessus.
+- RAM qui se remplit après plusieurs parties → voir section Performance ci-dessus (fuite du `Scoreboard` recréé chaque seconde ; amélioration significative, mais pas garanti à 100%, voir section "Toujours ouvert").
+- Maisons de vote/jukebox destructibles pendant le scattering/l'invincibilité → la protection anti-casse ne s'activait qu'en `DAY`/`NIGHT`, elle couvre maintenant toute la durée de la partie (dès `SCATTERING`).
+- Vie/faim/feu non réinitialisés au scattering → un joueur démarrait la partie suivante avec l'état de fin de la précédente. Reset explicite ajouté.
+- Monde qui semblait ne pas se reset (constructions/objets d'une partie précédente retrouvés) → chaque partie utilise maintenant un nom de monde unique (timestamp) au lieu de réutiliser le même dossier, donc plus besoin de compter sur la suppression de l'ancien pour avoir un monde vierge.
+- Maisons de vote trouvées empilées → même cause que le point précédent (ancien dossier pas supprimé, donc ancienne maison de vote encore présente à une hauteur différente de la nouvelle) : plus possible avec un monde toujours neuf.
+
+## Clarifié — pas un bug
+
+- Le 1er contrat du Chasseur de Primes n'apparaît pas au `/lg forcepvp` en solo : `BountyManager` a besoin d'une autre cible vivante que lui-même, donc aucun contrat n'est possible à un seul joueur. Se testera avec un 2ᵉ compte.
+
+## Toujours ouvert — pas encore corrigé
+
+- RAM qui augmente encore un peu à chaque nouvelle partie (mais moins qu'avant) : probablement lié à la création d'un nouveau monde Bukkit à chaque partie plutôt qu'à la réutilisation du même (peut ne jamais être totalement à zéro par nature, chaque monde étant désormais unique). Pas de fix supplémentaire identifié pour l'instant, à surveiller sur une session très longue.
+- Touche Échap qui ne répond pas parfois, en jeu normal (pas dans un menu ni pendant l'agonie) : la touche Échap est gérée entièrement côté client, un plugin serveur ne peut pas l'intercepter. C'est très probablement un symptôme de lag/gel ponctuel du serveur (la génération du monde peut déjà geler le serveur 1-2 secondes, voir Notes) plutôt qu'un bug de code — à confirmer si ça coïncide avec un `/lg start`/génération de monde ou une autre action lourde.

@@ -13,6 +13,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 public class GameStarter {
 
     private static final int MIN_PLAYERS = 3;
-    private static final long INVINCIBILITY_DURATION_TICKS = 20L * 30L; // 30 secondes
+    private static final long INVINCIBILITY_DURATION_TICKS = 20L * 60L * 3L; // 3 minutes (laisse le temps à la pré-génération du monde de finir en fond)
     private static final long PVP_DELAY_TICKS = 20L * 60L * 30L; // 30 minutes
     private static final long ROLE_REVEAL_DELAY_TICKS = 20L * 60L * 10L; // 10 minutes
     private static final long VOTE_START_DELAY_TICKS = 20L * 60L * 45L; // 45 minutes
@@ -126,6 +127,10 @@ public class GameStarter {
             scatterPlayer.setGameMode(GameMode.SURVIVAL);
             scatterPlayer.teleport(location);
             scatterPlayer.setInvulnerable(true);
+            scatterPlayer.setHealth(scatterPlayer.getAttribute(Attribute.MAX_HEALTH).getValue());
+            scatterPlayer.setFoodLevel(20);
+            scatterPlayer.setSaturation(20f);
+            scatterPlayer.setFireTicks(0);
             scatterPlayer.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
 
         }
@@ -153,6 +158,9 @@ public class GameStarter {
 
         Bukkit.broadcastMessage("§aLa partie a été lancée ! §7Vous êtes invulnérable pendant "
                 + invincibilitySeconds + " secondes. Les rôles seront révélés dans 10 minutes.");
+
+        Bukkit.broadcastMessage("§7Le centre de la zone (maisons de vote) se trouve en X: "
+                + worldManager.getCenterX() + ", Z: " + worldManager.getCenterZ() + ".");
 
         Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),

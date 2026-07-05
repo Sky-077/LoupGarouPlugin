@@ -107,11 +107,9 @@ public class LierSubCommand implements SubCommand {
         target2.sendMessage("§dCupidon vous a lié à " + target1.getName() + " par l'amour ! Si l'un de vous meurt, l'autre mourra aussi.");
         cupidonPlayer.sendMessage("§dVous avez lié " + target1.getName() + " et " + target2.getName() + " par l'amour !");
 
-        if (loveManager.isCrossedCamps()) {
-            target1.sendMessage("§5Vous formez un nouveau camp avec Cupidon : les Amoureux doivent éliminer tout le monde pour gagner !");
-            target2.sendMessage("§5Vous formez un nouveau camp avec Cupidon : les Amoureux doivent éliminer tout le monde pour gagner !");
-            cupidonPlayer.sendMessage("§5Vos amoureux sont de camps opposés : vous rejoignez leur camp pour les aider à survivre !");
-        }
+        target1.sendMessage("§5Vous formez un nouveau camp avec Cupidon : les Amoureux doivent éliminer tout le monde pour gagner !");
+        target2.sendMessage("§5Vous formez un nouveau camp avec Cupidon : les Amoureux doivent éliminer tout le monde pour gagner !");
+        cupidonPlayer.sendMessage("§5Vous rejoignez le camp des Amoureux pour les aider à survivre !");
 
         return true;
     }
