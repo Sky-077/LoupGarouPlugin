@@ -6,6 +6,7 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.loup.PereDesLoupsRole;
 import fr.dmall.loupgarou.role.loup.WolfRole;
+import fr.dmall.loupgarou.role.village.SorciereRole;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -26,12 +27,14 @@ public class DeathManager implements Manager {
 
     private static final long DYING_DURATION_TICKS = 20L * 15L; // 15 secondes
     private static final long CONVERSION_OFFER_TICKS = 20L * 10L; // 10 secondes
+    private static final long HEAL_OFFER_TICKS = 20L * 10L; // 10 secondes
 
     private final Map<UUID, BukkitTask> pendingTasks = new HashMap<>();
     private final Map<UUID, UUID> pendingKillers = new HashMap<>();
     private final Map<UUID, ItemStack[]> hiddenArmor = new HashMap<>();
     private final Map<UUID, ItemStack> hiddenMainHand = new HashMap<>();
     private final Set<UUID> conversionOffers = new HashSet<>();
+    private final Set<UUID> healOffers = new HashSet<>();
 
     @Override
     public void enable() {
@@ -50,6 +53,7 @@ public class DeathManager implements Manager {
         hiddenArmor.clear();
         hiddenMainHand.clear();
         conversionOffers.clear();
+        healOffers.clear();
 
     }
 
@@ -104,6 +108,7 @@ public class DeathManager implements Manager {
 
         pendingKillers.remove(uuid);
         conversionOffers.remove(uuid);
+        healOffers.remove(uuid);
 
         player.setInvulnerable(false);
         player.removePotionEffect(PotionEffectType.BLINDNESS);
@@ -164,6 +169,11 @@ public class DeathManager implements Manager {
 
         if (shouldOfferConversion(player)) {
             offerConversion(player);
+            return;
+        }
+
+        if (findAliveSorciereWithHeal() != null) {
+            offerWitchHeal(player);
             return;
         }
 
@@ -263,6 +273,70 @@ public class DeathManager implements Manager {
 
         pendingTasks.put(uuid, task);
 
+    }
+
+    private LGPlayer findAliveSorciereWithHeal() {
+
+        GameManager gameManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(GameManager.class);
+
+        Game game = gameManager.getCurrentGame();
+
+        for (LGPlayer lgPlayer : game.getPlayers()) {
+
+            if (lgPlayer.isAlive() && lgPlayer.getRole() instanceof SorciereRole
+                    && ((SorciereRole) lgPlayer.getRole()).isHealAvailable()) {
+                return lgPlayer;
+            }
+
+        }
+
+        return null;
+
+    }
+
+    private void offerWitchHeal(Player player) {
+
+        UUID uuid = player.getUniqueId();
+
+        healOffers.add(uuid);
+
+        LGPlayer lgSorciere = findAliveSorciereWithHeal();
+        Player sorciere = (lgSorciere != null) ? Bukkit.getPlayer(lgSorciere.getUuid()) : null;
+
+        if (sorciere != null) {
+
+            TextComponent message = new TextComponent("§5" + player.getName() + " agonise ! ");
+            TextComponent heal = new TextComponent("§a[Soigner]");
+            heal.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/lg soigner " + player.getName()));
+            message.addExtra(heal);
+
+            sorciere.spigot().sendMessage(message);
+            sorciere.sendMessage("§5Vous avez 10 secondes pour utiliser votre potion de vie.");
+
+        }
+
+        BukkitTask task = Bukkit.getScheduler().runTaskLater(
+                LoupGarouPlugin.getInstance(),
+                () -> {
+                    if (healOffers.remove(uuid)) {
+                        finalizeRealDeath(player);
+                    }
+                },
+                HEAL_OFFER_TICKS
+        );
+
+        pendingTasks.put(uuid, task);
+
+    }
+
+    public boolean hasHealOffer(Player player) {
+        return healOffers.contains(player.getUniqueId());
+    }
+
+    public void consumeHealOffer(Player player) {
+        healOffers.remove(player.getUniqueId());
     }
 
     private void finalizeRealDeath(Player player) {

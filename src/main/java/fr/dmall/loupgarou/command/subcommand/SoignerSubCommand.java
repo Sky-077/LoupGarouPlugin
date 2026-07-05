@@ -22,7 +22,7 @@ public class SoignerSubCommand implements SubCommand {
 
     @Override
     public String getDescription() {
-        return "Sauve un joueur en train de mourir avec votre potion de vie (Sorcière, une fois par partie).";
+        return "Sauve un joueur pendant l'offre de 10s reçue à sa mort avec votre potion de vie (Sorcière, une fois par partie).";
     }
 
     @Override
@@ -87,12 +87,13 @@ public class SoignerSubCommand implements SubCommand {
             return true;
         }
 
-        if (!deathManager.isDying(target)) {
-            sender.sendMessage("§cCe joueur n'est pas en train de mourir.");
+        if (!deathManager.hasHealOffer(target)) {
+            sender.sendMessage("§cCe joueur n'attend pas de décision de soin.");
             return true;
         }
 
         sorciere.consumeHeal();
+        deathManager.consumeHealOffer(target);
         deathManager.revive(target);
         HonorManager.gainHonor(lgHealer, healer);
 

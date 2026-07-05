@@ -60,6 +60,7 @@ public class GameEnder {
                 player.setInvulnerable(false);
                 HonorManager.clearModifier(player);
                 AngeManager.clearHearts(player);
+                PoisonManager.clearPoison(player);
 
                 if (player.isDead()) {
                     player.spigot().respawn();

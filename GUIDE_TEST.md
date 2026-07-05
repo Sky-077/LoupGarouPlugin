@@ -33,8 +33,8 @@
 | `/lg sonder <joueur>` | Voyante | Découvre le rôle d'un joueur, la nuit, 1x/nuit |
 | `/lg infecter <joueur>` | Père des Loups | Accepte de transformer un joueur corrompu à 100% en Loup-Garou (offre cliquable reçue en jeu, 10s, quand un tel joueur meurt de la main d'un loup) |
 | `/lg laissermourir <joueur>` | Père des Loups | Refuse l'infection et laisse mourir le joueur corrompu à 100% (même offre) |
-| `/lg soigner <joueur>` | Sorcière | Potion de vie : sauve un joueur en train de mourir, 1x/partie |
-| `/lg empoisonner <joueur>` | Sorcière | Potion de mort : tue instantanément un joueur, 1x/partie |
+| `/lg soigner <joueur>` | Sorcière | Potion de vie : reçue via une offre cliquable de 10s à la mort d'un joueur non infecté, 1x/partie |
+| `/lg empoisonner <joueur>` | Sorcière | Potion de mort : retire 2 cœurs de vie maximum, définitivement, à un joueur, 1x/partie |
 | `/lg tirer <joueur>` | Chasseur | Riposte une dernière fois pendant sa propre fenêtre de 15s de sursis avant de mourir, 1x/partie |
 | `/lg lier <joueur1> <joueur2>` | Cupidon | Lie deux joueurs par l'amour, 1x/partie |
 | `/lg ange <dechu\|gardien>` | Ange | Choisit sa forme (cible aléatoire assignée), 1x/partie |
@@ -92,11 +92,24 @@
 - [ ] Une fois le PVP activé : la mort redevient réelle dans les mêmes conditions
 
 ### Système de mort en deux temps
-- [ ] Un coup mortel annule les dégâts, rend le joueur invulnérable, et le tue réellement 15 secondes plus tard
+- [ ] Un coup mortel annule les dégâts, rend le joueur invulnérable, et le tue réellement 15 secondes plus tard (+ jusqu'à 10s supplémentaires si une offre de soin ou de conversion est en cours, voir sections dédiées)
 - [ ] Le message de mort (avec rôle révélé) et le kill crédité au bon joueur
 - [🟢] Le respawn remet bien le joueur en mode spectateur
-- [🟠] `/lg soigner` (Sorcière) fonctionne bien pendant cette fenêtre de 15 secondes
 - [ ] `/lg tirer` (Chasseur) fonctionne bien pendant sa propre fenêtre de mort différée
+
+### Potion de vie de la Sorcière (offre automatique, remplace l'ancien `/lg soigner` disponible à tout moment)
+- [ ] Si une Sorcière vivante n'a pas encore utilisé sa potion de vie : à la fin de l'agonie (15s) de tout joueur qui n'est pas éligible à l'infection, la mort réelle est suspendue et la Sorcière reçoit un message cliquable "[Soigner]" pendant 10 secondes
+- [ ] En cliquant (ou via `/lg soigner <joueur>`) dans les 10s : le joueur est sauvé (revit, équipement restauré), la Sorcière gagne +1 honneur, sa potion de vie est consommée
+- [ ] Sans réaction de la Sorcière dans les 10s : la mort réelle a bien lieu normalement
+- [ ] Si aucune Sorcière n'est vivante, ou si sa potion de vie est déjà utilisée : aucune offre n'est envoyée, la mort réelle a lieu immédiatement à la fin de l'agonie
+- [ ] La Sorcière peut recevoir l'offre pour sa propre mort et se sauver elle-même (`/lg soigner <sonNom>`)
+- [ ] `/lg soigner <joueur>` échoue ("n'attend pas de décision de soin") si utilisé en dehors de cette fenêtre de 10s
+
+### Potion de mort de la Sorcière (retire 2 cœurs définitifs, ne tue plus instantanément)
+- [ ] `/lg empoisonner <joueur>` retire bien 2 cœurs de vie maximum de façon permanente (barre de cœurs réduite, visible immédiatement) au lieu de tuer instantanément
+- [ ] Si la vie actuelle du joueur dépasse son nouveau maximum, elle est bien ramenée à ce nouveau maximum (peut tuer le joueur si sa vie était déjà très basse)
+- [ ] La réduction de vie maximum persiste jusqu'à la fin de la partie (pas de régénération naturelle du plafond)
+- [ ] En fin de partie, le malus de cœurs est bien nettoyé (`PoisonManager.clearPoison`), le joueur retrouve 10 cœurs normaux au prochain lobby
 
 ### Corruption des loups et conversion (`/lg infecter` a changé de fonctionnement : il n'infecte plus la propre victime pendant l'agonie, mais accepte l'offre de conversion envoyée au Père des Loups)
 - [ ] Un Loup-Garou qui reste à moins de 6 blocs d'un joueur (non-loup) le corrompt de 1% toutes les 5 secondes
@@ -121,7 +134,7 @@
 - [ ] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups **et** Loup Blanc
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
-- [🟢] **Sorcière** : `/lg soigner` et `/lg empoisonner`, chacun 1x/partie
+- [ ] **Sorcière** : `/lg soigner` (offre automatique à 10s) et `/lg empoisonner` (2 cœurs définitifs), chacun 1x/partie
 - [ ] **Chasseur** : reçoit un arc Puissance IV + 64 flèches à la révélation ; `/lg tirer` pendant sa propre agonie, 1x/partie
 - [ ] **Cupidon** : reçoit un arc simple + livre Puissance III + Punch I + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
 - [ ] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering

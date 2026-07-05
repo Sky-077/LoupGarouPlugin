@@ -4,6 +4,7 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.game.PoisonManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
@@ -21,7 +22,7 @@ public class EmpoisonnerSubCommand implements SubCommand {
 
     @Override
     public String getDescription() {
-        return "Tue instantanément un joueur avec votre potion de mort (Sorcière, une fois par partie).";
+        return "Retire 2 cœurs de vie maximum, définitivement, à un joueur avec votre potion de mort (Sorcière, une fois par partie).";
     }
 
     @Override
@@ -104,9 +105,10 @@ public class EmpoisonnerSubCommand implements SubCommand {
         }
 
         sorciere.consumePoison();
-        poisoner.sendMessage("§5Vous avez empoisonné " + target.getName() + " !");
+        PoisonManager.applyPoison(target);
 
-        deathManager.killInstantly(target, poisoner);
+        target.sendMessage("§5La Sorcière vous a empoisonné... vous perdez 2 cœurs de vie maximum, définitivement !");
+        poisoner.sendMessage("§5Vous avez empoisonné " + target.getName() + " : il perd 2 cœurs de vie maximum, définitivement !");
 
         return true;
     }
