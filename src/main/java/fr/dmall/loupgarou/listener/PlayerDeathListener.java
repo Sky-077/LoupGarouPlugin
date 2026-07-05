@@ -14,7 +14,9 @@ import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
+import fr.dmall.loupgarou.role.loup.WolfRole;
 import fr.dmall.loupgarou.role.solo.ChasseurDePrimesRole;
+import fr.dmall.loupgarou.role.solo.LoupBlancRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -27,6 +29,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.UUID;
 
@@ -89,6 +93,11 @@ public class PlayerDeathListener implements Listener {
 
                 if (killerLgPlayer.getRole() instanceof ChasseurDePrimesRole) {
                     fulfillContractIfNeeded((ChasseurDePrimesRole) killerLgPlayer.getRole(), killer, player, game.getEpisode());
+                }
+
+                if (killerLgPlayer.getRole() instanceof WolfRole || killerLgPlayer.getRole() instanceof LoupBlancRole) {
+                    killer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 60, 0, false, true));
+                    killer.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 60, 0, false, true));
                 }
 
             }

@@ -100,6 +100,7 @@
 - [ ] **Villageois** : aucun comportement particulier
 - [ ] **Loup-Garou** : Force I la nuit, retirée le jour ; `/lg regle` liste bien les autres Loups-Garous/Père des Loups de la partie (pas lui-même)
 - [ ] **Père des Loups** : Force I comme un loup + `/lg infecter` transforme bien la victime en Loup-Garou (message privé, pas de broadcast) ; `/lg regle` liste bien les autres loups (le nouveau Loup-Garou infecté doit apparaître dans la liste des autres si on revérifie après)
+- [ ] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups **et** Loup Blanc
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
 - [🟢] **Sorcière** : `/lg soigner` et `/lg empoisonner`, chacun 1x/partie
