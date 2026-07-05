@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou.listener;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.AncienManager;
 import fr.dmall.loupgarou.game.AngeManager;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
@@ -18,6 +19,7 @@ import fr.dmall.loupgarou.role.RoleTeam;
 import fr.dmall.loupgarou.role.loup.WolfRole;
 import fr.dmall.loupgarou.role.solo.ChasseurDePrimesRole;
 import fr.dmall.loupgarou.role.solo.LoupBlancRole;
+import fr.dmall.loupgarou.role.village.AncienRole;
 import fr.dmall.loupgarou.role.village.ChasseurRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -106,6 +108,13 @@ public class PlayerDeathListener implements Listener {
                 if ((killerLgPlayer.getRole() instanceof WolfRole || killerLgPlayer.getRole() instanceof LoupBlancRole) && !deniedWolfBuff) {
                     killer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 60, 0, false, true));
                     killer.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 60, 0, false, true));
+                }
+
+                if (role instanceof AncienRole
+                        && killerLgPlayer.getEffectiveTeam() != RoleTeam.LOUP
+                        && killerLgPlayer.getEffectiveTeam() != RoleTeam.NEUTRAL) {
+                    AncienManager.halveMaxHealth(killer);
+                    killer.sendMessage("§7Vous avez tué l'Ancien : votre vie maximale est réduite de moitié, définitivement.");
                 }
 
             }

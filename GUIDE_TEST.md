@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -148,6 +148,12 @@
   - [ ] Tué une seconde fois par un non-Loup (pouvoir déjà consommé) : meurt normalement cette fois
   - [ ] Tué par un Loup-Garou ou un Père des Loups (même la première fois) : meurt normalement, pas de survie
   - [ ] Priorité correcte si plusieurs mécanismes de mort différée pourraient s'appliquer en même temps (corruption/infection, offre de la Sorcière) — l'auto-survie de l'Idiot passe avant l'offre de la Sorcière
+- [ ] **Ancien** : Résistance 0.5 permanente (-10% de tous les dégâts subis, testable en comparant les PV perdus avec/sans le rôle)
+  - [ ] Tué par un Loup-Garou ou un Père des Loups : ressuscite avec sa vie **actuelle** (pas de valeur fixe, comme la Sorcière), 1x/partie, et perd définitivement sa Résistance 0.5 (vérifier que les dégâts ne sont plus réduits après)
+  - [ ] Tué une seconde fois par un Loup (pouvoir déjà consommé) : meurt normalement
+  - [ ] Tué par un villageois (ni Loup, ni solitaire — donc Village ou Amoureux) : meurt normalement (pas de résurrection), et le tueur perd la moitié de sa vie maximale, définitivement (arrondi au cœur supérieur, ex: 11♥→6♥)
+  - [ ] Tué par un solitaire (camp NEUTRAL) : meurt normalement, aucun effet particulier ni pour lui ni pour le tueur
+  - [ ] Le malus de vie maximale du tueur "villageois" est bien nettoyé en fin de partie (`AncienManager.clear`)
 - [🟢] **Sorcière** : `/lg soigner` (offre automatique à 10s) et `/lg empoisonner` (2 cœurs définitifs), chacun 1x/partie
 - [🟢] **Chasseur** : reçoit un arc Puissance IV + 64 flèches à la révélation
   - [ ] Bonus de dégâts contre le camp des Loups-Garous : commence à Force 0.5 (+1.5 dégâts au corps-à-corps uniquement, pas à l'arc), augmente de 0.1 par Loup-Garou/Père des Loups tué, plafonné à Force I (+3 dégâts)

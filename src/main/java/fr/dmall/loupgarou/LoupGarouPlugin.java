@@ -10,6 +10,7 @@ import fr.dmall.loupgarou.game.LoveManager;
 import fr.dmall.loupgarou.game.VoteManager;
 import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.listener.AgonyListener;
+import fr.dmall.loupgarou.listener.AncienResistanceListener;
 import fr.dmall.loupgarou.listener.AutoSmeltListener;
 import fr.dmall.loupgarou.listener.ChasseurStrengthListener;
 import fr.dmall.loupgarou.listener.DiamondCounterListener;
@@ -113,6 +114,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new SalvateurProtectionListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new AncienResistanceListener(),
                 this
         );
 

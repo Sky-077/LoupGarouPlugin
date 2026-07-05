@@ -6,6 +6,7 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.loup.PereDesLoupsRole;
 import fr.dmall.loupgarou.role.loup.WolfRole;
+import fr.dmall.loupgarou.role.village.AncienRole;
 import fr.dmall.loupgarou.role.village.IdiotDuVillageRole;
 import fr.dmall.loupgarou.role.village.SorciereRole;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -207,6 +208,11 @@ public class DeathManager implements Manager {
             return;
         }
 
+        if (shouldAutoReviveAncien(player)) {
+            autoReviveAncien(player);
+            return;
+        }
+
         if (findAliveSorciereWithHeal() != null) {
             offerWitchHeal(player);
             return;
@@ -271,6 +277,58 @@ public class DeathManager implements Manager {
         player.sendTitle("§aVous survivez... par pure bêtise !", "", 5, 40, 10);
         Bukkit.broadcastMessage("§6" + player.getName() + " aurait dû mourir, mais il est bien trop bête pour ça ! "
                 + "§7Il est en réalité l'Idiot du Village.");
+
+    }
+
+    private boolean shouldAutoReviveAncien(Player player) {
+
+        PlayerManager playerManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(PlayerManager.class);
+
+        LGPlayer lgPlayer = playerManager.get(player);
+
+        if (lgPlayer == null || !(lgPlayer.getRole() instanceof AncienRole)) {
+            return false;
+        }
+
+        if (!((AncienRole) lgPlayer.getRole()).isReviveAvailable()) {
+            return false;
+        }
+
+        UUID killerUuid = pendingKillers.get(player.getUniqueId());
+
+        if (killerUuid == null) {
+            return false;
+        }
+
+        Player killer = Bukkit.getPlayer(killerUuid);
+
+        if (killer == null) {
+            return false;
+        }
+
+        LGPlayer lgKiller = playerManager.get(killer);
+
+        return lgKiller != null && lgKiller.getRole() instanceof WolfRole;
+
+    }
+
+    private void autoReviveAncien(Player player) {
+
+        PlayerManager playerManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(PlayerManager.class);
+
+        LGPlayer lgPlayer = playerManager.get(player);
+        AncienRole ancienRole = (AncienRole) lgPlayer.getRole();
+
+        ancienRole.consumeRevive();
+        ancienRole.loseResistance();
+
+        revive(player);
+
+        player.sendMessage("§7Vous perdez définitivement votre Résistance 0.5.");
 
     }
 
