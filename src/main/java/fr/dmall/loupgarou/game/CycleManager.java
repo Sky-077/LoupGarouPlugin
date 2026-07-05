@@ -76,6 +76,12 @@ public class CycleManager implements Manager {
 
             BountyManager.onEpisodeChange(game);
 
+            CharmManager charmManager = LoupGarouPlugin.getInstance()
+                    .getManagerRegistry()
+                    .getManager(CharmManager.class);
+
+            charmManager.onEpisodeChange();
+
         }
 
         if (game.isRevealed()) {

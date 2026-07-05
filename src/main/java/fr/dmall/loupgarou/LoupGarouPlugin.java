@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou;
 
 import fr.dmall.loupgarou.command.LGCommand;
+import fr.dmall.loupgarou.game.CharmManager;
 import fr.dmall.loupgarou.game.CorruptionManager;
 import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.DeathManager;
@@ -10,12 +11,14 @@ import fr.dmall.loupgarou.game.LoveManager;
 import fr.dmall.loupgarou.game.StealthVisionManager;
 import fr.dmall.loupgarou.game.VoteManager;
 import fr.dmall.loupgarou.game.WorldManager;
+import fr.dmall.loupgarou.item.FluteItem;
 import fr.dmall.loupgarou.listener.AgonyListener;
 import fr.dmall.loupgarou.listener.AncienResistanceListener;
 import fr.dmall.loupgarou.listener.AutoSmeltListener;
 import fr.dmall.loupgarou.listener.ChasseurStrengthListener;
 import fr.dmall.loupgarou.listener.DiamondCounterListener;
 import fr.dmall.loupgarou.listener.FeuFolletListener;
+import fr.dmall.loupgarou.listener.JoueurDeFluteListener;
 import fr.dmall.loupgarou.listener.LethalDamageListener;
 import fr.dmall.loupgarou.listener.PetiteFilleListener;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
@@ -28,6 +31,10 @@ import fr.dmall.loupgarou.manager.ManagerRegistry;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
 import fr.dmall.loupgarou.scoreboard.ScoreboardManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class LoupGarouPlugin extends JavaPlugin {
@@ -55,6 +62,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry.register(new LobbySpawnManager());
         managerRegistry.register(new VoteManager());
         managerRegistry.register(new StealthVisionManager());
+        managerRegistry.register(new CharmManager());
 
         managerRegistry.enableAll();
 
@@ -130,6 +138,13 @@ public final class LoupGarouPlugin extends JavaPlugin {
                 this
         );
 
+        getServer().getPluginManager().registerEvents(
+                new JoueurDeFluteListener(),
+                this
+        );
+
+        registerFluteRecipe();
+
         getLogger().info("Plugin LoupGarou activé !");
     }
 
@@ -137,6 +152,19 @@ public final class LoupGarouPlugin extends JavaPlugin {
     public void onDisable() {
 
         managerRegistry.disableAll();
+
+    }
+
+    private void registerFluteRecipe() {
+
+        NamespacedKey key = new NamespacedKey(this, "flute");
+        ShapedRecipe recipe = new ShapedRecipe(key, FluteItem.create());
+
+        recipe.shape("GGG", "GSG", "GGG");
+        recipe.setIngredient('G', Material.GOLD_INGOT);
+        recipe.setIngredient('S', Material.STICK);
+
+        Bukkit.addRecipe(recipe);
 
     }
 

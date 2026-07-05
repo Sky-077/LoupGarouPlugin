@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`, `joueur-de-flute`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -240,6 +240,24 @@
   - [ ] **Copie du Cupidon, cas 3 (les deux amoureux de la victime étaient déjà morts)** : la victime était déjà redevenue Villageois avant sa mort, donc l'Imitateur copie simplement Villageois (comportement automatique, rien de spécial à coder/tester à part vérifier que ça tombe bien sur Villageois)
   - [ ] **Copie de l'Ange** : reste Solitaire par défaut (Déchu) ; s'il choisit ensuite Gardien via `/lg ange`, son camp change bien pour rejoindre son protégé (pas de verrouillage forcé pour ce rôle précis, contrairement aux autres)
   - [ ] Pour tous les autres rôles (Villageois, Sorcière, Voyante, Petite Fille, Salvateur, Ancien, Idiot du Village, Bienfaiteur) : camp verrouillé Solitaire en permanence malgré le nouveau rôle
+- [ ] **Joueur de Flûte** : reçoit le livre Tranchant IV (comme tout solo), pas de Flûte de départ (doit la fabriquer)
+  - [ ] Craft d'une Flûte : 8 lingots d'or autour d'un bâton (recette 3x3) → 1 Flûte nommée "§6Flûte"
+  - [ ] Tant qu'il porte une Flûte dans son inventaire (pas besoin de l'avoir en main), charme tous les joueurs vivants à moins de 20 blocs à 1% toutes les 4 secondes (aucune info donnée aux charmés, mécanisme silencieux)
+  - [ ] Sans Flûte dans l'inventaire, le charme passif s'arrête immédiatement
+  - [ ] Frapper un joueur au corps-à-corps donne +10% de charme instantané, une seule fois par joueur (un second coup sur le même joueur ne fait rien)
+  - [ ] Clic droit avec une Flûte en main + un joueur visé à moins de 5 blocs (ligne de mire) : lui donne une Flûte (consomme 1 Flûte de son inventaire), message de confirmation à lui uniquement
+  - [ ] Impossible de donner une seconde Flûte à un joueur qui en a déjà reçu une
+  - [ ] Le joueur ayant reçu une Flûte ne peut pas la jeter (`/drop` ou touche Q annulés avec message)
+  - [ ] Ce joueur charme désormais aussi les autres à son insu, à moitié vitesse (1% toutes les 8 secondes) — aucun message immédiat
+  - [ ] Il est notifié de la présence de cette Flûte mystérieuse dans son inventaire seulement au **début de l'épisode suivant** (pas immédiatement)
+  - [ ] Une Flûte ne charme jamais son propre porteur
+  - [ ] Paliers de joueurs charmés à 100% (comptent même après leur mort, donc définitifs une fois atteints) :
+    - [ ] 3 charmés → +1 cœur de vie permanent, message dédié
+    - [ ] 6 charmés → bonus de dégâts au corps-à-corps équivalent à Force 0.5 (+1.5 dégâts, pas d'effet visuel de potion)
+    - [ ] 9 charmés → passe à Force I (vraie potion, remplace le bonus 0.5) + bonus de vitesse de déplacement équivalent à Speed 0.5 (attribut, pas de potion visible)
+    - [ ] 12 charmés → +1 cœur de vie permanent supplémentaire (cumulé avec celui du palier 3)
+    - [ ] Tous les joueurs vivants sont charmés (minimum 6 joueurs vivants dans la partie) → Résistance I (vraie potion)
+  - [ ] Tous les bonus (cœurs, vitesse) sont bien nettoyés en fin de partie (`CharmManager.clear`)
 
 ### Conditions de victoire
 - [🟢] Village gagne quand tous les Loups (et solos) sont morts — message de victoire + partie `FINISHED`

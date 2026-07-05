@@ -63,6 +63,10 @@ public class GameEnder {
                 .getManagerRegistry()
                 .getManager(WorldManager.class);
 
+        CharmManager charmManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(CharmManager.class);
+
         Game game = gameManager.getCurrentGame();
 
         for (String message : messages) {
@@ -104,6 +108,7 @@ public class GameEnder {
                 ChasseurShotManager.clear(player);
                 AncienManager.clear(player);
                 BienfaiteurManager.clear(player);
+                charmManager.clear(player);
 
                 for (PotionEffectType effect : GAME_POTION_EFFECTS) {
                     player.removePotionEffect(effect);
@@ -128,6 +133,7 @@ public class GameEnder {
         corruptionManager.resetAll();
         deathManager.resetAll();
         worldManager.clearGameWorld();
+        charmManager.resetAll();
 
     }
 
