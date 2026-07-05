@@ -370,7 +370,7 @@ public class GameStarter {
 
     }
 
-    private static void giveRoleItems(LGPlayer lgPlayer, Player player) {
+    public static void giveRoleItems(LGPlayer lgPlayer, Player player) {
 
         if (lgPlayer.getRole() instanceof CupidonRole) {
             player.getInventory().addItem(new ItemStack(Material.BOW));

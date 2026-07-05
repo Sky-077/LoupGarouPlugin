@@ -47,6 +47,22 @@ public class BountyManager {
 
     }
 
+    public static void issueFirstContract(Game game, LGPlayer hunterLgPlayer) {
+
+        if (!(hunterLgPlayer.getRole() instanceof ChasseurDePrimesRole)) {
+            return;
+        }
+
+        ChasseurDePrimesRole role = (ChasseurDePrimesRole) hunterLgPlayer.getRole();
+
+        if (role.getContractsIssued() > 0) {
+            return;
+        }
+
+        issueContract(game, hunterLgPlayer, role);
+
+    }
+
     private static void issueContract(Game game, LGPlayer hunterLgPlayer, ChasseurDePrimesRole role) {
 
         List<UUID> candidates = new ArrayList<>();

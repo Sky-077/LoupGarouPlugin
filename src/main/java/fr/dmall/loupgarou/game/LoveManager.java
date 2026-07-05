@@ -44,6 +44,14 @@ public class LoveManager implements Manager {
 
     }
 
+    public boolean isCupidon(UUID uuid) {
+        return uuid != null && uuid.equals(cupidon);
+    }
+
+    public void replaceCupidon(UUID newCupidon) {
+        this.cupidon = newCupidon;
+    }
+
     public UUID getPartner(UUID uuid) {
 
         if (uuid.equals(loverA)) {

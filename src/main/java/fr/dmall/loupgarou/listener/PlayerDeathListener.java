@@ -8,6 +8,7 @@ import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.game.HonorManager;
+import fr.dmall.loupgarou.game.ImitationManager;
 import fr.dmall.loupgarou.game.LobbySpawnManager;
 import fr.dmall.loupgarou.game.LoveManager;
 import fr.dmall.loupgarou.game.VictoryChecker;
@@ -18,6 +19,7 @@ import fr.dmall.loupgarou.role.Role;
 import fr.dmall.loupgarou.role.RoleTeam;
 import fr.dmall.loupgarou.role.loup.WolfRole;
 import fr.dmall.loupgarou.role.solo.ChasseurDePrimesRole;
+import fr.dmall.loupgarou.role.solo.ImitateurRole;
 import fr.dmall.loupgarou.role.solo.LoupBlancRole;
 import fr.dmall.loupgarou.role.village.AncienRole;
 import fr.dmall.loupgarou.role.village.ChasseurRole;
@@ -115,6 +117,10 @@ public class PlayerDeathListener implements Listener {
                         && killerLgPlayer.getEffectiveTeam() != RoleTeam.NEUTRAL) {
                     AncienManager.halveMaxHealth(killer);
                     killer.sendMessage("§7Vous avez tué l'Ancien : votre vie maximale est réduite de moitié, définitivement.");
+                }
+
+                if (killerLgPlayer.getRole() instanceof ImitateurRole) {
+                    ImitationManager.imitate(game, killerLgPlayer, killer, lgPlayer, role);
                 }
 
             }

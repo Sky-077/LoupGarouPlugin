@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -225,6 +225,21 @@
   - [ ] Clic droit avec la Plume : téléporte 50 blocs dans la direction visée (s'arrête avant un mur/obstacle rencontré en chemin), 1x/10 minutes réelles, message si pas encore rechargée
   - [ ] Chaque début de nuit : révèle le rôle d'un joueur aléatoire à moins de 50 blocs (message privé) ; si personne à portée, message dédié et aucune info cette nuit-là
   - [ ] Tous les effets (Invisibilité, Speed) sont bien nettoyés en fin de partie, pas de fuite après `/lg stop`
+- [ ] **Imitateur** : Force I permanente (jour et nuit) dès la révélation
+  - [ ] La Force I disparaît automatiquement au milieu de l'épisode 6 (transition vers la nuit de l'épisode 6), sans avoir besoin de tuer qui que ce soit
+  - [ ] La première victime qu'il tue (peu importe le camp) lui transmet son rôle : `/lg me` et `/lg regle` affichent le nouveau rôle juste après le kill, message dédié reçu
+  - [ ] Le rôle copié est une version **neuve** (charges/cooldowns non consommés), pas l'état exact de la victime
+  - [ ] Il reçoit immédiatement les objets associés au rôle copié (arc du Chasseur, livres du Cupidon/Bienfaiteur, etc.) et le message d'explication du nouveau rôle
+  - [ ] La Force I est immédiatement retirée dès qu'il imite un rôle (même si le milieu de l'épisode 6 n'est pas encore atteint)
+  - [ ] Un second kill après avoir déjà imité un rôle **ne déclenche pas** une seconde imitation (il n'est plus Imitateur, désormais un rôle normal)
+  - [ ] **Copie d'un Loup-Garou/Père des Loups** : rejoint la liste des loups connus (dans les deux sens), a accès à `/lg loups`, mais son camp reste verrouillé Solitaire (pas de victoire Loups) — vérifier le scoreboard
+  - [ ] **Copie du Loup Blanc** : reçoit les 15 cœurs de vie et la liste des Loups-Garous connus, reste Solitaire
+  - [ ] **Copie du Chasseur de Primes** : reçoit immédiatement un premier contrat (puisque les contrats normaux ne se déclenchent qu'à l'activation du PVP ou au changement d'épisode)
+  - [ ] **Copie du Cupidon, cas 1 (aucun lien fait par la victime)** : devient Cupidon normal avec `/lg lier` disponible, camp non verrouillé (VILLAGE tant qu'il n'a pas lié personne)
+  - [ ] **Copie du Cupidon, cas 2 (victime avait déjà lié 2 joueurs)** : devient immédiatement membre du camp Amoureux existant, sa potion de lien est déjà consommée, il remplace la victime comme "Cupidon" du couple (si les deux amoureux meurent plus tard, c'est lui qui redeviendrait Villageois)
+  - [ ] **Copie du Cupidon, cas 3 (les deux amoureux de la victime étaient déjà morts)** : la victime était déjà redevenue Villageois avant sa mort, donc l'Imitateur copie simplement Villageois (comportement automatique, rien de spécial à coder/tester à part vérifier que ça tombe bien sur Villageois)
+  - [ ] **Copie de l'Ange** : reste Solitaire par défaut (Déchu) ; s'il choisit ensuite Gardien via `/lg ange`, son camp change bien pour rejoindre son protégé (pas de verrouillage forcé pour ce rôle précis, contrairement aux autres)
+  - [ ] Pour tous les autres rôles (Villageois, Sorcière, Voyante, Petite Fille, Salvateur, Ancien, Idiot du Village, Bienfaiteur) : camp verrouillé Solitaire en permanence malgré le nouveau rôle
 
 ### Conditions de victoire
 - [🟢] Village gagne quand tous les Loups (et solos) sont morts — message de victoire + partie `FINISHED`
