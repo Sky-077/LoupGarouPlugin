@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import fr.dmall.loupgarou.player.LGPlayer;
+import fr.dmall.loupgarou.role.loup.LoupGarouPerfideRole;
 import fr.dmall.loupgarou.role.solo.FeuFolletRole;
 import fr.dmall.loupgarou.role.village.PetiteFilleRole;
 import org.bukkit.Bukkit;
@@ -63,7 +64,9 @@ public class StealthVisionManager implements Manager {
                 continue;
             }
 
-            boolean isStealthRole = lgPlayer.getRole() instanceof FeuFolletRole || lgPlayer.getRole() instanceof PetiteFilleRole;
+            boolean isStealthRole = lgPlayer.getRole() instanceof FeuFolletRole
+                    || lgPlayer.getRole() instanceof PetiteFilleRole
+                    || lgPlayer.getRole() instanceof LoupGarouPerfideRole;
 
             if (!isStealthRole) {
                 continue;

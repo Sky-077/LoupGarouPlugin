@@ -6,7 +6,7 @@ import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
-import fr.dmall.loupgarou.role.village.PetiteFilleRole;
+import fr.dmall.loupgarou.role.NightInvisibilityRole;
 import io.papermc.paper.event.entity.EntityEquipmentChangedEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -14,7 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
 
-public class PetiteFilleListener implements Listener {
+public class InvisibilityListener implements Listener {
 
     @EventHandler
     public void onEquipmentChange(EntityEquipmentChangedEvent event) {
@@ -56,11 +56,11 @@ public class PetiteFilleListener implements Listener {
 
         LGPlayer lgPlayer = playerManager.get(player);
 
-        if (lgPlayer == null || !(lgPlayer.getRole() instanceof PetiteFilleRole)) {
+        if (lgPlayer == null || !(lgPlayer.getRole() instanceof NightInvisibilityRole)) {
             return;
         }
 
-        PetiteFilleRole role = (PetiteFilleRole) lgPlayer.getRole();
+        NightInvisibilityRole role = (NightInvisibilityRole) lgPlayer.getRole();
 
         if (role.hasNoArmor(player)) {
             role.tryActivateInvisibility(player);

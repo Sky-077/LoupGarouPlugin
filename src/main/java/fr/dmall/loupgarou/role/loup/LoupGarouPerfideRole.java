@@ -1,8 +1,6 @@
-package fr.dmall.loupgarou.role.village;
+package fr.dmall.loupgarou.role.loup;
 
 import fr.dmall.loupgarou.role.NightInvisibilityRole;
-import fr.dmall.loupgarou.role.Role;
-import fr.dmall.loupgarou.role.RoleTeam;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,22 +8,27 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class PetiteFilleRole extends Role implements NightInvisibilityRole {
+import java.util.ArrayList;
+import java.util.List;
+
+public class LoupGarouPerfideRole extends WolfRole implements NightInvisibilityRole {
 
     public static final int INVISIBILITY_DURATION_TICKS = 20 * 60 * 5; // 5 minutes
 
     private boolean powerAvailable = true;
 
-    public PetiteFilleRole() {
-        super("Petite Fille", RoleTeam.VILLAGE);
+    public LoupGarouPerfideRole() {
+        super("Loup-Garou Perfide");
     }
 
     @Override
     public void onNight(Player player) {
 
+        super.onNight(player);
+
         powerAvailable = true;
 
-        // Vérification au tout début de la nuit, au cas où elle serait déjà sans armure.
+        // Vérification au tout début de la nuit, au cas où il serait déjà sans armure.
         if (hasNoArmor(player)) {
             tryActivateInvisibility(player);
         }
@@ -34,6 +37,7 @@ public class PetiteFilleRole extends Role implements NightInvisibilityRole {
 
     @Override
     public void onDay(Player player) {
+        super.onDay(player);
         removeInvisibility(player);
     }
 
@@ -83,15 +87,6 @@ public class PetiteFilleRole extends Role implements NightInvisibilityRole {
     }
 
     @Override
-    public String[] getInstructions() {
-        return new String[] {
-                "Retirez toute votre armure pendant la nuit pour devenir invisible durant 5 minutes.",
-                "Remettre une pièce d'armure annule l'effet immédiatement.",
-                "Ce pouvoir n'est utilisable qu'une fois par nuit.",
-        };
-    }
-
-    @Override
     public boolean hasNoArmor(Player player) {
 
         PlayerInventory inventory = player.getInventory();
@@ -105,6 +100,22 @@ public class PetiteFilleRole extends Role implements NightInvisibilityRole {
 
     private boolean isEmpty(ItemStack item) {
         return item == null || item.getType() == Material.AIR;
+    }
+
+    @Override
+    public String[] getInstructions() {
+
+        List<String> lines = new ArrayList<>();
+        lines.add("Vous recevez Force I chaque nuit, comme un loup.");
+        lines.add("Éliminez les villageois en combat direct (PVP libre, pas de vote ni de ciblage).");
+        lines.add("En restant à proximité d'un joueur, vous le corrompez (1% toutes les 5 secondes).");
+        lines.add("Retirez toute votre armure pendant la nuit pour devenir invisible durant 5 minutes (1 fois par nuit).");
+        lines.add("Remettre une pièce d'armure annule l'effet pour le reste de la nuit.");
+        lines.add("Pendant l'invisibilité, vous générez des particules visibles par la Petite Fille et le Feu Follet, et vous voyez aussi les leurs.");
+        lines.addAll(getWolfPackLines());
+
+        return lines.toArray(new String[0]);
+
     }
 
 }

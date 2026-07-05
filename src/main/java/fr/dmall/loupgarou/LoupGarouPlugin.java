@@ -19,9 +19,9 @@ import fr.dmall.loupgarou.listener.AutoSmeltListener;
 import fr.dmall.loupgarou.listener.ChasseurStrengthListener;
 import fr.dmall.loupgarou.listener.DiamondCounterListener;
 import fr.dmall.loupgarou.listener.FeuFolletListener;
+import fr.dmall.loupgarou.listener.InvisibilityListener;
 import fr.dmall.loupgarou.listener.JoueurDeFluteListener;
 import fr.dmall.loupgarou.listener.LethalDamageListener;
-import fr.dmall.loupgarou.listener.PetiteFilleListener;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
 import fr.dmall.loupgarou.listener.PlayerDeathListener;
 import fr.dmall.loupgarou.listener.PortalBlockListener;
@@ -76,7 +76,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         );
 
         getServer().getPluginManager().registerEvents(
-                new PetiteFilleListener(),
+                new InvisibilityListener(),
                 this
         );
 

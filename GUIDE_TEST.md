@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `grand-mechant-loup`, `loup-garou-craintif`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`, `joueur-de-flute`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `grand-mechant-loup`, `loup-garou-craintif`, `loup-garou-perfide`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`, `joueur-de-flute`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -158,6 +158,13 @@
   - [ ] Corrompu à 100% et tué par un loup : **aucune offre d'infection** n'est envoyée au Père des Loups (mort réelle directe)
   - [ ] Tué alors qu'une Sorcière vivante a encore sa potion de vie : **aucune offre de soin** ne lui est envoyée (mort réelle directe)
   - [ ] Tous les effets (Faiblesse, Résistance, bonus de vitesse) sont bien nettoyés en fin de partie (`CraintifManager.clear`)
+- [ ] **Loup-Garou Perfide** : tous les aspects normaux d'un loup (Force I la nuit, corruption, `/lg loups`, liste des loups connus)
+  - [ ] Retirer toute son armure pendant la nuit déclenche l'invisibilité 5 minutes, 1x/nuit (comme la Petite Fille)
+  - [ ] Remettre une pièce d'armure annule l'effet pour le reste de la nuit (pas de réactivation avant la nuit suivante)
+  - [ ] Le jour, l'invisibilité est retirée automatiquement même si les 5 minutes ne sont pas écoulées
+  - [ ] Pendant l'invisibilité, seuls la Petite Fille et le Feu Follet (vivants) voient ses particules ; les autres joueurs ne voient rien
+  - [ ] Il voit aussi les particules d'une Petite Fille ou d'un Feu Follet actuellement invisible
+  - [ ] Partage bien le même mécanisme que la Petite Fille (`NightInvisibilityRole`, `InvisibilityListener` généralisé — vérifier qu'aucune régression n'est apparue pour la Petite Fille elle-même)
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
 - [ ] **Salvateur** : `/lg proteger <joueur>` applique Résistance I + 50% de réduction des dégâts de chute à la cible, 1x/épisode
