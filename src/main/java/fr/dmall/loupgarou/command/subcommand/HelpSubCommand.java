@@ -39,6 +39,8 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§e/lg lier <joueur1> <joueur2> §7- Lie deux joueurs par l'amour (Cupidon)");
         sender.sendMessage("§e/lg lobbyspawn §7- [OP] Définit le spawn du lobby à votre position actuelle");
         sender.sendMessage("§e/lg forcevote §7- [Debug] Ouvre immédiatement le vote");
+        sender.sendMessage("§e/lg ange <dechu|gardien> §7- Choisit votre forme d'Ange");
+        sender.sendMessage("§e/lg regen §7- Régénération pour votre protégé sous 4 cœurs (Ange Gardien)");
 
         return true;
     }

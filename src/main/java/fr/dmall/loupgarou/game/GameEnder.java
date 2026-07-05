@@ -55,6 +55,7 @@ public class GameEnder {
 
                 player.setInvulnerable(false);
                 HonorManager.clearModifier(player);
+                AngeManager.clearHearts(player);
 
                 if (player.isDead()) {
                     player.spigot().respawn();

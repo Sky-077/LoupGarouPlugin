@@ -1,6 +1,7 @@
 package fr.dmall.loupgarou.listener;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.AngeManager;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
@@ -95,6 +96,7 @@ public class PlayerDeathListener implements Listener {
         }
 
         cancelContractsOnOthers(game, lgPlayer, killer);
+        AngeManager.onDeath(game, lgPlayer, killer);
 
         event.setDeathMessage(null);
 
