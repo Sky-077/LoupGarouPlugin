@@ -114,6 +114,7 @@ public class GameEnder {
                 BienfaiteurManager.clear(player);
                 charmManager.clear(player);
                 craintifManager.clear(player);
+                VilainPetitLoupManager.clear(player);
 
                 for (PotionEffectType effect : GAME_POTION_EFFECTS) {
                     player.removePotionEffect(effect);

@@ -27,6 +27,7 @@ import fr.dmall.loupgarou.listener.PlayerDeathListener;
 import fr.dmall.loupgarou.listener.PortalBlockListener;
 import fr.dmall.loupgarou.listener.PvpListener;
 import fr.dmall.loupgarou.listener.SalvateurProtectionListener;
+import fr.dmall.loupgarou.listener.VilainPetitLoupListener;
 import fr.dmall.loupgarou.listener.VoteListener;
 import fr.dmall.loupgarou.manager.ManagerRegistry;
 import fr.dmall.loupgarou.player.PlayerManager;
@@ -142,6 +143,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new JoueurDeFluteListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new VilainPetitLoupListener(),
                 this
         );
 
