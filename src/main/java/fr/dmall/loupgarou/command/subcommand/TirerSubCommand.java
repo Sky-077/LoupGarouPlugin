@@ -1,14 +1,18 @@
 package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.ChasseurShotManager;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
+import fr.dmall.loupgarou.role.RoleTeam;
 import fr.dmall.loupgarou.role.village.ChasseurRole;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -23,7 +27,7 @@ public class TirerSubCommand implements SubCommand {
 
     @Override
     public String getDescription() {
-        return "Riposte avant de mourir : fait perdre 6 cœurs à un joueur autre que votre tueur (Chasseur, une fois par partie).";
+        return "Riposte avant de mourir sur un joueur autre que votre tueur (Chasseur, une fois par partie).";
     }
 
     @Override
@@ -118,12 +122,46 @@ public class TirerSubCommand implements SubCommand {
         }
 
         chasseur.consumeShot();
-        deathManager.applyDamage(target, hunter, 12.0);
 
-        hunter.sendMessage("§6Vous avez tiré sur " + target.getName() + " ! Il perd 6 cœurs.");
-        target.sendMessage("§6Le Chasseur vous a tiré dessus en mourant ! Vous perdez 6 cœurs.");
+        RoleTeam targetTeam = lgTarget.getEffectiveTeam();
+
+        if (targetTeam == RoleTeam.LOUP) {
+
+            double currentHearts = getMaxHearts(target);
+            double newHearts = Math.ceil(currentHearts / 2.0);
+
+            ChasseurShotManager.reduceMaxHealthTo(target, newHearts * 2.0);
+
+            hunter.sendMessage("§6Vous avez tiré sur " + target.getName() + " ! Sa vie maximale est réduite de moitié, définitivement.");
+            target.sendMessage("§6Le Chasseur vous a tiré dessus en mourant ! Votre vie maximale est réduite de moitié, définitivement.");
+
+        } else if (targetTeam == RoleTeam.NEUTRAL) {
+
+            double currentHearts = getMaxHearts(target);
+            double newHearts = currentHearts - Math.ceil(currentHearts / 4.0);
+
+            ChasseurShotManager.reduceMaxHealthTo(target, newHearts * 2.0);
+
+            hunter.sendMessage("§6Vous avez tiré sur " + target.getName() + " ! Il perd un quart de sa vie maximale, définitivement.");
+            target.sendMessage("§6Le Chasseur vous a tiré dessus en mourant ! Vous perdez un quart de votre vie maximale, définitivement.");
+
+        } else {
+
+            deathManager.applyDamage(target, hunter, 12.0);
+
+            hunter.sendMessage("§6Vous avez tiré sur " + target.getName() + " ! Il perd 6 cœurs.");
+            target.sendMessage("§6Le Chasseur vous a tiré dessus en mourant ! Vous perdez 6 cœurs.");
+
+        }
 
         return true;
+    }
+
+    private double getMaxHearts(Player player) {
+
+        AttributeInstance maxHealth = player.getAttribute(Attribute.MAX_HEALTH);
+
+        return (maxHealth != null) ? maxHealth.getValue() / 2.0 : 10.0;
     }
 
 }

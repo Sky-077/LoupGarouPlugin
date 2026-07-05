@@ -96,6 +96,7 @@ public class GameEnder {
                 AngeManager.clearHearts(player);
                 PoisonManager.clearPoison(player);
                 LoupBlancManager.clearHearts(player);
+                ChasseurShotManager.clear(player);
 
                 for (PotionEffectType effect : GAME_POTION_EFFECTS) {
                     player.removePotionEffect(effect);

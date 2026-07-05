@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -35,7 +35,7 @@
 | `/lg laissermourir <joueur>` | Père des Loups | Refuse l'infection et laisse mourir le joueur corrompu à 100% (même offre) |
 | `/lg soigner <joueur>` | Sorcière | Potion de vie : reçue via une offre cliquable de 10s à la mort d'un joueur non infecté, 1x/partie |
 | `/lg empoisonner <joueur>` | Sorcière | Potion de mort : retire 2 cœurs de vie maximum, définitivement, à un joueur, 1x/partie |
-| `/lg tirer <joueur>` | Chasseur | Riposte pendant sa propre fenêtre de 15s de sursis, fait perdre 6 cœurs à un joueur autre que son tueur, 1x/partie |
+| `/lg tirer <joueur>` | Chasseur | Riposte pendant sa propre fenêtre de 15s de sursis sur un joueur autre que son tueur, 1x/partie : moitié de vie max en moins (définitif) sur un Loup, quart de vie max en moins (définitif) sur un solitaire, 6 cœurs (non définitif) sur un villageois |
 | `/lg lier <joueur1> <joueur2>` | Cupidon | Lie deux joueurs par l'amour, 1x/partie |
 | `/lg ange <dechu\|gardien>` | Ange | Choisit sa forme (cible aléatoire assignée), 1x/partie |
 | `/lg regen` | Ange Gardien | Donne Régénération I (1 min) à son protégé sous 4 cœurs, 1x/partie |
@@ -142,11 +142,20 @@
   - [ ] La protection dure jusqu'à la fin de l'épisode courant (testable en accélérant le cycle jour/nuit) puis Résistance I est bien retirée
   - [ ] `/lg proteger` refuse une seconde utilisation dans le même épisode ("déjà utilisé votre protection cet épisode"), redevient disponible au nouvel épisode
   - [ ] En fin de partie (`/lg stop` ou victoire), la Résistance I résiduelle du joueur protégé est bien nettoyée
+- [ ] **Idiot du Village** : tué par un joueur qui n'est **pas** Loup-Garou/Père des Loups (Village, Amoureux, solo...) → survit avec 8 cœurs (16 PV) au lieu de mourir, 1x/partie
+  - [ ] Un broadcast annonce publiquement son rôle au moment de la survie (message dédié, pas le message de mort classique)
+  - [ ] Aucun message/kill/mort n'est enregistré pour cette "fausse mort" (pas de `PlayerDeathEvent`, pas de crédit de kill au tueur)
+  - [ ] Tué une seconde fois par un non-Loup (pouvoir déjà consommé) : meurt normalement cette fois
+  - [ ] Tué par un Loup-Garou ou un Père des Loups (même la première fois) : meurt normalement, pas de survie
+  - [ ] Priorité correcte si plusieurs mécanismes de mort différée pourraient s'appliquer en même temps (corruption/infection, offre de la Sorcière) — l'auto-survie de l'Idiot passe avant l'offre de la Sorcière
 - [🟢] **Sorcière** : `/lg soigner` (offre automatique à 10s) et `/lg empoisonner` (2 cœurs définitifs), chacun 1x/partie
 - [🟢] **Chasseur** : reçoit un arc Puissance IV + 64 flèches à la révélation
   - [ ] Bonus de dégâts contre le camp des Loups-Garous : commence à Force 0.5 (+1.5 dégâts au corps-à-corps uniquement, pas à l'arc), augmente de 0.1 par Loup-Garou/Père des Loups tué, plafonné à Force I (+3 dégâts)
-  - [ ] `/lg tirer <joueur>` pendant sa propre agonie fait perdre 6 cœurs à la cible (pas de mort instantanée garantie), 1x/partie
-  -[ ] `/lg tirer` refuse de cibler son propre tueur ("vous ne pouvez pas tirer sur votre propre tueur")
+  - [ ] `/lg tirer <joueur>` pendant sa propre agonie, 1x/partie, refuse de cibler son propre tueur ("vous ne pouvez pas tirer sur votre propre tueur")
+  - [ ] Sur un Loup-Garou/Père des Loups : sa vie **maximale** est réduite de moitié et arrondie au cœur supérieur si besoin (10♥→5♥, 12♥→6♥, 11♥→6♥), effet permanent, potentiellement lié à une chute de vie actuelle si elle dépassait le nouveau maximum
+  - [ ] Sur un solitaire (camp NEUTRAL) : perd un quart de sa vie maximale (arrondi au cœur supérieur), effet permanent
+  - [ ] Sur un Villageois/Amoureux : perd 6 cœurs de vie **actuelle** seulement (non définitif, pas de mort instantanée garantie)
+  - [ ] Le malus de vie maximale (Loup/solitaire) est bien nettoyé en fin de partie (`ChasseurShotManager.clear`)
   -[ ] Si un Loup-Garou ou un Père des Loups tue le Chasseur, il ne reçoit **pas** le bonus Speed I + Absorption I habituel (le Loup Blanc, lui, le reçoit normalement)
 - [🟢] **Cupidon** : reçoit un arc simple + livre Puissance III + Punch I + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
 - [🟢] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering

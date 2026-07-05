@@ -6,11 +6,13 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.loup.PereDesLoupsRole;
 import fr.dmall.loupgarou.role.loup.WolfRole;
+import fr.dmall.loupgarou.role.village.IdiotDuVillageRole;
 import fr.dmall.loupgarou.role.village.SorciereRole;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -200,12 +202,75 @@ public class DeathManager implements Manager {
             return;
         }
 
+        if (shouldAutoReviveIdiot(player)) {
+            autoReviveIdiot(player);
+            return;
+        }
+
         if (findAliveSorciereWithHeal() != null) {
             offerWitchHeal(player);
             return;
         }
 
         finalizeRealDeath(player);
+
+    }
+
+    private boolean shouldAutoReviveIdiot(Player player) {
+
+        PlayerManager playerManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(PlayerManager.class);
+
+        LGPlayer lgPlayer = playerManager.get(player);
+
+        if (lgPlayer == null || !(lgPlayer.getRole() instanceof IdiotDuVillageRole)) {
+            return false;
+        }
+
+        if (!((IdiotDuVillageRole) lgPlayer.getRole()).isReviveAvailable()) {
+            return false;
+        }
+
+        UUID killerUuid = pendingKillers.get(player.getUniqueId());
+
+        if (killerUuid == null) {
+            return false;
+        }
+
+        Player killer = Bukkit.getPlayer(killerUuid);
+
+        if (killer == null) {
+            return false;
+        }
+
+        LGPlayer lgKiller = playerManager.get(killer);
+
+        return lgKiller != null && !(lgKiller.getRole() instanceof WolfRole);
+
+    }
+
+    private void autoReviveIdiot(Player player) {
+
+        PlayerManager playerManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(PlayerManager.class);
+
+        LGPlayer lgPlayer = playerManager.get(player);
+
+        ((IdiotDuVillageRole) lgPlayer.getRole()).consumeRevive();
+
+        revive(player);
+
+        double eightHearts = 16.0;
+        AttributeInstance maxHealthAttribute = player.getAttribute(Attribute.MAX_HEALTH);
+        double maxHealth = (maxHealthAttribute != null) ? maxHealthAttribute.getValue() : eightHearts;
+
+        player.setHealth(Math.min(eightHearts, maxHealth));
+
+        player.sendTitle("§aVous survivez... par pure bêtise !", "", 5, 40, 10);
+        Bukkit.broadcastMessage("§6" + player.getName() + " aurait dû mourir, mais il est bien trop bête pour ça ! "
+                + "§7Il est en réalité l'Idiot du Village.");
 
     }
 

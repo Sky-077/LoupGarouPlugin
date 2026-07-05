@@ -21,7 +21,10 @@ public class ChasseurRole extends Role {
                 "Vous recevez un arc enchanté Puissance IV et des flèches.",
                 "Vous infligez un bonus de dégâts contre le camp des Loups-Garous (Force 0.5), qui augmente de 0.1 à chaque Loup tué, jusqu'à Force I maximum.",
                 "Quand vous recevez un coup mortel, vous disposez de 15 secondes avant de mourir réellement.",
-                "Pendant ce délai, ripostez avec /lg tirer <joueur> (autre que votre tueur) pour lui faire perdre 6 cœurs (1 fois par partie).",
+                "Pendant ce délai, ripostez avec /lg tirer <joueur> (autre que votre tueur), 1 fois par partie :",
+                "  - Sur un Loup-Garou/Père des Loups : sa vie maximale est réduite de moitié, définitivement.",
+                "  - Sur un solitaire : il perd un quart de sa vie maximale, définitivement.",
+                "  - Sur un villageois : il perd 6 cœurs (non définitif).",
                 "Si un Loup-Garou ou un Père des Loups vous tue, il ne reçoit pas son bonus de Speed/Absorption habituel.",
         };
     }
