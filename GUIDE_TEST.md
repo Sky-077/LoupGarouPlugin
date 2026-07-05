@@ -76,6 +76,21 @@
 - [🟢] Impossible de voyager au Nether ou à l'End pendant la partie (message de blocage affiché)
 - [🟢] Le temps de génération du monde au lancement (peut geler le serveur une ou deux secondes)
 
+### Limites d'enchantement, pêche et seaux de lave (actif à tout moment, pas seulement en partie)
+- [ ] Table d'enchantement sur une armure en fer : jamais plus de Protection III proposé/appliqué
+- [ ] Table d'enchantement sur une armure en diamant : jamais plus de Protection II proposé/appliqué
+- [ ] Table d'enchantement sur une épée (fer ou diamant) : jamais plus de Tranchant III pour un rôle non-solitaire
+- [ ] Table d'enchantement sur une épée pour un rôle solitaire (Loup Blanc, Ange, Feu Follet, Imitateur, Joueur de Flûte, Chasseur de Primes) : peut atteindre Tranchant IV
+- [ ] Table d'enchantement sur une hache : suit exactement les mêmes plafonds que l'épée (III normal, IV solitaire)
+- [ ] Table d'enchantement sur un arc pour un rôle non-Chasseur/non-solitaire : jamais plus de Puissance III
+- [ ] Table d'enchantement sur un arc pour le Chasseur ou un rôle solitaire : peut atteindre Puissance IV
+- [ ] Solidité reste obtenable sur n'importe quel objet (armure, épée/hache, arc, outils), sans lien avec les plafonds ci-dessus
+- [ ] Table d'enchantement sur un outil (pioche, pelle, houe), un livre vierge, une canne à pêche, un trident... : aucun enchantement autre que Solidité n'est jamais proposé/appliqué (Vitesse de Feu/Flamme/Repoussée/Loyauté/Efficacité/Fortune/etc. tous bloqués)
+- [ ] Si aucun enchantement autorisé ne peut s'appliquer (objet qui finit sans rien), l'enchantement est annulé avec un message plutôt que de consommer XP/lapis pour rien
+- [ ] Les livres donnés par un rôle (Cupidon Puissance IV, Chasseur, Bienfaiteur Protection II, rôles solitaires Tranchant IV) ne sont jamais bridés par ce système (ils ne passent pas par la table)
+- [ ] La canne à pêche ne permet plus d'attraper quoi que ce soit (message "La pêche est désactivée." au lancer)
+- [ ] Un seau de lave ne peut plus être vidé pour poser de la lave (message affiché, seau non consommé)
+
 ### Scattering et invincibilité
 - [ ] Chaque joueur est téléporté à un endroit différent, sur un point de terrain sûr (pas dans le vide, pas dans l'eau/lave) — corrigé : évite maintenant les feuilles d'arbre, force le chargement du chunk, retente jusqu'à 10 fois si eau/lave — à revalider
 - [🟢] Invulnérabilité active pendant les 30 premières secondes, puis désactivée automatiquement
@@ -217,7 +232,7 @@
   - [ ] Sur un Villageois/Amoureux : perd 6 cœurs de vie **actuelle** seulement (non définitif, pas de mort instantanée garantie)
   - [ ] Le malus de vie maximale (Loup/solitaire) est bien nettoyé en fin de partie (`ChasseurShotManager.clear`)
   -[ ] Si un Loup-Garou ou un Père des Loups tue le Chasseur, il ne reçoit **pas** le bonus Speed I + Absorption I habituel (le Loup Blanc, lui, le reçoit normalement)
-- [🟢] **Cupidon** : reçoit un arc simple + livre Puissance III + Punch I + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
+- [ ] **Cupidon** : reçoit un arc simple + livre Puissance IV + Punch I + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
 - [🟢] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering
   - [🟢] Aucun contrat avant l'activation du PVP (`/lg regle` dit "Aucun contrat actif")
   - [ ] Premier contrat reçu **à l'activation du PVP** (testable via `/lg forcepvp`, pas besoin d'attendre 30 min)

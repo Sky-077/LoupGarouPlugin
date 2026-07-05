@@ -19,9 +19,12 @@ import fr.dmall.loupgarou.listener.AutoSmeltListener;
 import fr.dmall.loupgarou.listener.ChasseurStrengthListener;
 import fr.dmall.loupgarou.listener.ColorMenuListener;
 import fr.dmall.loupgarou.listener.DiamondCounterListener;
+import fr.dmall.loupgarou.listener.EnchantLimitListener;
 import fr.dmall.loupgarou.listener.FeuFolletListener;
+import fr.dmall.loupgarou.listener.FishingListener;
 import fr.dmall.loupgarou.listener.InvisibilityListener;
 import fr.dmall.loupgarou.listener.JoueurDeFluteListener;
+import fr.dmall.loupgarou.listener.LavaBucketListener;
 import fr.dmall.loupgarou.listener.LethalDamageListener;
 import fr.dmall.loupgarou.listener.PlayerConnectionListener;
 import fr.dmall.loupgarou.listener.PlayerDeathListener;
@@ -154,6 +157,21 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new ColorMenuListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new EnchantLimitListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new FishingListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new LavaBucketListener(),
                 this
         );
 

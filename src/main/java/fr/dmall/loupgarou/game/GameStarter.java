@@ -176,7 +176,7 @@ public class GameStarter {
 
         ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
         EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
-        meta.addStoredEnchant(Enchantment.POWER, 3, true);
+        meta.addStoredEnchant(Enchantment.POWER, 4, true);
         meta.addStoredEnchant(Enchantment.PUNCH, 1, true);
         book.setItemMeta(meta);
 
