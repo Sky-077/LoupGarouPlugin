@@ -41,6 +41,10 @@ public class GameEnder {
             Bukkit.broadcastMessage(message);
         }
 
+        // Passé à WAITING avant les respawns forcés, pour que PlayerDeathListener.onRespawn()
+        // sache que la partie est terminée et renvoie directement au lobby.
+        game.setState(GameState.WAITING);
+
         Location lobbySpawn = lobbySpawnManager.getSpawn();
 
         for (LGPlayer lgPlayer : playerManager.getPlayers()) {
@@ -48,10 +52,17 @@ public class GameEnder {
             Player player = Bukkit.getPlayer(lgPlayer.getUuid());
 
             if (player != null) {
+
                 player.setInvulnerable(false);
-                player.setGameMode(GameMode.SURVIVAL);
                 HonorManager.clearModifier(player);
+
+                if (player.isDead()) {
+                    player.spigot().respawn();
+                }
+
+                player.setGameMode(GameMode.SURVIVAL);
                 player.teleport(lobbySpawn);
+
             }
 
             lgPlayer.resetStats();
@@ -59,7 +70,6 @@ public class GameEnder {
         }
 
         game.clearPlayers();
-        game.setState(GameState.WAITING);
         loveManager.reset();
         voteManager.reset();
 

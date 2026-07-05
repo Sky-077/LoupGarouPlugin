@@ -6,6 +6,7 @@ import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.game.HonorManager;
+import fr.dmall.loupgarou.game.LobbySpawnManager;
 import fr.dmall.loupgarou.game.LoveManager;
 import fr.dmall.loupgarou.game.VictoryChecker;
 import fr.dmall.loupgarou.game.WorldManager;
@@ -199,7 +200,34 @@ public class PlayerDeathListener implements Listener {
 
         LGPlayer lgPlayer = playerManager.get(player);
 
-        if (lgPlayer == null || lgPlayer.isAlive()) {
+        if (lgPlayer == null) {
+            return;
+        }
+
+        GameManager gameManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(GameManager.class);
+
+        Game game = gameManager.getCurrentGame();
+
+        if (game.getState() == GameState.WAITING) {
+
+            LobbySpawnManager lobbySpawnManager = LoupGarouPlugin.getInstance()
+                    .getManagerRegistry()
+                    .getManager(LobbySpawnManager.class);
+
+            event.setRespawnLocation(lobbySpawnManager.getSpawn());
+
+            Bukkit.getScheduler().runTask(
+                    LoupGarouPlugin.getInstance(),
+                    () -> player.setGameMode(GameMode.SURVIVAL)
+            );
+
+            return;
+
+        }
+
+        if (lgPlayer.isAlive()) {
             return;
         }
 
