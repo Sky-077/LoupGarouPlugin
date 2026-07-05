@@ -137,6 +137,16 @@ public class DeathManager implements Manager {
 
     }
 
+    public void applyDamage(Player player, Player source, double amount) {
+
+        if (source != null) {
+            pendingKillers.put(player.getUniqueId(), source.getUniqueId());
+        }
+
+        player.setHealth(Math.max(0.0, player.getHealth() - amount));
+
+    }
+
     private void finalizeDeath(Player player) {
 
         pendingTasks.remove(player.getUniqueId());

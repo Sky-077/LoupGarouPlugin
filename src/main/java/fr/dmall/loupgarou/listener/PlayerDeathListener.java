@@ -14,9 +14,11 @@ import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
+import fr.dmall.loupgarou.role.RoleTeam;
 import fr.dmall.loupgarou.role.loup.WolfRole;
 import fr.dmall.loupgarou.role.solo.ChasseurDePrimesRole;
 import fr.dmall.loupgarou.role.solo.LoupBlancRole;
+import fr.dmall.loupgarou.role.village.ChasseurRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -95,7 +97,13 @@ public class PlayerDeathListener implements Listener {
                     fulfillContractIfNeeded((ChasseurDePrimesRole) killerLgPlayer.getRole(), killer, player, game.getEpisode());
                 }
 
-                if (killerLgPlayer.getRole() instanceof WolfRole || killerLgPlayer.getRole() instanceof LoupBlancRole) {
+                if (killerLgPlayer.getRole() instanceof ChasseurRole && lgPlayer.getEffectiveTeam() == RoleTeam.LOUP) {
+                    ((ChasseurRole) killerLgPlayer.getRole()).increaseWolfStrength();
+                }
+
+                boolean deniedWolfBuff = (role instanceof ChasseurRole) && (killerLgPlayer.getRole() instanceof WolfRole);
+
+                if ((killerLgPlayer.getRole() instanceof WolfRole || killerLgPlayer.getRole() instanceof LoupBlancRole) && !deniedWolfBuff) {
                     killer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 60, 0, false, true));
                     killer.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 60, 0, false, true));
                 }

@@ -12,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class TirerSubCommand implements SubCommand {
 
     @Override
@@ -21,7 +23,7 @@ public class TirerSubCommand implements SubCommand {
 
     @Override
     public String getDescription() {
-        return "Riposte une dernière fois avant de mourir (Chasseur, une fois par partie).";
+        return "Riposte avant de mourir : fait perdre 6 cœurs à un joueur autre que votre tueur (Chasseur, une fois par partie).";
     }
 
     @Override
@@ -96,6 +98,13 @@ public class TirerSubCommand implements SubCommand {
             return true;
         }
 
+        UUID ownKillerUuid = deathManager.getPendingKiller(hunter);
+
+        if (ownKillerUuid != null && ownKillerUuid.equals(target.getUniqueId())) {
+            sender.sendMessage("§cVous ne pouvez pas tirer sur votre propre tueur.");
+            return true;
+        }
+
         LGPlayer lgTarget = playerManager.get(target);
 
         if (lgTarget == null || !lgTarget.isAlive()) {
@@ -109,9 +118,10 @@ public class TirerSubCommand implements SubCommand {
         }
 
         chasseur.consumeShot();
-        hunter.sendMessage("§6Vous avez tiré une dernière fois sur " + target.getName() + " !");
+        deathManager.applyDamage(target, hunter, 12.0);
 
-        deathManager.killInstantly(target, hunter);
+        hunter.sendMessage("§6Vous avez tiré sur " + target.getName() + " ! Il perd 6 cœurs.");
+        target.sendMessage("§6Le Chasseur vous a tiré dessus en mourant ! Vous perdez 6 cœurs.");
 
         return true;
     }

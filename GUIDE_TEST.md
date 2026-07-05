@@ -35,7 +35,7 @@
 | `/lg laissermourir <joueur>` | Père des Loups | Refuse l'infection et laisse mourir le joueur corrompu à 100% (même offre) |
 | `/lg soigner <joueur>` | Sorcière | Potion de vie : reçue via une offre cliquable de 10s à la mort d'un joueur non infecté, 1x/partie |
 | `/lg empoisonner <joueur>` | Sorcière | Potion de mort : retire 2 cœurs de vie maximum, définitivement, à un joueur, 1x/partie |
-| `/lg tirer <joueur>` | Chasseur | Riposte une dernière fois pendant sa propre fenêtre de 15s de sursis avant de mourir, 1x/partie |
+| `/lg tirer <joueur>` | Chasseur | Riposte pendant sa propre fenêtre de 15s de sursis, fait perdre 6 cœurs à un joueur autre que son tueur, 1x/partie |
 | `/lg lier <joueur1> <joueur2>` | Cupidon | Lie deux joueurs par l'amour, 1x/partie |
 | `/lg ange <dechu\|gardien>` | Ange | Choisit sa forme (cible aléatoire assignée), 1x/partie |
 | `/lg regen` | Ange Gardien | Donne Régénération I (1 min) à son protégé sous 4 cœurs, 1x/partie |
@@ -135,7 +135,11 @@
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
 - [ ] **Sorcière** : `/lg soigner` (offre automatique à 10s) et `/lg empoisonner` (2 cœurs définitifs), chacun 1x/partie
-- [ ] **Chasseur** : reçoit un arc Puissance IV + 64 flèches à la révélation ; `/lg tirer` pendant sa propre agonie, 1x/partie
+- [ ] **Chasseur** : reçoit un arc Puissance IV + 64 flèches à la révélation
+  - [ ] Bonus de dégâts contre le camp des Loups-Garous : commence à Force 0.5 (+1.5 dégâts au corps-à-corps uniquement, pas à l'arc), augmente de 0.1 par Loup-Garou/Père des Loups tué, plafonné à Force I (+3 dégâts)
+  - [ ] `/lg tirer <joueur>` pendant sa propre agonie fait perdre 6 cœurs à la cible (pas de mort instantanée garantie), 1x/partie
+  - [ ] `/lg tirer` refuse de cibler son propre tueur ("vous ne pouvez pas tirer sur votre propre tueur")
+  - [ ] Si un Loup-Garou ou un Père des Loups tue le Chasseur, il ne reçoit **pas** le bonus Speed I + Absorption I habituel (le Loup Blanc, lui, le reçoit normalement)
 - [ ] **Cupidon** : reçoit un arc simple + livre Puissance III + Punch I + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
 - [ ] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering
   - [ ] Aucun contrat avant l'activation du PVP (`/lg regle` dit "Aucun contrat actif")
