@@ -40,6 +40,7 @@
 | `/lg ange <dechu\|gardien>` | Ange | Choisit sa forme (cible aléatoire assignée), 1x/partie |
 | `/lg regen` | Ange Gardien | Donne Régénération I (1 min) à son protégé sous 4 cœurs, 1x/partie |
 | `/lg proteger <joueur>` | Salvateur | Protège un joueur (Résistance I + 50% dégâts de chute) jusqu'à la fin de l'épisode, 1x/épisode |
+| `/lg loups <message>` | Loup-Garou, Père des Loups, Loup Blanc | Chat privé de la meute, la nuit uniquement — lu aussi par la Petite Fille (lecture seule), tous les pseudos masqués pour tout le monde |
 
 ### Commandes de debug (réservées aux OP)
 
@@ -129,6 +130,15 @@
 - [ ] La victime elle-même ne reçoit aucun message pendant ce délai (silencieux jusqu'au résultat final)
 - [ ] Une conversion réussie relance bien `VictoryChecker` (le camp d'origine peut perdre la partie si c'était son dernier membre)
 - [ ] La corruption est bien réinitialisée en fin de partie (`/lg stop` ou victoire)
+
+### Chat de la meute (`/lg loups <message>`, nécessite plusieurs comptes)
+- [ ] Utilisable uniquement la nuit ("Ce chat n'est disponible que la nuit." le jour) et uniquement une fois les rôles révélés
+- [ ] Loup-Garou, Père des Loups et Loup Blanc peuvent écrire ; tout autre rôle (y compris Petite Fille) reçoit "Vous n'avez pas accès à ce chat."
+- [ ] Le message est bien reçu par tous les Loups-Garous/Père des Loups/Loup Blanc vivants
+- [ ] La Petite Fille vivante reçoit aussi le message (lecture seule, elle ne peut pas répondre via `/lg loups`)
+- [ ] Aucun autre joueur (Villageois, Voyante, solos autres que Loup Blanc...) ne reçoit le message
+- [ ] Le pseudo de l'expéditeur n'apparaît **jamais**, même pour les autres Loups-Garous/Père des Loups (masqué à tout le monde, y compris entre membres de la meute) — le message affiche juste "[Meute] <texte>"
+- [ ] Un joueur mort (loup ou Petite Fille) ne reçoit plus les messages
 
 ### Rôles (un par un, en conditions réelles avec plusieurs joueurs)
 - [🟢] **Villageois** : aucun comportement particulier
