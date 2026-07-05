@@ -67,6 +67,10 @@ public class GameEnder {
                 .getManagerRegistry()
                 .getManager(CharmManager.class);
 
+        CraintifManager craintifManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(CraintifManager.class);
+
         Game game = gameManager.getCurrentGame();
 
         for (String message : messages) {
@@ -109,6 +113,7 @@ public class GameEnder {
                 AncienManager.clear(player);
                 BienfaiteurManager.clear(player);
                 charmManager.clear(player);
+                craintifManager.clear(player);
 
                 for (PotionEffectType effect : GAME_POTION_EFFECTS) {
                     player.removePotionEffect(effect);

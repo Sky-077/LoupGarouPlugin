@@ -20,7 +20,7 @@
 
 ## Architecture générale
 
-- **Pattern Manager** : chaque système implémente `Manager` (`enable()`/`disable()`), enregistré dans `ManagerRegistry` au démarrage (`LoupGarouPlugin.onEnable()`). Managers actuels : `GameManager`, `WorldManager`, `PlayerManager`, `RoleManager`, `CycleManager`, `ScoreboardManager`, `DeathManager`, `CorruptionManager`, `LoveManager`, `LobbySpawnManager`, `VoteManager`, `StealthVisionManager`, `CharmManager`.
+- **Pattern Manager** : chaque système implémente `Manager` (`enable()`/`disable()`), enregistré dans `ManagerRegistry` au démarrage (`LoupGarouPlugin.onEnable()`). Managers actuels : `GameManager`, `WorldManager`, `PlayerManager`, `RoleManager`, `CycleManager`, `ScoreboardManager`, `DeathManager`, `CorruptionManager`, `LoveManager`, `LobbySpawnManager`, `VoteManager`, `StealthVisionManager`, `CharmManager`, `CraintifManager`.
 - **Classes utilitaires statiques** (pas de cycle `enable()`/`disable()`, pas dans `ManagerRegistry`) : `GameStarter`/`GameEnder` (déroulé de partie), `VictoryChecker` (conditions de victoire), `BountyManager` (contrats du Chasseur de Primes), `HonorManager`/`AngeManager`/`PoisonManager`/`LoupBlancManager`/`ChasseurShotManager`/`AncienManager`/`BienfaiteurManager` (effets de cœurs via `AttributeModifier` sur `Attribute.MAX_HEALTH`, tous nettoyés dans `GameEnder.end()`).
 - **Commandes** : `/lg <sous-commande>` via `LGCommand`, qui route vers des classes `SubCommand` (interface `getName()`/`getDescription()`/`execute()`). Les commandes de debug étendent `DebugSubCommand` (abstraite, vérifie `sender.isOp()` avant d'exécuter).
 - **Rôles** : classe abstraite `Role` (nom, `RoleTeam`, hooks `onGameStart`, `onDeath`, `onDay`, `onNight`, `getInstructions()` pour le texte d'explication envoyé au joueur, `sendInstructions()`). `RoleFactory` = registre statique nom→constructeur. `RoleManager` gère le pool de rôles configuré (`/lg role add/remove/list/clear`, noms exacts via `/lg role available`) et les distribue aléatoirement (`assignRoles`), en complétant avec des Villageois. `WolfRole` (classe abstraite) factorise la Force I jour/nuit + la liste `knownWolves` partagées par `LoupGarouRole` et `PereDesLoupsRole` ; `LoupBlancRole` duplique cette logique indépendamment (camp `NEUTRAL`, ne peut pas hériter de `WolfRole`).
@@ -70,7 +70,7 @@ Toutes les tâches différées (révélation, PVP, vote, invincibilité) se prot
 - Tous les pseudos sont **masqués pour tout le monde**, y compris entre membres de la meute eux-mêmes (le message affiche juste "[Meute] <texte>", aucune attribution) — volontairement plus strict que la connaissance de `knownWolves` (qui reste inchangée pour les autres pouvoirs), pour garder un doute sur qui parle réellement (utile si le Loup Blanc se glisse dans la conversation).
 - Diffusion directe (pas de stockage d'historique) à tous les destinataires éligibles encore vivants au moment de l'envoi ; aucun rôle en dehors de cette liste ne reçoit quoi que ce soit.
 
-## Rôles implémentés (19)
+## Rôles implémentés (20)
 
 | Rôle | Team | Pouvoir |
 |---|---|---|
@@ -78,6 +78,7 @@ Toutes les tâches différées (révélation, PVP, vote, invincibilité) se prot
 | Loup-Garou | LOUP | Force I la nuit. Corrompt les joueurs proches (1%/5s, voir Corruption). Reçoit Speed I + Absorption I (2♥, 1 min) après un kill — **sauf** en tuant le Chasseur. Bonus de dégâts du Chasseur contre lui (voir Chasseur) |
 | Père des Loups | LOUP | Comme Loup-Garou, mais corrompt 5x plus vite (1%/s) et reçoit l'offre d'infection quand une victime corrompue à 100% meurt d'un loup (voir Corruption) |
 | Grand Méchant Loup | LOUP | Comme Loup-Garou (mêmes aspects : corruption, meute, `/lg loups`), mais garde Force I en permanence jour et nuit — `onDay()` surchargé pour appliquer Force I au lieu de la retirer |
+| Loup-Garou Craintif | LOUP | Comme Loup-Garou (corruption, meute, `/lg loups`), mais `onDay`/`onNight` ne font rien : ses effets sont recalculés toutes les 5 secondes par `CraintifManager` selon le nombre de Loups-Garous vivants à moins de 20 blocs (lui inclus) : >4 → Faiblesse I ; ≤2 → Résistance I le jour / Force I la nuit ; exactement 1 (seul) → bonus de vitesse Speed 0.5 en plus. Ne peut voter que blanc (`VoteListener` force `castPass` quel que soit le clic), sa mort ne produit aucun message de broadcast, et il est explicitement exclu des offres de conversion (Père des Loups) et de soin (Sorcière) dans `DeathManager.finalizeDeath` |
 | Petite Fille | VILLAGE | Invisibilité 5 min en retirant toute son armure la nuit (1x/nuit) |
 | Voyante | VILLAGE | `/lg sonder <joueur>` révèle rôle+équipe, jour ou nuit (1x/cycle) |
 | Salvateur | VILLAGE | `/lg proteger <joueur>` (1x/épisode) accorde Résistance I + 50% de réduction des dégâts de chute (`SalvateurProtectionListener`) au joueur ciblé jusqu'à la fin de l'épisode courant (nettoyé via `onDay()`, appelé à chaque nouvel épisode) ; le joueur protégé n'est jamais informé |
@@ -137,5 +138,5 @@ Voir [GUIDE_TEST.md](GUIDE_TEST.md) pour la liste complète à jour des commande
 
 ## Idées / étapes pas encore commencées
 
-- Autres rôles potentiels du LG UHC de TheGuill (Bouc émissaire, Loup-Garou Craintif, Loup-Garou Perfide, Vilain Petit Loup, etc.) — décrits par l'utilisateur, à implémenter un par un. **Note** : le Loup-Garou Perfide, une fois implémenté, doit être ajouté à la liste des rôles pouvant voir/générer les particules d'invisibilité du Feu Follet et de la Petite Fille (`StealthVisionManager`).
+- Autres rôles potentiels du LG UHC de TheGuill (Bouc émissaire, Loup-Garou Perfide, Vilain Petit Loup, etc.) — décrits par l'utilisateur, à implémenter un par un. **Note** : le Loup-Garou Perfide, une fois implémenté, doit être ajouté à la liste des rôles pouvant voir/générer les particules d'invisibilité du Feu Follet et de la Petite Fille (`StealthVisionManager`).
 - Le résumé initial du projet (avant l'intervention de Claude) est dans `resume-projet-loupgarou.md` côté utilisateur (hors repo) — contient l'historique ChatGPT → Claude jusqu'à l'étape 10.

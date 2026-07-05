@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `grand-mechant-loup`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`, `joueur-de-flute`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `grand-mechant-loup`, `loup-garou-craintif`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`, `joueur-de-flute`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -148,6 +148,16 @@
 - [ ] **Père des Loups** : Force I comme un loup, corrompt les autres joueurs plus vite qu'un Loup-Garou classique (voir section Corruption) ; `/lg regle` liste bien les autres loups
 - [ ] **Grand Méchant Loup** : Force I en **permanence**, jour et nuit (contrairement au Loup-Garou classique qui la perd le jour) ; tous les autres aspects d'un loup normal fonctionnent (corruption, `/lg loups`, liste des loups connus, bonus de kill Speed/Absorption)
 - [ ] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups, Grand Méchant Loup **et** Loup Blanc
+- [ ] **Loup-Garou Craintif** : tous les aspects normaux d'un loup (corruption, `/lg loups`, liste des loups connus) — mais Force I/Faiblesse/Résistance dynamiques selon le nombre de Loups-Garous à moins de 20 blocs (lui inclus), recalculé toutes les 5 secondes
+  - [ ] Plus de 4 loups à portée → Faiblesse I
+  - [ ] 2 loups ou moins à portée → Résistance I le jour, Force I la nuit (aucun effet si entre 3 et 4 loups à portée)
+  - [ ] Seul à portée (aucun autre loup à moins de 20 blocs) → bonus de vitesse de déplacement (Speed 0.5, custom), en plus de la Résistance/Force ci-dessus
+  - [ ] Les effets changent bien en se rapprochant/éloignant d'autres loups, avec un délai de recalcul de 5 secondes maximum (pas besoin d'attendre un changement jour/nuit)
+  - [ ] `/lg vote` : cliquer sur n'importe quel joueur dans l'interface de vote est toujours traité comme un vote blanc (jamais de vote enregistré sur une cible), message dédié
+  - [ ] Sa mort ne produit **aucun message** de broadcast (ni "est mort, tué par...", ni "est mort !"), contrairement à tous les autres rôles
+  - [ ] Corrompu à 100% et tué par un loup : **aucune offre d'infection** n'est envoyée au Père des Loups (mort réelle directe)
+  - [ ] Tué alors qu'une Sorcière vivante a encore sa potion de vie : **aucune offre de soin** ne lui est envoyée (mort réelle directe)
+  - [ ] Tous les effets (Faiblesse, Résistance, bonus de vitesse) sont bien nettoyés en fin de partie (`CraintifManager.clear`)
 - [🟢] **Petite Fille** : invisibilité 5 min en retirant toute l'armure la nuit, 1x/nuit, annulée en remettant une pièce d'armure
 - [ ] **Voyante** : `/lg sonder` révèle bien rôle + équipe, seulement la nuit, 1x/nuit
 - [ ] **Salvateur** : `/lg proteger <joueur>` applique Résistance I + 50% de réduction des dégâts de chute à la cible, 1x/épisode

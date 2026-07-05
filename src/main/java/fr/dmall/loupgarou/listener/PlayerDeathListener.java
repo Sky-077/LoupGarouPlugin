@@ -17,6 +17,7 @@ import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.Role;
 import fr.dmall.loupgarou.role.RoleTeam;
+import fr.dmall.loupgarou.role.loup.LoupGarouCraintifRole;
 import fr.dmall.loupgarou.role.loup.WolfRole;
 import fr.dmall.loupgarou.role.solo.ChasseurDePrimesRole;
 import fr.dmall.loupgarou.role.solo.ImitateurRole;
@@ -134,10 +135,14 @@ public class PlayerDeathListener implements Listener {
 
         String roleName = (role != null) ? role.getName() : "Inconnu";
 
-        if (killer != null) {
-            Bukkit.broadcastMessage("§c☠ " + player.getName() + " est mort, tué par " + killer.getName() + " ! §7(Rôle : " + roleName + ")");
-        } else {
-            Bukkit.broadcastMessage("§c☠ " + player.getName() + " est mort ! §7(Rôle : " + roleName + ")");
+        if (!(role instanceof LoupGarouCraintifRole)) {
+
+            if (killer != null) {
+                Bukkit.broadcastMessage("§c☠ " + player.getName() + " est mort, tué par " + killer.getName() + " ! §7(Rôle : " + roleName + ")");
+            } else {
+                Bukkit.broadcastMessage("§c☠ " + player.getName() + " est mort ! §7(Rôle : " + roleName + ")");
+            }
+
         }
 
         LoveManager loveManager = LoupGarouPlugin.getInstance()

@@ -9,6 +9,7 @@ import fr.dmall.loupgarou.game.VoteManager;
 import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.role.loup.LoupGarouCraintifRole;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -153,7 +154,9 @@ public class VoteListener implements Listener {
                 .getManagerRegistry()
                 .getManager(PlayerManager.class);
 
-        if (playerManager.get(voter) == null) {
+        LGPlayer lgVoter = playerManager.get(voter);
+
+        if (lgVoter == null) {
             return;
         }
 
@@ -161,9 +164,13 @@ public class VoteListener implements Listener {
                 .getManagerRegistry()
                 .getManager(VoteManager.class);
 
-        if (target.equals(VoteInventoryHolder.PASS)) {
+        boolean forcedBlank = lgVoter.getRole() instanceof LoupGarouCraintifRole;
+
+        if (target.equals(VoteInventoryHolder.PASS) || forcedBlank) {
             voteManager.castPass(voter);
-            voter.sendMessage("§7Vous avez choisi de passer.");
+            voter.sendMessage(forcedBlank
+                    ? "§7Trop craintif pour désigner qui que ce soit... vote blanc."
+                    : "§7Vous avez choisi de passer.");
         } else {
             Player targetPlayer = Bukkit.getPlayer(target);
             voteManager.castVote(voter, target);

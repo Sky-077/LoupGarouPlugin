@@ -4,6 +4,7 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.role.loup.LoupGarouCraintifRole;
 import fr.dmall.loupgarou.role.loup.PereDesLoupsRole;
 import fr.dmall.loupgarou.role.loup.WolfRole;
 import fr.dmall.loupgarou.role.village.AncienRole;
@@ -198,6 +199,11 @@ public class DeathManager implements Manager {
 
         }
 
+        if (isLoupGarouCraintif(player)) {
+            finalizeRealDeath(player);
+            return;
+        }
+
         if (shouldOfferConversion(player)) {
             offerConversion(player);
             return;
@@ -329,6 +335,18 @@ public class DeathManager implements Manager {
         revive(player);
 
         player.sendMessage("§7Vous perdez définitivement votre Résistance 0.5.");
+
+    }
+
+    private boolean isLoupGarouCraintif(Player player) {
+
+        PlayerManager playerManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(PlayerManager.class);
+
+        LGPlayer lgPlayer = playerManager.get(player);
+
+        return lgPlayer != null && lgPlayer.getRole() instanceof LoupGarouCraintifRole;
 
     }
 

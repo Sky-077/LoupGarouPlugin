@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.role;
 import fr.dmall.loupgarou.manager.Manager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.role.loup.GrandMechantLoupRole;
+import fr.dmall.loupgarou.role.loup.LoupGarouCraintifRole;
 import fr.dmall.loupgarou.role.loup.LoupGarouRole;
 import fr.dmall.loupgarou.role.loup.PereDesLoupsRole;
 import fr.dmall.loupgarou.role.loup.WolfRole;
@@ -42,6 +43,7 @@ public class RoleManager implements Manager {
         RoleFactory.register("loup-garou", LoupGarouRole::new);
         RoleFactory.register("pere-des-loups", PereDesLoupsRole::new);
         RoleFactory.register("grand-mechant-loup", GrandMechantLoupRole::new);
+        RoleFactory.register("loup-garou-craintif", LoupGarouCraintifRole::new);
         RoleFactory.register("petite-fille", PetiteFilleRole::new);
         RoleFactory.register("voyante", VoyanteRole::new);
         RoleFactory.register("sorciere", SorciereRole::new);

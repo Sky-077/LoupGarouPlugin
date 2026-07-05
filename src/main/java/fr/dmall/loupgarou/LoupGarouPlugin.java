@@ -3,6 +3,7 @@ package fr.dmall.loupgarou;
 import fr.dmall.loupgarou.command.LGCommand;
 import fr.dmall.loupgarou.game.CharmManager;
 import fr.dmall.loupgarou.game.CorruptionManager;
+import fr.dmall.loupgarou.game.CraintifManager;
 import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.DeathManager;
 import fr.dmall.loupgarou.game.GameManager;
@@ -63,6 +64,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry.register(new VoteManager());
         managerRegistry.register(new StealthVisionManager());
         managerRegistry.register(new CharmManager());
+        managerRegistry.register(new CraintifManager());
 
         managerRegistry.enableAll();
 
