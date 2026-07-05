@@ -20,7 +20,7 @@
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`) |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`) |
 | `/lg role remove <role>` | Retire un rôle du pool |
 | `/lg role list` | Liste les rôles configurés |
 | `/lg role clear` | Réinitialise la configuration |
@@ -41,6 +41,7 @@
 | `/lg regen` | Ange Gardien | Donne Régénération I (1 min) à son protégé sous 4 cœurs, 1x/partie |
 | `/lg proteger <joueur>` | Salvateur | Protège un joueur (Résistance I + 50% dégâts de chute) jusqu'à la fin de l'épisode, 1x/épisode |
 | `/lg loups <message>` | Loup-Garou, Père des Loups, Loup Blanc | Chat privé de la meute, la nuit uniquement — lu aussi par la Petite Fille (lecture seule), tous les pseudos masqués pour tout le monde |
+| `/lg conferer <joueur>` | Bienfaiteur | Offre 1 cœur permanent, délivré discrètement 3 minutes plus tard, à 3 joueurs différents max, 1x/5min |
 
 ### Commandes de debug (réservées aux OP)
 
@@ -164,6 +165,14 @@
   - [ ] Tué par un villageois (ni Loup, ni solitaire — donc Village ou Amoureux) : meurt normalement (pas de résurrection), et le tueur perd la moitié de sa vie maximale, définitivement (arrondi au cœur supérieur, ex: 11♥→6♥)
   - [ ] Tué par un solitaire (camp NEUTRAL) : meurt normalement, aucun effet particulier ni pour lui ni pour le tueur
   - [ ] Le malus de vie maximale du tueur "villageois" est bien nettoyé en fin de partie (`AncienManager.clear`)
+- [ ] **Bienfaiteur** : reçoit 2 livres Protection II à la révélation
+  - [ ] `/lg conferer <joueur>` refuse de se cibler soi-même et refuse un joueur déjà ciblé précédemment
+  - [ ] Le joueur ciblé ne reçoit **aucun effet immédiat** ; le don (+1 cœur permanent, +1 cœur de vie actuelle) arrive exactement 3 minutes après la commande, avec un message dédié
+  - [ ] `/lg conferer` refuse une nouvelle utilisation avant 5 minutes depuis la dernière ("vous devez encore attendre... secondes")
+  - [ ] Après le 3ᵉ don utilisé (peu importe si les dons sont déjà délivrés ou encore en attente), `/lg conferer` refuse toute utilisation supplémentaire ("déjà offert vos 3 dons") et le Bienfaiteur reçoit une régénération lente permanente (+1 cœur par minute)
+  - [ ] La régénération lente s'arrête bien à sa mort et ne fuit pas après la fin de la partie (`BienfaiteurRole.onDeath`/`cancelRegen` dans `GameEnder`)
+  - [ ] Si le joueur ciblé meurt avant la délivrance (3 min), le don est silencieusement annulé (pas d'erreur, pas de cœur donné à un mort)
+  - [ ] Le cœur permanent offert est bien nettoyé en fin de partie (`BienfaiteurManager.clear`)
 - [🟢] **Sorcière** : `/lg soigner` (offre automatique à 10s) et `/lg empoisonner` (2 cœurs définitifs), chacun 1x/partie
 - [🟢] **Chasseur** : reçoit un arc Puissance IV + 64 flèches à la révélation
   - [ ] Bonus de dégâts contre le camp des Loups-Garous : commence à Force 0.5 (+1.5 dégâts au corps-à-corps uniquement, pas à l'arc), augmente de 0.1 par Loup-Garou/Père des Loups tué, plafonné à Force I (+3 dégâts)

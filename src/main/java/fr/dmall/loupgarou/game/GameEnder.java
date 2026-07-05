@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.role.village.BienfaiteurRole;
 import fr.dmall.loupgarou.role.village.SalvateurRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -87,6 +88,10 @@ public class GameEnder {
 
             }
 
+            if (lgPlayer.getRole() instanceof BienfaiteurRole) {
+                ((BienfaiteurRole) lgPlayer.getRole()).cancelRegen();
+            }
+
             Player player = Bukkit.getPlayer(lgPlayer.getUuid());
 
             if (player != null) {
@@ -98,6 +103,7 @@ public class GameEnder {
                 LoupBlancManager.clearHearts(player);
                 ChasseurShotManager.clear(player);
                 AncienManager.clear(player);
+                BienfaiteurManager.clear(player);
 
                 for (PotionEffectType effect : GAME_POTION_EFFECTS) {
                     player.removePotionEffect(effect);

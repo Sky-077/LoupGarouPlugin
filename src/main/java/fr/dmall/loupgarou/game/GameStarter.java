@@ -6,6 +6,7 @@ import fr.dmall.loupgarou.player.PlayerManager;
 import fr.dmall.loupgarou.role.RoleManager;
 import fr.dmall.loupgarou.role.RoleTeam;
 import fr.dmall.loupgarou.role.solo.LoupBlancRole;
+import fr.dmall.loupgarou.role.village.BienfaiteurRole;
 import fr.dmall.loupgarou.role.village.ChasseurRole;
 import fr.dmall.loupgarou.role.village.CupidonRole;
 import org.bukkit.Bukkit;
@@ -204,6 +205,17 @@ public class GameStarter {
 
     }
 
+    private static ItemStack createProtectionBook() {
+
+        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+        EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
+        meta.addStoredEnchant(Enchantment.PROTECTION, 2, true);
+        book.setItemMeta(meta);
+
+        return book;
+
+    }
+
     private static void beginGame(Game game, List<LGPlayer> players, CycleManager cycleManager) {
 
         if (game.getState() != GameState.INVINCIBILITY) {
@@ -351,6 +363,9 @@ public class GameStarter {
         } else if (lgPlayer.getRole() instanceof ChasseurRole) {
             player.getInventory().addItem(createPowerBow());
             player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
+        } else if (lgPlayer.getRole() instanceof BienfaiteurRole) {
+            player.getInventory().addItem(createProtectionBook());
+            player.getInventory().addItem(createProtectionBook());
         } else if (lgPlayer.getRole().getTeam() == RoleTeam.NEUTRAL) {
             player.getInventory().addItem(createSharpnessBook());
         }

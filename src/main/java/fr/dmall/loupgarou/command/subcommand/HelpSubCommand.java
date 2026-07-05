@@ -44,6 +44,7 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§e/lg regen §7- Régénération pour votre protégé sous 4 cœurs (Ange Gardien)");
         sender.sendMessage("§e/lg proteger <joueur> §7- Protège un joueur jusqu'à la fin de l'épisode (Salvateur)");
         sender.sendMessage("§e/lg loups <message> §7- Chat privé de la meute la nuit (Loup-Garou, Père des Loups, Loup Blanc)");
+        sender.sendMessage("§e/lg conferer <joueur> §7- Offre 1 cœur permanent, délivré 3 min plus tard (Bienfaiteur)");
 
         return true;
     }

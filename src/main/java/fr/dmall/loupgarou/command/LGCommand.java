@@ -40,6 +40,7 @@ public class LGCommand implements CommandExecutor {
         register(new HonneurSubCommand());
         register(new ProtegerSubCommand());
         register(new LoupsSubCommand());
+        register(new ConfererSubCommand());
     }
 
     private void register(SubCommand subCommand) {
