@@ -113,7 +113,9 @@
 - [🟢] Page Minimum de joueurs : clic gauche +1, clic droit -1, shift = ±5 ; ne descend jamais sous 1
 - [🟢] Page Délais : les 4 items (invincibilité/révélation/pvp/vote) s'ajustent chacun indépendamment (±1 min, ±10 avec shift) et respectent le même ordre logique que `/lg delais` (pas de valeur incohérente possible)
 - [🟢] Page Pool de rôles : clic gauche +1/clic droit -1 (±5 avec shift) sur un rôle, le nombre affiché dans le lore se met à jour ; un rôle qui retombe à 0 disparaît bien du pool (`RoleManager.getGameRoles()`)
-- [ ] Le Loup-Garou affiche bien une tête personnalisée (loup-garou) dans le pool de rôles au lieu de l'œuf de ponte loup générique ; tous les autres rôles gardent encore leur icône générique par camp (pas encore de régression pour les rôles sans tête définie)
+- [ ] Les 22 rôles affichent bien chacun leur tête personnalisée dans le pool de rôles au lieu de l'ancienne icône générique par camp (loup/village/solo)
+- [ ] Villageois et Bienfaiteur affichent bien le skin d'un vrai joueur (`DrTestificate_MD`/`King`) plutôt qu'une texture custom — vérifier que la tête se charge correctement (pas de tête vierge/erreur si le joueur référencé n'a jamais joué sur le serveur)
+- [ ] Un futur rôle ajouté sans tête définie retomberait bien sur l'icône générique par camp (plus de cas réel à tester tant que les 22 rôles actuels sont couverts, mais le repli `getRoleIcon` doit rester fonctionnel)
 - [🟢] Pagination du pool de rôles : boutons "Page suivante"/"Page précédente" apparaissent seulement quand pertinent (pas de bouton "précédente" sur la première page, pas de "suivante" sur la dernière)
 - [🟢] Bouton "Retour" sur chaque sous-page ramène bien au menu principal
 - [🟢] Impossible de déplacer/sortir un item du menu (aucun item ne doit atterrir dans l'inventaire du joueur)
