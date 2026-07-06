@@ -13,10 +13,10 @@ import fr.dmall.loupgarou.role.village.SorciereRole;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -35,8 +35,6 @@ public class DeathManager implements Manager {
 
     private final Map<UUID, BukkitTask> pendingTasks = new HashMap<>();
     private final Map<UUID, UUID> pendingKillers = new HashMap<>();
-    private final Map<UUID, ItemStack[]> hiddenArmor = new HashMap<>();
-    private final Map<UUID, ItemStack> hiddenMainHand = new HashMap<>();
     private final Set<UUID> conversionOffers = new HashSet<>();
     private final Set<UUID> healOffers = new HashSet<>();
 
@@ -57,11 +55,8 @@ public class DeathManager implements Manager {
             Player player = Bukkit.getPlayer(uuid);
 
             if (player != null) {
-                player.setInvulnerable(false);
                 player.removePotionEffect(PotionEffectType.BLINDNESS);
-                player.removePotionEffect(PotionEffectType.SLOWNESS);
-                player.removePotionEffect(PotionEffectType.INVISIBILITY);
-                restoreEquipment(player);
+                player.setGameMode(GameMode.SURVIVAL);
             }
 
         }
@@ -72,8 +67,6 @@ public class DeathManager implements Manager {
 
         pendingTasks.clear();
         pendingKillers.clear();
-        hiddenArmor.clear();
-        hiddenMainHand.clear();
         conversionOffers.clear();
         healOffers.clear();
 
@@ -95,16 +88,11 @@ public class DeathManager implements Manager {
             pendingKillers.put(uuid, killer.getUniqueId());
         }
 
-        player.setInvulnerable(true);
-
+        // Vrai mode spectateur : invisible aux autres, ne peut ni subir ni infliger de dégâts, plus de bug
+        // de corps semi-transparent en vue 3e personne (contrairement à l'ancienne Invisibilité en potion).
+        // Le déplacement reste bloqué par AgonyListener (sinon le mode spectateur permettrait de voler/espionner).
+        player.setGameMode(GameMode.SPECTATOR);
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) DYING_DURATION_TICKS, 0, false, true));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, (int) DYING_DURATION_TICKS, 3, false, true));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) DYING_DURATION_TICKS, 0, false, false));
-
-        hiddenArmor.put(uuid, player.getInventory().getArmorContents());
-        hiddenMainHand.put(uuid, player.getInventory().getItemInMainHand());
-        player.getInventory().setArmorContents(new ItemStack[4]);
-        player.getInventory().setItemInMainHand(null);
 
         player.sendTitle("§4Vous agonisez...", "§7Vous allez mourir dans 15 secondes", 10, 60, 10);
 
@@ -132,11 +120,8 @@ public class DeathManager implements Manager {
         conversionOffers.remove(uuid);
         healOffers.remove(uuid);
 
-        player.setInvulnerable(false);
         player.removePotionEffect(PotionEffectType.BLINDNESS);
-        player.removePotionEffect(PotionEffectType.SLOWNESS);
-        player.removePotionEffect(PotionEffectType.INVISIBILITY);
-        restoreEquipment(player);
+        player.setGameMode(GameMode.SURVIVAL);
         player.sendTitle("§aVous avez été sauvé !", "", 5, 40, 10);
 
     }
@@ -181,11 +166,8 @@ public class DeathManager implements Manager {
 
         if (!game.isPvpEnabled()) {
 
-            player.setInvulnerable(false);
             player.removePotionEffect(PotionEffectType.BLINDNESS);
-            player.removePotionEffect(PotionEffectType.SLOWNESS);
-            player.removePotionEffect(PotionEffectType.INVISIBILITY);
-            restoreEquipment(player);
+            player.setGameMode(GameMode.SURVIVAL);
 
             pendingKillers.remove(player.getUniqueId());
 
@@ -514,12 +496,12 @@ public class DeathManager implements Manager {
 
         pendingTasks.remove(player.getUniqueId());
 
-        player.setInvulnerable(false);
         player.removePotionEffect(PotionEffectType.BLINDNESS);
-        player.removePotionEffect(PotionEffectType.SLOWNESS);
-        player.removePotionEffect(PotionEffectType.INVISIBILITY);
-        restoreEquipment(player);
 
+        // Repasse en survie avant la vraie mort : le joueur reprend son inventaire (jamais touché pendant
+        // l'agonie) à l'endroit exact où il agonisait (position bloquée par AgonyListener), donc le drop
+        // se fait normalement au bon endroit. PlayerDeathListener.onRespawn() le repasse en spectateur ensuite.
+        player.setGameMode(GameMode.SURVIVAL);
         player.setHealth(0.0);
 
     }
@@ -536,23 +518,6 @@ public class DeathManager implements Manager {
 
         if (conversionOffers.remove(player.getUniqueId())) {
             finalizeRealDeath(player);
-        }
-
-    }
-
-    private void restoreEquipment(Player player) {
-
-        UUID uuid = player.getUniqueId();
-
-        ItemStack[] armor = hiddenArmor.remove(uuid);
-        ItemStack mainHand = hiddenMainHand.remove(uuid);
-
-        if (armor != null) {
-            player.getInventory().setArmorContents(armor);
-        }
-
-        if (mainHand != null) {
-            player.getInventory().setItemInMainHand(mainHand);
         }
 
     }

@@ -183,15 +183,23 @@
 - [🟢] Tant que le PVP n'est pas activé : un joueur qui subirait normalement une mort réelle (chute, lave, faim...) est soigné à pleine vie à la place ("Vous avez survécu !"), quelle que soit la cause
 - [🟢] Une fois le PVP activé : la mort redevient réelle dans les mêmes conditions
 
-### Système de mort en deux temps
-- [🟢] Un coup mortel annule les dégâts, rend le joueur invulnérable, et le tue réellement 15 secondes plus tard (+ jusqu'à 10s supplémentaires si une offre de soin ou de conversion est en cours, voir sections dédiées)
-- [🟢] Le message de mort (avec rôle révélé) et le kill crédité au bon joueur
-- [🟢] Le respawn remet bien le joueur en mode spectateur
-- [🟢] `/lg tirer` (Chasseur) fonctionne bien pendant sa propre fenêtre de mort différée
+### Système de mort en deux temps (refonte : vrai mode spectateur au lieu d'Invisibilité/Lenteur simulées)
+- [ ] Un coup mortel s'applique réellement (flash rouge, son de coup et recul visibles pour l'attaquant), mais la vie de la victime ne tombe jamais à 0 à ce moment (reste à 1, ou à la moitié de sa vie si déjà très basse) — **aucune animation de chute au sol** (limitation connue, réservée à la vraie mort)
+- [ ] Après ce coup, la victime passe en **vrai mode spectateur** au tick suivant (léger délai imperceptible), avec un titre "Vous agonisez..."
+- [ ] Deux coups mortels rapprochés sur la même victime (avant le passage en spectateur) ne déclenchent l'agonie qu'une seule fois, sans dégât excessif ni double déclenchement
+- [ ] Le joueur agonisant est bien invisible pour les autres joueurs, **y compris en vue 3ᵉ personne** de lui-même (l'ancien bug de corps semi-transparent a disparu, puisque le mode spectateur ne rend aucun corps du tout)
+- [ ] Le joueur agonisant ne peut ni bouger (position bloquée par `AgonyListener`, seule la rotation caméra est libre) ni subir/infliger de dégâts (natif au mode spectateur, plus besoin d'un listener dédié pour ça)
+- [ ] L'inventaire (armure comprise) n'est jamais touché ni caché pendant l'agonie (visible si on inspecte via `/lg` ou en cas de reconnexion) — contrairement à l'ancien système qui devait temporairement le retirer
+- [ ] Le joueur tue réellement 15 secondes plus tard (+ jusqu'à 10s supplémentaires si une offre de soin ou de conversion est en cours, voir sections dédiées) : repasse d'abord en survie à l'endroit exact de l'agonie, puis meurt et drop son inventaire normalement à cet endroit
+- [ ] Le message de mort (avec rôle révélé) et le kill crédité au bon joueur ne se déclenchent qu'à la mort réelle confirmée, jamais avant (donc jamais si le joueur est finalement sauvé)
+- [ ] Le respawn remet bien le joueur en mode spectateur (après la mort réelle, comme avant)
+- [ ] Une résurrection (Sorcière, Père des Loups, Ancien, Idiot du Village) repasse bien le joueur en survie avec sa vie et son inventaire intacts, sans qu'aucun message de mort/kill n'ait été envoyé entre-temps
+- [ ] `/lg tirer` (Chasseur) fonctionne bien pendant sa propre fenêtre de mort différée (commande, non affectée par le mode spectateur)
+- [ ] Un `/lg stop` ou la fin de partie pendant qu'un joueur agonise le repasse bien en survie (`GameEnder`/`DeathManager.resetAll`)
 
 ### Potion de vie de la Sorcière (offre automatique, remplace l'ancien `/lg soigner` disponible à tout moment)
 - [🟢] Si une Sorcière vivante n'a pas encore utilisé sa potion de vie : à la fin de l'agonie (15s) de tout joueur qui n'est pas éligible à l'infection, la mort réelle est suspendue et la Sorcière reçoit un message cliquable "[Soigner]" pendant 10 secondes
-- [🟢] En cliquant (ou via `/lg soigner <joueur>`) dans les 10s : le joueur est sauvé (revit, équipement restauré), la Sorcière gagne +1 honneur, sa potion de vie est consommée
+- [ ] En cliquant (ou via `/lg soigner <joueur>`) dans les 10s : le joueur est sauvé (repasse en survie, inventaire intact puisqu'il n'a jamais été touché), la Sorcière gagne +1 honneur, sa potion de vie est consommée
 - [🟢] Sans réaction de la Sorcière dans les 10s : la mort réelle a bien lieu normalement
 - [🟢] Si aucune Sorcière n'est vivante, ou si sa potion de vie est déjà utilisée : aucune offre n'est envoyée, la mort réelle a lieu immédiatement à la fin de l'agonie
 - [🟢] La Sorcière peut recevoir l'offre pour sa propre mort et se sauver elle-même (`/lg soigner <sonNom>`)
@@ -212,7 +220,7 @@
 - [🟢] Le Loup Blanc ne participe **pas** à la corruption (solo, hors meute)
 - [🟢] Quand un joueur corrompu à 100% meurt de la main d'un Loup-Garou ou Père des Loups (pas un autre camp) : sa mort réelle est suspendue, et c'est le **Père des Loups** (pas la victime) qui reçoit un message cliquable dans le chat pendant 10 secondes ("Infecter" / "Laisser mourir")
 - [🟢] Si aucun Père des Loups n'est vivant au moment du kill : la victime meurt normalement, aucune offre n'est envoyée
-- [🟢] En cliquant "Infecter" (ou `/lg infecter <joueur>`) dans les 10s : la victime devient Loup-Garou, reprend sa vie/équipement, rejoint la liste des loups connus (et réciproquement), `/lg regle` reflète le nouveau rôle
+- [ ] En cliquant "Infecter" (ou `/lg infecter <joueur>`) dans les 10s : la victime devient Loup-Garou, repasse en survie (inventaire intact), rejoint la liste des loups connus (et réciproquement), `/lg regle` reflète le nouveau rôle
 - [🟢] En cliquant "Laisser mourir" (ou `/lg laissermourir <joueur>`) : la mort réelle a lieu immédiatement, sans attendre la fin des 10s
 - [🟢] Sans réponse du Père des Loups dans les 10s : la mort réelle a bien lieu normalement (comportement par défaut)
 - [🟢] La victime elle-même ne reçoit aucun message pendant ce délai (silencieux jusqu'au résultat final)
