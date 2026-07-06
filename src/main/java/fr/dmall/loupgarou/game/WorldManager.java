@@ -148,6 +148,8 @@ public class WorldManager implements Manager {
 
     }
 
+    private static final int PREGEN_CHUNKS_PER_TICK = 20;
+
     private void pregenerateScatterArea(World world) {
 
         int centerChunkX = centerX >> 4;
@@ -156,23 +158,55 @@ public class WorldManager implements Manager {
         // Même rayon que findScatterLocation (90% de la bordure) : c'est là que les joueurs atterrissent réellement.
         int radius = (int) ((borderSize / 2.0) * 0.9) / 16;
 
-        List<CompletableFuture<Chunk>> futures = new ArrayList<>();
+        List<int[]> coords = new ArrayList<>();
 
         for (int dx = -radius; dx <= radius; dx++) {
 
             for (int dz = -radius; dz <= radius; dz++) {
-                futures.add(world.getChunkAtAsync(centerChunkX + dx, centerChunkZ + dz, true));
+                coords.add(new int[] { centerChunkX + dx, centerChunkZ + dz });
             }
 
         }
 
         long startedAt = System.currentTimeMillis();
-        int chunkCount = futures.size();
+        int chunkCount = coords.size();
 
-        pregenerationFuture = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() ->
-                Bukkit.getLogger().info("[LoupGarouPlugin] Pré-génération de " + chunkCount + " chunks terminée en "
-                        + (System.currentTimeMillis() - startedAt) + "ms.")
-        );
+        CompletableFuture<Void> completion = new CompletableFuture<>();
+        pregenerationFuture = completion;
+
+        List<CompletableFuture<Chunk>> futures = new ArrayList<>();
+
+        // Étale les demandes de chunks sur plusieurs ticks au lieu de toutes les lancer d'un coup :
+        // en solliciter des milliers en une seule boucle synchrone contend avec le système de chunks
+        // (verrous internes du chunk system) et peut geler le thread principal plusieurs secondes.
+        Bukkit.getScheduler().runTaskTimer(LoupGarouPlugin.getInstance(), task -> {
+
+            if (Bukkit.getWorld(world.getName()) != world) {
+                task.cancel();
+                completion.complete(null);
+                return;
+            }
+
+            for (int i = 0; i < PREGEN_CHUNKS_PER_TICK && !coords.isEmpty(); i++) {
+
+                int[] coord = coords.remove(coords.size() - 1);
+                futures.add(world.getChunkAtAsync(coord[0], coord[1], true));
+
+            }
+
+            if (coords.isEmpty()) {
+
+                task.cancel();
+
+                CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).whenComplete((v, error) -> {
+                    Bukkit.getLogger().info("[LoupGarouPlugin] Pré-génération de " + chunkCount + " chunks terminée en "
+                            + (System.currentTimeMillis() - startedAt) + "ms.");
+                    completion.complete(null);
+                });
+
+            }
+
+        }, 0L, 1L);
 
     }
 
