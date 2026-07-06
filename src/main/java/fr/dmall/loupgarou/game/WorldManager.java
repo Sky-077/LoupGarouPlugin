@@ -116,7 +116,12 @@ public class WorldManager implements Manager {
         // (sur Windows, les fichiers de région restent parfois verrouillés juste après unloadWorld).
         String newWorldName = WORLD_NAME + "_" + System.currentTimeMillis();
 
-        cleanupOldWorldFolders(newWorldName);
+        // Suppression des anciens dossiers en tâche asynchrone : pure I/O disque (java.nio), aucun appel
+        // à l'API Bukkit, donc sans risque à exécuter hors du thread principal — évite un à-coup au lancement.
+        Bukkit.getScheduler().runTaskAsynchronously(
+                LoupGarouPlugin.getInstance(),
+                () -> cleanupOldWorldFolders(newWorldName)
+        );
 
         WorldCreator creator = new WorldCreator(newWorldName);
         creator.seed(new Random().nextLong());
