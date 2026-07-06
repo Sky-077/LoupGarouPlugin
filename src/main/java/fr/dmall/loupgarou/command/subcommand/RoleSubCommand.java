@@ -1,9 +1,11 @@
 package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.HostManager;
 import fr.dmall.loupgarou.role.RoleFactory;
 import fr.dmall.loupgarou.role.RoleManager;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
 
@@ -34,6 +36,10 @@ public class RoleSubCommand implements SubCommand {
         switch (args[1].toLowerCase()) {
 
             case "add": {
+
+                if (!isHost(sender)) {
+                    return true;
+                }
 
                 if (args.length < 4) {
                     sender.sendMessage("§cUsage : /lg role add <role> <nombre>");
@@ -66,6 +72,10 @@ public class RoleSubCommand implements SubCommand {
 
             case "remove": {
 
+                if (!isHost(sender)) {
+                    return true;
+                }
+
                 if (args.length < 3) {
                     sender.sendMessage("§cUsage : /lg role remove <role>");
                     return true;
@@ -81,6 +91,11 @@ public class RoleSubCommand implements SubCommand {
             }
 
             case "clear": {
+
+                if (!isHost(sender)) {
+                    return true;
+                }
+
                 roleManager.clearGameRoles();
                 sender.sendMessage("§aConfiguration des rôles réinitialisée.");
                 return true;
@@ -118,6 +133,26 @@ public class RoleSubCommand implements SubCommand {
                 sendUsage(sender);
                 return true;
         }
+    }
+
+    private boolean isHost(CommandSender sender) {
+
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("§cSeul un joueur peut utiliser cette commande.");
+            return false;
+        }
+
+        HostManager hostManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(HostManager.class);
+
+        if (!hostManager.isActiveHost((Player) sender)) {
+            sender.sendMessage("§cSeul l'hôte de la partie peut modifier la configuration des rôles.");
+            return false;
+        }
+
+        return true;
+
     }
 
     private void sendUsage(CommandSender sender) {

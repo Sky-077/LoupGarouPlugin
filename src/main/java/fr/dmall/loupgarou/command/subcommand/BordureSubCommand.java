@@ -1,8 +1,10 @@
 package fr.dmall.loupgarou.command.subcommand;
 
 import fr.dmall.loupgarou.LoupGarouPlugin;
+import fr.dmall.loupgarou.game.HostManager;
 import fr.dmall.loupgarou.game.WorldManager;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class BordureSubCommand implements SubCommand {
 
@@ -26,6 +28,15 @@ public class BordureSubCommand implements SubCommand {
         if (args.length < 2) {
             sender.sendMessage("§7Bordure actuelle : §f" + (long) worldManager.getBorderSize() + " blocs");
             sender.sendMessage("§7Usage : /lg bordure <taille>");
+            return true;
+        }
+
+        HostManager hostManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(HostManager.class);
+
+        if (!(sender instanceof Player) || !hostManager.isActiveHost((Player) sender)) {
+            sender.sendMessage("§cSeul l'hôte de la partie peut modifier la bordure.");
             return true;
         }
 

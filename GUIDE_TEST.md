@@ -19,18 +19,18 @@
 | `/lg host release` | Quitte le rôle d'Hôte (si on l'occupe actuellement) |
 | `/lg me` | Affiche son propre rôle (bloqué tant que les rôles ne sont pas révélés) |
 | `/lg regle` | Réaffiche l'explication de son rôle (bloqué tant que non révélé) |
-| `/lg bordure <taille>` | Configure la taille de la bordure pour la prochaine partie (sans argument : affiche la valeur actuelle) |
+| `/lg bordure <taille>` | Configure la taille de la bordure pour la prochaine partie — **réservé à l'Hôte actif** (sans argument : affiche la valeur actuelle, ouvert à tous) |
 | `/lg color <joueur1> <joueur2> ...>` | Ouvre un menu (16 laines colorées) pour colorer le pseudo (au-dessus de la tête + liste Tab) des joueurs listés, visible uniquement par soi-même |
 
 ### Configuration des rôles avant une partie
 
 | Commande | Description |
 |---|---|
-| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `grand-mechant-loup`, `loup-garou-craintif`, `loup-garou-perfide`, `vilain-petit-loup`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`, `joueur-de-flute`) |
-| `/lg role remove <role>` | Retire un rôle du pool |
-| `/lg role list` | Liste les rôles configurés |
-| `/lg role clear` | Réinitialise la configuration |
-| `/lg role available` | Liste tous les rôles utilisables avec la bonne orthographe |
+| `/lg role add <role> <nombre>` | Ajoute des rôles au pool (`villageois`, `loup-garou`, `pere-des-loups`, `grand-mechant-loup`, `loup-garou-craintif`, `loup-garou-perfide`, `vilain-petit-loup`, `petite-fille`, `voyante`, `sorciere`, `chasseur`, `cupidon`, `chasseur-de-primes`, `loup-blanc`, `ange`, `salvateur`, `idiot-du-village`, `ancien`, `bienfaiteur`, `feu-follet`, `imitateur`, `joueur-de-flute`) — **réservé à l'Hôte actif** |
+| `/lg role remove <role>` | Retire un rôle du pool — **réservé à l'Hôte actif** |
+| `/lg role list` | Liste les rôles configurés (ouvert à tous) |
+| `/lg role clear` | Réinitialise la configuration — **réservé à l'Hôte actif** |
+| `/lg role available` | Liste tous les rôles utilisables avec la bonne orthographe (ouvert à tous) |
 
 ### Pouvoirs de rôle (utilisables uniquement une fois les rôles révélés, 10 min après le vrai début)
 
@@ -66,7 +66,7 @@
 ## Ce qui n'a jamais été testé en jeu (tout écrit et compilé, mais jamais lancé sur un vrai serveur)
 
 ### Cycle de partie de bout en bout
-- [ ] `/lg join` par plusieurs comptes, puis `/lg start` par le host — vérifier que seuls les inscrits reçoivent un rôle et sont téléportés dans le monde de jeu
+- [🟢] `/lg join` par plusieurs comptes, puis `/lg start` par le host — vérifier que seuls les inscrits reçoivent un rôle et sont téléportés dans le monde de jeu
 - [🟢] Les joueurs connectés mais **non inscrits** au moment du `/lg start` : doivent être téléportés dans le monde de partie en mode **spectateur** (pas dans l'ancien monde)
 - [🟢] Minimum de 3 joueurs inscrits refusé correctement par `/lg start` (message d'erreur)
 - [🟢] `/lg forcestart` (OP) : lance bien la partie avec 1 ou 2 joueurs inscrits seulement
@@ -88,6 +88,8 @@
 - [ ] `/lg stop` fonctionne pour un OP même s'il n'est pas l'hôte (filet de sécurité)
 - [ ] `/lg host list` affiche bien tous les éligibles (incluant `Skytag07`) et l'hôte actif s'il y en a un
 - [ ] `/lg forcestart`/`/lg forcereveal`/`/lg forcepvp`/`/lg forcevote` (OP) continuent de fonctionner sans avoir besoin d'être l'hôte
+- [ ] `/lg bordure <taille>` refusé à un joueur qui n'est pas l'hôte actif ; `/lg bordure` sans argument (lecture) reste accessible à tous
+- [ ] `/lg role add/remove/clear` refusés à un joueur qui n'est pas l'hôte actif ; `/lg role list`/`/lg role available` restent accessibles à tous
 
 ### Génération du monde
 - [ ] Le monde de partie est bien vierge à chaque `/lg start`, sans trace de constructions/objets d'une partie précédente (corrigé : chaque partie utilise désormais un nom de monde unique — timestamp en suffixe — au lieu de réutiliser/supprimer le même dossier, qui pouvait rester verrouillé sous Windows et laisser resurgir l'ancien monde) — à revalider
@@ -118,7 +120,7 @@
 - [🟢] Invulnérabilité active pendant les 30 premières secondes, puis désactivée automatiquement
 - [🟢] `/lg stop` pendant la phase de scattering/invincibilité annule bien tout proprement (pas de bug de tâche différée qui se déclenche plus tard)
 - [🟢] Chaque joueur reçoit bien un stack de 64 steaks cuits au moment du scattering
-- [ ] La vie, la faim et le feu sont bien réinitialisés au scattering (corrigé : ne l'étaient pas, un joueur pouvait démarrer la partie suivante avec la vie/faim de la fin de la précédente) — à revalider
+- [🟢] La vie, la faim et le feu sont bien réinitialisés au scattering (corrigé : ne l'étaient pas, un joueur pouvait démarrer la partie suivante avec la vie/faim de la fin de la précédente) — à revalider
 
 ### Révélation des rôles (10 min après le vrai début)
 - [🟢] Avant la révélation : `/lg me`, `/lg regle`, `/lg sonder`, `/lg soigner`, `/lg empoisonner`, `/lg tirer` renvoient tous "les rôles n'ont pas encore été révélés"
@@ -128,7 +130,7 @@
 - [🟢] `/lg forcereveal` (OP) déclenche bien la révélation immédiatement et désactive le minuteur automatique (pas de double révélation à 10 min)
 
 ### PVP différé (30 min après le vrai début)
-- [ ] Avant l'activation : un coup porté entre deux joueurs de la partie est bien annulé (aucun dégât, message affiché à l'attaquant)
+- [🟢] Avant l'activation : un coup porté entre deux joueurs de la partie est bien annulé (aucun dégât, message affiché à l'attaquant)
 - [🟢] Avant l'activation : un coup PVP annulé ne déclenche **pas** le système de mort différée (pas de "mort" fantôme)
 - [🟢] À 30 min : le PVP s'active automatiquement pour tout le monde
 - [🟢] `/lg forcepvp` (OP) active le PVP immédiatement
@@ -139,7 +141,7 @@
 - [🟢] Un coup mortel annule les dégâts, rend le joueur invulnérable, et le tue réellement 15 secondes plus tard (+ jusqu'à 10s supplémentaires si une offre de soin ou de conversion est en cours, voir sections dédiées)
 - [🟢] Le message de mort (avec rôle révélé) et le kill crédité au bon joueur
 - [🟢] Le respawn remet bien le joueur en mode spectateur
-- [ ] `/lg tirer` (Chasseur) fonctionne bien pendant sa propre fenêtre de mort différée
+- [🟢] `/lg tirer` (Chasseur) fonctionne bien pendant sa propre fenêtre de mort différée
 
 ### Potion de vie de la Sorcière (offre automatique, remplace l'ancien `/lg soigner` disponible à tout moment)
 - [🟢] Si une Sorcière vivante n'a pas encore utilisé sa potion de vie : à la fin de l'agonie (15s) de tout joueur qui n'est pas éligible à l'infection, la mort réelle est suspendue et la Sorcière reçoit un message cliquable "[Soigner]" pendant 10 secondes
@@ -150,10 +152,10 @@
 - [🟢] `/lg soigner <joueur>` échoue ("n'attend pas de décision de soin") si utilisé en dehors de cette fenêtre de 10s
 
 ### Potion de mort de la Sorcière (retire 2 cœurs définitifs, ne tue plus instantanément)
-- [ ] `/lg empoisonner <joueur>` retire bien 2 cœurs de vie maximum de façon permanente (barre de cœurs réduite, visible immédiatement) au lieu de tuer instantanément
-- [ ] Si la vie actuelle du joueur dépasse son nouveau maximum, elle est bien ramenée à ce nouveau maximum (peut tuer le joueur si sa vie était déjà très basse)
+- [🟢] `/lg empoisonner <joueur>` retire bien 2 cœurs de vie maximum de façon permanente (barre de cœurs réduite, visible immédiatement) au lieu de tuer instantanément
+- [🟢] Si la vie actuelle du joueur dépasse son nouveau maximum, elle est bien ramenée à ce nouveau maximum (peut tuer le joueur si sa vie était déjà très basse)
 - [ ] La réduction de vie maximum persiste jusqu'à la fin de la partie (pas de régénération naturelle du plafond)
-- [ ] En fin de partie, le malus de cœurs est bien nettoyé (`PoisonManager.clearPoison`), le joueur retrouve 10 cœurs normaux au prochain lobby
+- [🟢] En fin de partie, le malus de cœurs est bien nettoyé (`PoisonManager.clearPoison`), le joueur retrouve 10 cœurs normaux au prochain lobby
 
 ### Corruption des loups et conversion (`/lg infecter` a changé de fonctionnement : il n'infecte plus la propre victime pendant l'agonie, mais accepte l'offre de conversion envoyée au Père des Loups)
 - [ ] Un Loup-Garou qui reste à moins de 6 blocs d'un joueur (non-loup) le corrompt de 1% toutes les 5 secondes
