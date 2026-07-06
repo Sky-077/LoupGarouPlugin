@@ -5,7 +5,9 @@ import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameEnder;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.GameState;
+import fr.dmall.loupgarou.game.HostManager;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class StopSubCommand implements SubCommand {
 
@@ -16,11 +18,22 @@ public class StopSubCommand implements SubCommand {
 
     @Override
     public String getDescription() {
-        return "Arrête la partie.";
+        return "Arrête la partie (réservé à l'hôte, ou à un OP en secours).";
     }
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
+
+        HostManager hostManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(HostManager.class);
+
+        boolean isHost = sender instanceof Player && hostManager.isActiveHost((Player) sender);
+
+        if (!sender.isOp() && !isHost) {
+            sender.sendMessage("§cSeul l'hôte de la partie (ou un OP) peut utiliser cette commande.");
+            return true;
+        }
 
         GameManager gameManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()

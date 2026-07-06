@@ -10,8 +10,13 @@
 | `/lg info` | État de la partie + liste des rôles des joueurs |
 | `/lg join` | S'inscrit pour la prochaine partie |
 | `/lg leave` | Annule son inscription |
-| `/lg start` | Lance la partie avec les joueurs inscrits (min. 3, sauf via `/lg forcestart`) |
-| `/lg stop` | Arrête la partie, réinitialise les inscriptions |
+| `/lg start` | Lance la partie avec les joueurs inscrits (min. 3, sauf via `/lg forcestart`) — **réservé à l'Hôte actif** |
+| `/lg stop` | Arrête la partie, réinitialise les inscriptions — **réservé à l'Hôte actif, ou à un OP en secours** |
+| `/lg host add <joueur>` | Rend un joueur éligible à devenir Hôte (OP uniquement) |
+| `/lg host remove <joueur>` | Retire l'éligibilité d'un joueur (OP uniquement, refusé pour `Skytag07` qui est permanent) |
+| `/lg host list` | Liste les joueurs éligibles et affiche l'Hôte actif s'il y en a un |
+| `/lg host claim` | Revendique le rôle d'Hôte (si éligible et aucun Hôte actif) |
+| `/lg host release` | Quitte le rôle d'Hôte (si on l'occupe actuellement) |
 | `/lg me` | Affiche son propre rôle (bloqué tant que les rôles ne sont pas révélés) |
 | `/lg regle` | Réaffiche l'explication de son rôle (bloqué tant que non révélé) |
 | `/lg bordure <taille>` | Configure la taille de la bordure pour la prochaine partie (sans argument : affiche la valeur actuelle) |
@@ -66,6 +71,23 @@
 - [🟢] Minimum de 3 joueurs inscrits refusé correctement par `/lg start` (message d'erreur)
 - [🟢] `/lg forcestart` (OP) : lance bien la partie avec 1 ou 2 joueurs inscrits seulement
 - [🟢] Vérifier que les commandes de debug (`forcestart`, `forcereveal`, `forcepvp`) sont bien refusées à un joueur non-OP
+
+### Système d'hôte (`/lg host`, nécessite plusieurs comptes dont un OP)
+- [ ] `Skytag07` est éligible même sans être ajouté via `/lg host add` (permanent en dur dans le code)
+- [ ] `/lg host remove Skytag07` refuse toujours ("hôte permanent, impossible de le retirer")
+- [ ] Un OP fait `/lg host add <joueur>` : ce joueur reçoit bien le message cliquable "[Oui] devenir l'hôte ?" à sa **prochaine connexion** (pas immédiatement s'il est déjà connecté)
+- [ ] Cliquer "[Oui]" (ou taper `/lg host claim`) alors qu'aucun hôte n'est actif : devient hôte, broadcast visible par tous, `/lg info` l'affiche
+- [ ] `/lg host claim` par un second joueur éligible alors qu'un hôte est déjà actif : refusé ("X est déjà l'hôte")
+- [ ] Un joueur non-éligible qui tape `/lg host claim` : refusé ("vous n'êtes pas éligible")
+- [ ] `/lg host release` par l'hôte actif : libère le poste, broadcast visible par tous
+- [ ] `/lg host release` par quelqu'un qui n'est pas l'hôte : refusé
+- [ ] L'hôte actif qui se **déconnecte** : poste libéré automatiquement (broadcast), sans attendre `/lg host release`
+- [ ] Un joueur éligible qui se connecte alors qu'un hôte est déjà actif : ne reçoit **pas** le message de proposition
+- [ ] `/lg start` refusé à un joueur qui n'est pas l'hôte actif (même s'il est inscrit via `/lg join`)
+- [ ] `/lg stop` refusé à un joueur qui n'est ni l'hôte actif ni OP
+- [ ] `/lg stop` fonctionne pour un OP même s'il n'est pas l'hôte (filet de sécurité)
+- [ ] `/lg host list` affiche bien tous les éligibles (incluant `Skytag07`) et l'hôte actif s'il y en a un
+- [ ] `/lg forcestart`/`/lg forcereveal`/`/lg forcepvp`/`/lg forcevote` (OP) continuent de fonctionner sans avoir besoin d'être l'hôte
 
 ### Génération du monde
 - [ ] Le monde de partie est bien vierge à chaque `/lg start`, sans trace de constructions/objets d'une partie précédente (corrigé : chaque partie utilise désormais un nom de monde unique — timestamp en suffixe — au lieu de réutiliser/supprimer le même dossier, qui pouvait rester verrouillé sous Windows et laisser resurgir l'ancien monde) — à revalider

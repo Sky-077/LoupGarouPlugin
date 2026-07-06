@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.command.subcommand;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.game.HostManager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import org.bukkit.command.CommandSender;
 
@@ -27,7 +28,12 @@ public class InfoSubCommand implements SubCommand {
 
         Game game = gameManager.getCurrentGame();
 
+        HostManager hostManager = LoupGarouPlugin.getInstance()
+                .getManagerRegistry()
+                .getManager(HostManager.class);
+
         sender.sendMessage("§6===== Informations =====");
+        sender.sendMessage("§eHôte : §f" + (hostManager.hasActiveHost() ? hostManager.getActiveHostName() : "aucun"));
         sender.sendMessage("§eÉtat : §f" + game.getState());
         sender.sendMessage("§eJoueurs : §f" + game.getPlayers().size());
 

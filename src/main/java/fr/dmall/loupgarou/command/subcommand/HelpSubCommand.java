@@ -20,8 +20,9 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§6========== LoupGarou ==========");
         sender.sendMessage("§e/lg help §7- Affiche cette aide");
         sender.sendMessage("§e/lg info §7- Informations de la partie");
-        sender.sendMessage("§e/lg start §7- Lance la partie avec les joueurs inscrits (/lg join)");
-        sender.sendMessage("§e/lg stop §7- Arrête la partie");
+        sender.sendMessage("§e/lg start §7- Lance la partie avec les joueurs inscrits (/lg join) [réservé à l'hôte]");
+        sender.sendMessage("§e/lg stop §7- Arrête la partie [réservé à l'hôte, ou à un OP en secours]");
+        sender.sendMessage("§e/lg host <add|remove|list|claim|release> §7- Gère l'hôte de la partie");
         sender.sendMessage("§e/lg role §7- Configure les rôles (add/remove/list/clear)");
         sender.sendMessage("§e/lg me §7- Affiche votre rôle actuel");
         sender.sendMessage("§e/lg sonder <joueur> §7- Sonde un joueur (Voyante, la nuit)");

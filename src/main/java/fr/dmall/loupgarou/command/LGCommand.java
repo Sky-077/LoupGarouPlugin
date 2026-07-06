@@ -43,6 +43,7 @@ public class LGCommand implements CommandExecutor {
         register(new ConfererSubCommand());
         register(new FolieSubCommand());
         register(new ColorSubCommand());
+        register(new HostSubCommand());
     }
 
     private void register(SubCommand subCommand) {
