@@ -21,6 +21,7 @@ import fr.dmall.loupgarou.listener.ChasseurStrengthListener;
 import fr.dmall.loupgarou.listener.ColorMenuListener;
 import fr.dmall.loupgarou.listener.DiamondCounterListener;
 import fr.dmall.loupgarou.listener.EnchantLimitListener;
+import fr.dmall.loupgarou.listener.ExperienceLockListener;
 import fr.dmall.loupgarou.listener.FeuFolletListener;
 import fr.dmall.loupgarou.listener.FishingListener;
 import fr.dmall.loupgarou.listener.InvisibilityListener;
@@ -180,6 +181,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new SettingsMenuListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new ExperienceLockListener(),
                 this
         );
 

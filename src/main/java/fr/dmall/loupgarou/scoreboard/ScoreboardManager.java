@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.scoreboard;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.game.GameStarter;
 import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.game.WorldManager;
 import fr.dmall.loupgarou.manager.Manager;
@@ -25,7 +26,6 @@ import java.util.UUID;
 public class ScoreboardManager implements Manager {
 
     private static final String OBJECTIVE_NAME = "lg_uhc";
-    private static final int DIAMOND_TARGET = 17;
 
     private BukkitTask task;
     private final Map<UUID, Scoreboard> scoreboards = new HashMap<>();
@@ -129,9 +129,11 @@ public class ScoreboardManager implements Manager {
 
         LGPlayer lgPlayer = playerManager.get(player);
 
+        int diamondTarget = GameStarter.getDiamondLimit();
+
         String group = "-";
         String kills = "-";
-        String diamonds = "0/" + DIAMOND_TARGET;
+        String diamonds = "0/" + diamondTarget;
 
         if (lgPlayer != null) {
 
@@ -142,7 +144,7 @@ public class ScoreboardManager implements Manager {
             }
 
             kills = String.valueOf(lgPlayer.getKills());
-            diamonds = lgPlayer.getDiamonds() + "/" + DIAMOND_TARGET;
+            diamonds = lgPlayer.getDiamonds() + "/" + diamondTarget;
 
         }
 

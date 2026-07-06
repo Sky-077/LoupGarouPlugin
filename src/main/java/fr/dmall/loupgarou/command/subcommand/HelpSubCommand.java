@@ -23,7 +23,7 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§e/lg start §7- Lance la partie avec les joueurs inscrits (/lg join) [réservé à l'hôte]");
         sender.sendMessage("§e/lg stop §7- Arrête la partie [réservé à l'hôte, ou à un OP en secours]");
         sender.sendMessage("§e/lg host <add|remove|list|claim|release> §7- Gère l'hôte de la partie");
-        sender.sendMessage("§e/lg delais <minjoueurs|invincibilite|revelation|pvp|vote> [valeur] §7- Configure les délais de partie [réservé à l'hôte]");
+        sender.sendMessage("§e/lg delais <minjoueurs|invincibilite|revelation|pvp|vote|rapide> [valeur] §7- Configure les délais de partie [réservé à l'hôte]");
         sender.sendMessage("§e/lg menu §7- Ouvre le menu de paramètres de la partie [réservé à l'hôte]");
         sender.sendMessage("§e/lg role §7- Configure les rôles (add/remove/list/clear)");
         sender.sendMessage("§e/lg me §7- Affiche votre rôle actuel");

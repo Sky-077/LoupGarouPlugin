@@ -17,7 +17,7 @@
 | `/lg host list` | Liste les joueurs éligibles et affiche l'Hôte actif s'il y en a un |
 | `/lg host claim` | Revendique le rôle d'Hôte (si éligible et aucun Hôte actif) |
 | `/lg host release` | Quitte le rôle d'Hôte (si on l'occupe actuellement) |
-| `/lg delais [minjoueurs\|invincibilite\|revelation\|pvp\|vote] [valeur]` | Affiche (ouvert à tous) ou modifie (**réservé à l'Hôte actif**) le minimum de joueurs et les 4 délais de partie, en minutes |
+| `/lg delais [minjoueurs\|invincibilite\|revelation\|pvp\|vote\|rapide] [valeur]` | Affiche (ouvert à tous) ou modifie (**réservé à l'Hôte actif**) le minimum de joueurs, les 4 délais de partie et le délai PVP/vote du mode rapide, en minutes |
 | `/lg menu` | Ouvre le menu GUI de paramètres (bordure/min. joueurs/délais/rôles) — **réservé à l'Hôte actif** |
 | `/lg me` | Affiche son propre rôle (bloqué tant que les rôles ne sont pas révélés) |
 | `/lg regle` | Réaffiche l'explication de son rôle (bloqué tant que non révélé) |
@@ -100,12 +100,13 @@
 - [ ] `/lg delais revelation <minutes>` : la révélation des rôles a bien lieu au bon délai lors de la partie suivante
 - [ ] `/lg delais pvp <minutes>` : le PVP s'active bien au bon délai
 - [ ] `/lg delais vote <minutes>` : le vote s'ouvre bien au bon délai
+- [ ] `/lg delais rapide <minutes>` : change bien le délai commun PVP/vote utilisé quand le mode rapide est actif, sans toucher aux valeurs `pvp`/`vote` du mode normal
 - [ ] Tenter de régler la révélation au-dessus du délai PVP (ou le PVP au-dessus du vote) : la valeur est automatiquement plafonnée pour garder l'ordre invincibilité ≤ révélation < pvp < vote, sans message d'erreur bloquant
 - [ ] Les valeurs réglées persistent bien pour la partie suivante (comme `/lg bordure`), pas de reset entre deux `/lg start`
 
 ### Menu GUI de paramètres (`/lg menu`, nécessite un compte Hôte)
 - [ ] `/lg menu` refusé à un joueur qui n'est pas l'hôte actif
-- [ ] Menu principal : 4 icônes cliquables (Bordure/Minimum de joueurs/Délais de partie/Pool de rôles), chacune ouvre la bonne sous-page
+- [ ] Menu principal : 4 icônes cliquables (Bordure/Minimum de joueurs/Délais de partie/Pool de rôles), chacune ouvre la bonne sous-page, + l'interrupteur du mode rapide (voir section dédiée)
 - [ ] Page Bordure : clic gauche +50, clic droit -50, shift+clic gauche +500, shift+clic droit -500 ; la valeur affichée se met à jour immédiatement après chaque clic ; ne descend jamais sous le minimum (100 blocs)
 - [ ] Page Minimum de joueurs : clic gauche +1, clic droit -1, shift = ±5 ; ne descend jamais sous 1
 - [ ] Page Délais : les 4 items (invincibilité/révélation/pvp/vote) s'ajustent chacun indépendamment (±1 min, ±10 avec shift) et respectent le même ordre logique que `/lg delais` (pas de valeur incohérente possible)
@@ -116,6 +117,23 @@
 - [ ] Cliquer dans son propre inventaire (en bas de l'écran) pendant que le menu est ouvert ne déclenche aucune modification de paramètre
 - [ ] Si l'hôte perd son statut (déconnexion d'un autre hôte, `/lg host release` par un tiers impossible normalement) pendant que le menu est ouvert, le prochain clic le ferme avec un message d'erreur plutôt que d'appliquer un changement
 - [ ] Toutes les valeurs modifiées via le menu sont bien reflétées par les commandes texte équivalentes (`/lg bordure`, `/lg delais`, `/lg role list`) et vice-versa
+
+### Mode partie rapide (interrupteur dans `/lg menu`, nécessite un compte Hôte)
+- [ ] Clic sur l'item du menu principal (laine rouge par défaut) : bascule en "activé" (laine verte), reclic revient à "désactivé" — pas de commande dédiée pour ce toggle, uniquement le menu
+- [ ] Mode rapide activé + `/lg start` : chaque joueur reçoit au scattering, en plus des steaks, un casque/jambières/bottes en fer Protection III et un **plastron en diamant** Protection II, une **épée en diamant** Tranchant III (IV si rôle solitaire), un **arc** Puissance III (IV si Chasseur ou rôle solitaire), 2 stacks de feuilles de chêne, 2 stacks de flèches, 10 pommes d'or et 32 lingots de fer
+- [ ] Un rôle solitaire en mode rapide ne reçoit **pas** le livre Tranchant IV habituel à la révélation (son épée du kit l'a déjà) ; en mode normal, il le reçoit toujours
+- [ ] Cupidon en mode rapide : à la révélation, ne reçoit **ni** second arc **ni** livre séparé — l'arc du kit déjà en sa possession devient directement Puissance IV + Punch I ; en mode normal, il garde son arc simple + livre séparé comme avant
+- [ ] Mode rapide activé : les rôles sont révélés (message + objets de rôle + pouvoir jour/nuit) **dès la fin de l'invincibilité**, sans attendre `roleRevealMinutes`
+- [ ] Mode rapide activé : le PVP s'active et le vote s'ouvre **au même instant**, au délai réglé par `/lg delais rapide` (10 min par défaut)
+- [ ] Mode rapide désactivé (mode normal) : `/lg start` se comporte exactement comme avant (pas de stuff de départ, révélation/pvp/vote à leurs délais respectifs `/lg delais`), aucune régression
+- [ ] Désactiver le mode rapide après l'avoir activé, puis relancer une partie : les valeurs `revelation`/`pvp`/`vote` du mode normal (configurées via `/lg delais`) n'ont pas été altérées entre-temps
+
+### Verrou d'expérience à 30 (tous modes)
+- [ ] Chaque joueur démarre la partie (scattering) avec exactement le niveau 30 et une barre d'XP vide
+- [ ] Utiliser la table d'enchantement (dépense des niveaux) : le niveau revient instantanément à 30 après l'enchantement
+- [ ] Réparer/combiner à l'enclume (dépense des niveaux) : le niveau revient instantanément à 30
+- [ ] Mourir puis respawn (perte d'XP normalement) : le niveau revient à 30 dès le respawn, pas seulement au prochain gain d'XP
+- [ ] En dehors d'une partie (état `WAITING`, dans le lobby) : le niveau d'un joueur peut librement descendre sous 30 sans être forcé de remonter
 
 ### Génération du monde
 - [ ] Le monde de partie est bien vierge à chaque `/lg start`, sans trace de constructions/objets d'une partie précédente (corrigé : chaque partie utilise désormais un nom de monde unique — timestamp en suffixe — au lieu de réutiliser/supprimer le même dossier, qui pouvait rester verrouillé sous Windows et laisser resurgir l'ancien monde) — à revalider
@@ -369,7 +387,8 @@
 - [🟢] Fer/or/cuivre bruts minés donnent directement le lingot
 - [🟢] Un outil Silk Touch sur un minerai ne déclenche **pas** l'autosmelt (le bloc de minerai reste intact)
 - [🟢] Les débris antiques donnent directement un éclat de netherite
-- [🟢] Le compteur de diamants (`X/17` dans le scoreboard) s'incrémente correctement, y compris avec Fortune
+- [ ] Le compteur de diamants (`X/18` dans le scoreboard en mode normal) s'incrémente correctement, y compris avec Fortune — à revalider (limite passée de 17 à 18)
+- [ ] En mode rapide, la limite affichée est `X/0` : tout diamant miné est immédiatement supprimé du monde (aucun ne peut être collecté)
 
 ### Système de vote (démarre 45 min après le vrai début, dure 3 épisodes)
 - [🟢] Les 4 maisons de vote apparaissent bien autour du centre de la bordure (à ~150 blocs), chacune avec une enclume et un jukebox

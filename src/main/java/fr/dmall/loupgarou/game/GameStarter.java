@@ -29,11 +29,17 @@ import java.util.stream.Collectors;
 
 public class GameStarter {
 
+    public static final int LOCKED_EXPERIENCE_LEVEL = 30;
+    private static final int DIAMOND_LIMIT_NORMAL = 18;
+    private static final int DIAMOND_LIMIT_QUICK = 0;
+
     private static int minPlayers = 3;
     private static int invincibilityMinutes = 3; // laisse le temps à la pré-génération du monde de finir en fond
     private static int roleRevealMinutes = 10;
     private static int pvpDelayMinutes = 30;
     private static int voteStartMinutes = 45;
+    private static boolean quickMode = false;
+    private static int quickModeMinutes = 10; // délai commun PVP + vote en mode rapide
 
     private GameStarter() {
     }
@@ -76,6 +82,26 @@ public class GameStarter {
 
     public static void setVoteStartMinutes(int value) {
         voteStartMinutes = Math.max(pvpDelayMinutes + 1, value);
+    }
+
+    public static boolean isQuickMode() {
+        return quickMode;
+    }
+
+    public static void setQuickMode(boolean value) {
+        quickMode = value;
+    }
+
+    public static int getQuickModeMinutes() {
+        return quickModeMinutes;
+    }
+
+    public static void setQuickModeMinutes(int value) {
+        quickModeMinutes = Math.max(1, value);
+    }
+
+    public static int getDiamondLimit() {
+        return quickMode ? DIAMOND_LIMIT_QUICK : DIAMOND_LIMIT_NORMAL;
     }
 
     private static long minutesToTicks(int minutes) {
@@ -177,7 +203,13 @@ public class GameStarter {
             scatterPlayer.setFoodLevel(20);
             scatterPlayer.setSaturation(20f);
             scatterPlayer.setFireTicks(0);
+            scatterPlayer.setLevel(LOCKED_EXPERIENCE_LEVEL);
+            scatterPlayer.setExp(0f);
             scatterPlayer.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
+
+            if (quickMode) {
+                giveQuickModeGear(scatterPlayer, lgPlayer);
+            }
 
         }
 
@@ -228,6 +260,25 @@ public class GameStarter {
 
     }
 
+    private static void applyCupidonKitBowEnchants(Player player) {
+
+        for (ItemStack item : player.getInventory().getContents()) {
+
+            if (item == null || item.getType() != Material.BOW) {
+                continue;
+            }
+
+            ItemMeta meta = item.getItemMeta();
+            meta.addEnchant(Enchantment.POWER, 4, true);
+            meta.addEnchant(Enchantment.PUNCH, 1, true);
+            item.setItemMeta(meta);
+
+            return;
+
+        }
+
+    }
+
     private static ItemStack createPowerBow() {
 
         ItemStack bow = new ItemStack(Material.BOW);
@@ -272,6 +323,37 @@ public class GameStarter {
 
     }
 
+    private static void giveQuickModeGear(Player player, LGPlayer lgPlayer) {
+
+        boolean solo = lgPlayer.getRole() != null && lgPlayer.getRole().getTeam() == RoleTeam.NEUTRAL;
+        boolean chasseur = lgPlayer.getRole() instanceof ChasseurRole;
+
+        player.getInventory().setHelmet(enchantedItem(Material.IRON_HELMET, Enchantment.PROTECTION, 3));
+        player.getInventory().setChestplate(enchantedItem(Material.DIAMOND_CHESTPLATE, Enchantment.PROTECTION, 2));
+        player.getInventory().setLeggings(enchantedItem(Material.IRON_LEGGINGS, Enchantment.PROTECTION, 3));
+        player.getInventory().setBoots(enchantedItem(Material.IRON_BOOTS, Enchantment.PROTECTION, 3));
+
+        player.getInventory().addItem(enchantedItem(Material.DIAMOND_SWORD, Enchantment.SHARPNESS, solo ? 4 : 3));
+        player.getInventory().addItem(enchantedItem(Material.BOW, Enchantment.POWER, (solo || chasseur) ? 4 : 3));
+
+        player.getInventory().addItem(new ItemStack(Material.OAK_LEAVES, 128));
+        player.getInventory().addItem(new ItemStack(Material.ARROW, 128));
+        player.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE, 10));
+        player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, 32));
+
+    }
+
+    private static ItemStack enchantedItem(Material material, Enchantment enchantment, int level) {
+
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        meta.addEnchant(enchantment, level, true);
+        item.setItemMeta(meta);
+
+        return item;
+
+    }
+
     private static void beginGame(Game game, List<LGPlayer> players, CycleManager cycleManager) {
 
         if (game.getState() != GameState.INVINCIBILITY) {
@@ -291,10 +373,33 @@ public class GameStarter {
         game.markStarted();
         game.setState(cycleManager.getPhaseForCurrentTime());
 
+        long startedAt = game.getStartTimeMillis();
+
+        if (quickMode) {
+
+            Bukkit.broadcastMessage("§aLa partie commence (mode rapide) ! §7Les rôles sont révélés immédiatement, "
+                    + "le PVP et le vote seront activés dans " + quickModeMinutes + " minutes.");
+
+            revealRoles(game);
+
+            Bukkit.getScheduler().runTaskLater(
+                    LoupGarouPlugin.getInstance(),
+                    () -> enablePvp(game, startedAt),
+                    minutesToTicks(quickModeMinutes)
+            );
+
+            Bukkit.getScheduler().runTaskLater(
+                    LoupGarouPlugin.getInstance(),
+                    () -> startVoting(game, startedAt),
+                    minutesToTicks(quickModeMinutes)
+            );
+
+            return;
+
+        }
+
         Bukkit.broadcastMessage("§aLa partie commence ! §7Les rôles seront révélés dans " + roleRevealMinutes
                 + " minutes, le PVP activé dans " + pvpDelayMinutes + " minutes.");
-
-        long startedAt = game.getStartTimeMillis();
 
         Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),
@@ -418,9 +523,18 @@ public class GameStarter {
     public static void giveRoleItems(LGPlayer lgPlayer, Player player) {
 
         if (lgPlayer.getRole() instanceof CupidonRole) {
-            player.getInventory().addItem(new ItemStack(Material.BOW));
-            player.getInventory().addItem(createPowerBook());
+
+            // En mode rapide, l'arc du kit de départ reçoit directement Puissance IV + Punch I au lieu
+            // de donner un second arc simple + un livre séparé à combiner soi-même à l'enclume.
+            if (quickMode) {
+                applyCupidonKitBowEnchants(player);
+            } else {
+                player.getInventory().addItem(new ItemStack(Material.BOW));
+                player.getInventory().addItem(createPowerBook());
+            }
+
             player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
+
         } else if (lgPlayer.getRole() instanceof ChasseurRole) {
             player.getInventory().addItem(createPowerBow());
             player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
@@ -428,7 +542,13 @@ public class GameStarter {
             player.getInventory().addItem(createProtectionBook());
             player.getInventory().addItem(createProtectionBook());
         } else if (lgPlayer.getRole().getTeam() == RoleTeam.NEUTRAL) {
-            player.getInventory().addItem(createSharpnessBook());
+
+            // En mode rapide, l'épée du kit de départ est déjà enchantée à Tranchant IV pour les rôles
+            // solitaires : donner ce livre en plus serait redondant, puisqu'il n'y a rien d'autre à enchanter.
+            if (!quickMode) {
+                player.getInventory().addItem(createSharpnessBook());
+            }
+
         }
 
         if (lgPlayer.getRole() instanceof FeuFolletRole) {

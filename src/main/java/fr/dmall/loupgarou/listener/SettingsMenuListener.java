@@ -92,6 +92,11 @@ public class SettingsMenuListener implements Listener {
                 SettingsMenuBuilder.openRoles(player, 0);
                 break;
 
+            case 22:
+                GameStarter.setQuickMode(!GameStarter.isQuickMode());
+                SettingsMenuBuilder.openMain(player);
+                break;
+
             default:
                 break;
 

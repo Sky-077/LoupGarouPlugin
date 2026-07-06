@@ -31,7 +31,7 @@ public class DelaisSubCommand implements SubCommand {
         if (args.length < 3) {
 
             if (!key.equals("minjoueurs") && !key.equals("invincibilite") && !key.equals("revelation")
-                    && !key.equals("pvp") && !key.equals("vote")) {
+                    && !key.equals("pvp") && !key.equals("vote") && !key.equals("rapide")) {
                 sendUsage(sender);
                 return true;
             }
@@ -86,6 +86,11 @@ public class DelaisSubCommand implements SubCommand {
                 sender.sendMessage("§aOuverture du vote réglée sur §e" + GameStarter.getVoteStartMinutes() + " min");
                 return true;
 
+            case "rapide":
+                GameStarter.setQuickModeMinutes(value);
+                sender.sendMessage("§aDélai PVP/vote du mode rapide réglé sur §e" + GameStarter.getQuickModeMinutes() + " min");
+                return true;
+
             default:
                 sendUsage(sender);
                 return true;
@@ -102,12 +107,14 @@ public class DelaisSubCommand implements SubCommand {
         sender.sendMessage("§7Révélation des rôles : §f" + GameStarter.getRoleRevealMinutes() + " min");
         sender.sendMessage("§7Activation du PVP : §f" + GameStarter.getPvpDelayMinutes() + " min");
         sender.sendMessage("§7Ouverture du vote : §f" + GameStarter.getVoteStartMinutes() + " min");
+        sender.sendMessage("§7Mode rapide : §f" + (GameStarter.isQuickMode() ? "activé" : "désactivé") + " §7(bascule via /lg menu)");
+        sender.sendMessage("§7Délai PVP/vote en mode rapide : §f" + GameStarter.getQuickModeMinutes() + " min");
         sendUsage(sender);
 
     }
 
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage("§7Usage : /lg delais <minjoueurs|invincibilite|revelation|pvp|vote> [valeur]");
+        sender.sendMessage("§7Usage : /lg delais <minjoueurs|invincibilite|revelation|pvp|vote|rapide> [valeur]");
     }
 
 }

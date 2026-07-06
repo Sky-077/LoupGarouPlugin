@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.listener;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.game.Game;
 import fr.dmall.loupgarou.game.GameManager;
+import fr.dmall.loupgarou.game.GameStarter;
 import fr.dmall.loupgarou.game.GameState;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
@@ -15,8 +16,6 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class DiamondCounterListener implements Listener {
-
-    private static final int DIAMOND_LIMIT = 17;
 
     @EventHandler
     public void onBlockDrop(BlockDropItemEvent event) {
@@ -51,7 +50,7 @@ public class DiamondCounterListener implements Listener {
                 continue;
             }
 
-            int remaining = DIAMOND_LIMIT - lgPlayer.getDiamonds();
+            int remaining = GameStarter.getDiamondLimit() - lgPlayer.getDiamonds();
 
             if (remaining <= 0) {
                 item.remove();

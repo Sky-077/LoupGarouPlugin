@@ -34,6 +34,15 @@ public class SettingsMenuBuilder {
         inventory.setItem(14, namedItem(Material.CLOCK, "§eDélais de partie", "§7Invincibilité, révélation, PVP, vote"));
         inventory.setItem(16, namedItem(Material.BOOK, "§ePool de rôles", "§7Ajoute/retire des rôles à la partie"));
 
+        boolean quickMode = GameStarter.isQuickMode();
+
+        inventory.setItem(22, namedItem(quickMode ? Material.LIME_WOOL : Material.RED_WOOL,
+                "§eMode rapide : " + (quickMode ? "§aactivé" : "§cdésactivé"),
+                "§7Skip la partie farm : stuff de départ,",
+                "§7révélation immédiate, PVP + vote au même délai",
+                "§7(réglable via /lg delais rapide <minutes>)",
+                "§7Clic pour basculer"));
+
         player.openInventory(inventory);
 
     }
