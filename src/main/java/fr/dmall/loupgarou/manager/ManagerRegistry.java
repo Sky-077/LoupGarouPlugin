@@ -1,30 +1,25 @@
 package fr.dmall.loupgarou.manager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ManagerRegistry {
 
-    private final List<Manager> managers = new ArrayList<>();
+    private final Map<Class<? extends Manager>, Manager> managers = new LinkedHashMap<>();
 
     public void register(Manager manager) {
-        managers.add(manager);
+        managers.put(manager.getClass(), manager);
     }
 
     public <T extends Manager> T getManager(Class<T> clazz) {
-        for (Manager manager : managers) {
-            if (clazz.isInstance(manager)) {
-                return clazz.cast(manager);
-            }
-        }
-        return null;
+        return clazz.cast(managers.get(clazz));
     }
 
     public void enableAll() {
-        managers.forEach(Manager::enable);
+        managers.values().forEach(Manager::enable);
     }
 
     public void disableAll() {
-        managers.forEach(Manager::disable);
+        managers.values().forEach(Manager::disable);
     }
 }
