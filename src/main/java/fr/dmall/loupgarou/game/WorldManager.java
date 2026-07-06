@@ -3,7 +3,6 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -53,6 +52,7 @@ public class WorldManager implements Manager {
     private int centerX;
     private int centerZ;
     private CompletableFuture<Void> pregenerationFuture = CompletableFuture.completedFuture(null);
+    private final List<Location> pendingScatterLocations = new ArrayList<>();
 
     private final List<Location> voteJukeboxes = new ArrayList<>();
     private final List<int[]> voteHouseBounds = new ArrayList<>();
@@ -93,7 +93,7 @@ public class WorldManager implements Manager {
         return pregenerationFuture;
     }
 
-    public World prepareGameWorld() {
+    public World prepareGameWorld(int scatterCount) {
 
         LobbySpawnManager lobbySpawnManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
@@ -142,71 +142,85 @@ public class WorldManager implements Manager {
         // pour laisser la pré-génération ci-dessous avancer en arrière-plan avant de forcer du chargement
         // de chunks bloquant (sinon, sur un monde tout juste créé, ça peut geler le serveur au point de
         // faire timeout et déconnecter les joueurs).
-        pregenerateScatterArea(world);
+        pregenerateForLaunch(world, scatterCount);
 
         return world;
 
     }
 
-    private static final int PREGEN_CHUNKS_PER_TICK = 20;
+    // Ne pré-génère que ce qui sera réellement utilisé au lancement (positions de scatter + maisons de vote),
+    // au lieu de tout le rayon de scattering (plusieurs milliers de chunks) : bien plus léger en RAM/CPU,
+    // et évite aussi de bombarder le chunk system de milliers de demandes d'un coup (source d'un gel constaté
+    // en test malgré l'asynchronisme individuel de chaque appel).
+    private void pregenerateForLaunch(World world, int scatterCount) {
 
-    private void pregenerateScatterArea(World world) {
+        pendingScatterLocations.clear();
 
-        int centerChunkX = centerX >> 4;
-        int centerChunkZ = centerZ >> 4;
+        List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        // Même rayon que findScatterLocation (90% de la bordure) : c'est là que les joueurs atterrissent réellement.
-        int radius = (int) ((borderSize / 2.0) * 0.9) / 16;
+        int[][] voteOffsets = {
+                { VOTE_HOUSE_RADIUS, 0 },
+                { -VOTE_HOUSE_RADIUS, 0 },
+                { 0, VOTE_HOUSE_RADIUS },
+                { 0, -VOTE_HOUSE_RADIUS },
+        };
 
-        List<int[]> coords = new ArrayList<>();
+        for (int[] offset : voteOffsets) {
 
-        for (int dx = -radius; dx <= radius; dx++) {
+            int houseChunkX = (centerX + offset[0]) >> 4;
+            int houseChunkZ = (centerZ + offset[1]) >> 4;
 
-            for (int dz = -radius; dz <= radius; dz++) {
-                coords.add(new int[] { centerChunkX + dx, centerChunkZ + dz });
+            // Voisinage 3x3 : la maison (5x5 blocs) peut chevaucher un chunk adjacent si son centre
+            // tombe près d'une frontière de chunk.
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    futures.add(world.getChunkAtAsync(houseChunkX + dx, houseChunkZ + dz, true));
+                }
             }
 
         }
 
-        long startedAt = System.currentTimeMillis();
-        int chunkCount = coords.size();
+        for (int i = 0; i < scatterCount; i++) {
 
-        CompletableFuture<Void> completion = new CompletableFuture<>();
-        pregenerationFuture = completion;
+            CompletableFuture<Void> locationReady = new CompletableFuture<>();
+            attemptScatterLocation(world, locationReady, 0);
+            futures.add(locationReady);
 
-        List<CompletableFuture<Chunk>> futures = new ArrayList<>();
+        }
 
-        // Étale les demandes de chunks sur plusieurs ticks au lieu de toutes les lancer d'un coup :
-        // en solliciter des milliers en une seule boucle synchrone contend avec le système de chunks
-        // (verrous internes du chunk system) et peut geler le thread principal plusieurs secondes.
-        Bukkit.getScheduler().runTaskTimer(LoupGarouPlugin.getInstance(), task -> {
+        pregenerationFuture = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
-            if (Bukkit.getWorld(world.getName()) != world) {
-                task.cancel();
-                completion.complete(null);
-                return;
-            }
+    }
 
-            for (int i = 0; i < PREGEN_CHUNKS_PER_TICK && !coords.isEmpty(); i++) {
+    private void attemptScatterLocation(World world, CompletableFuture<Void> done, int attempt) {
 
-                int[] coord = coords.remove(coords.size() - 1);
-                futures.add(world.getChunkAtAsync(coord[0], coord[1], true));
+        double radius = (borderSize / 2.0) * 0.9;
+        int blockX = centerX + (int) ((Math.random() * 2 - 1) * radius);
+        int blockZ = centerZ + (int) ((Math.random() * 2 - 1) * radius);
 
-            }
+        world.getChunkAtAsync(blockX >> 4, blockZ >> 4, true).thenRun(() ->
+                Bukkit.getScheduler().runTask(LoupGarouPlugin.getInstance(), () -> {
 
-            if (coords.isEmpty()) {
+                    if (Bukkit.getWorld(world.getName()) != world) {
+                        done.complete(null);
+                        return;
+                    }
 
-                task.cancel();
+                    int blockY = world.getHighestBlockYAt(blockX, blockZ, HeightMap.MOTION_BLOCKING_NO_LEAVES);
+                    Material ground = world.getBlockAt(blockX, blockY, blockZ).getType();
+                    Location location = new Location(world, blockX + 0.5, blockY + 1, blockZ + 0.5);
 
-                CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).whenComplete((v, error) -> {
-                    Bukkit.getLogger().info("[LoupGarouPlugin] Pré-génération de " + chunkCount + " chunks terminée en "
-                            + (System.currentTimeMillis() - startedAt) + "ms.");
-                    completion.complete(null);
-                });
+                    boolean valid = ground != Material.WATER && ground != Material.LAVA;
 
-            }
+                    if (valid || attempt >= SCATTER_ATTEMPTS - 1) {
+                        pendingScatterLocations.add(location);
+                        done.complete(null);
+                    } else {
+                        attemptScatterLocation(world, done, attempt + 1);
+                    }
 
-        }, 0L, 1L);
+                })
+        );
 
     }
 
@@ -296,35 +310,15 @@ public class WorldManager implements Manager {
 
     private static final int SCATTER_ATTEMPTS = 10;
 
-    public Location findScatterLocation(World world) {
+    // Consomme une position de scatter déjà calculée par pregenerateForLaunch (chunk garanti chargé) ;
+    // repli sur le spawn du monde dans le cas improbable où il n'en resterait pas (nombre de joueurs incohérent).
+    public Location takeScatterLocation(World world) {
 
-        double radius = (borderSize / 2.0) * 0.9;
-
-        Location fallback = null;
-
-        for (int attempt = 0; attempt < SCATTER_ATTEMPTS; attempt++) {
-
-            int blockX = centerX + (int) ((Math.random() * 2 - 1) * radius);
-            int blockZ = centerZ + (int) ((Math.random() * 2 - 1) * radius);
-
-            world.getChunkAt(blockX >> 4, blockZ >> 4);
-
-            int blockY = world.getHighestBlockYAt(blockX, blockZ, HeightMap.MOTION_BLOCKING_NO_LEAVES);
-            Material ground = world.getBlockAt(blockX, blockY, blockZ).getType();
-
-            Location location = new Location(world, blockX + 0.5, blockY + 1, blockZ + 0.5);
-
-            if (ground != Material.WATER && ground != Material.LAVA) {
-                return location;
-            }
-
-            if (fallback == null) {
-                fallback = location;
-            }
-
+        if (pendingScatterLocations.isEmpty()) {
+            return world.getSpawnLocation();
         }
 
-        return fallback;
+        return pendingScatterLocations.remove(pendingScatterLocations.size() - 1);
 
     }
 

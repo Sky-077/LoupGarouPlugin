@@ -188,7 +188,7 @@ public class GameStarter {
 
         Bukkit.broadcastMessage("§7Génération du monde de jeu, veuillez patienter...");
 
-        World gameWorld = worldManager.prepareGameWorld();
+        World gameWorld = worldManager.prepareGameWorld(players.size());
 
         Bukkit.broadcastMessage("§7Préparation de la zone de jeu en arrière-plan, le scattering commencera dès que ce sera prêt...");
 
@@ -235,7 +235,7 @@ public class GameStarter {
                 continue;
             }
 
-            Location location = worldManager.findScatterLocation(gameWorld);
+            Location location = worldManager.takeScatterLocation(gameWorld);
             scatterPlayer.getInventory().clear();
             scatterPlayer.getInventory().setArmorContents(null);
             scatterPlayer.setGameMode(GameMode.SURVIVAL);
