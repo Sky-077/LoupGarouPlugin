@@ -38,6 +38,8 @@ public class LGCommand implements CommandExecutor {
         register(new AngeSubCommand());
         register(new RegenSubCommand());
         register(new HonneurSubCommand());
+        register(new InfectionSubCommand());
+        register(new CharmeSubCommand());
         register(new ProtegerSubCommand());
         register(new LoupsSubCommand());
         register(new ConfererSubCommand());

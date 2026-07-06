@@ -35,8 +35,6 @@ public class PlayerConnectionListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
 
-        playerManager.remove(event.getPlayer());
-
         ScoreboardManager scoreboardManager = LoupGarouPlugin.getInstance()
                 .getManagerRegistry()
                 .getManager(ScoreboardManager.class);

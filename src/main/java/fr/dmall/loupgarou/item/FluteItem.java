@@ -13,7 +13,7 @@ public class FluteItem {
 
     public static ItemStack create() {
 
-        ItemStack flute = new ItemStack(Material.GOAT_HORN);
+        ItemStack flute = new ItemStack(Material.STICK);
         ItemMeta meta = flute.getItemMeta();
         meta.setDisplayName(DISPLAY_NAME);
         flute.setItemMeta(meta);
@@ -25,7 +25,7 @@ public class FluteItem {
     public static boolean isFlute(ItemStack item) {
 
         return item != null
-                && item.getType() == Material.GOAT_HORN
+                && item.getType() == Material.STICK
                 && item.hasItemMeta()
                 && DISPLAY_NAME.equals(item.getItemMeta().getDisplayName());
 

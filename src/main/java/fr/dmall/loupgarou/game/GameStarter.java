@@ -32,6 +32,9 @@ public class GameStarter {
     public static final int LOCKED_EXPERIENCE_LEVEL = 30;
     private static final int DIAMOND_LIMIT_NORMAL = 18;
     private static final int DIAMOND_LIMIT_QUICK = 0;
+    // Laisse la pré-génération asynchrone du monde avancer avant de forcer la construction des maisons de vote
+    // et le scattering (bloquants), pour éviter un gel du serveur assez long pour faire timeout les joueurs.
+    private static final long WORLD_PREP_DELAY_TICKS = 20L * 15L;
 
     private static int minPlayers = 3;
     private static int invincibilityMinutes = 3; // laisse le temps à la pré-génération du monde de finir en fond
@@ -120,7 +123,7 @@ public class GameStarter {
 
         Game game = gameManager.getCurrentGame();
 
-        if (game.getState() != GameState.WAITING) {
+        if (game.getState() != GameState.WAITING || game.isLaunching()) {
             sender.sendMessage("§cUne partie est déjà en cours.");
             return false;
         }
@@ -177,11 +180,36 @@ public class GameStarter {
             player.setJoined(false);
         }
 
+        game.setLaunching(true);
+
         roleManager.assignRoles(players);
 
         Bukkit.broadcastMessage("§7Génération du monde de jeu, veuillez patienter...");
 
         World gameWorld = worldManager.prepareGameWorld();
+
+        Bukkit.broadcastMessage("§7Préparation de la zone de jeu, encore " + (WORLD_PREP_DELAY_TICKS / 20L)
+                + " secondes avant le scattering...");
+
+        Bukkit.getScheduler().runTaskLater(
+                LoupGarouPlugin.getInstance(),
+                () -> continueLaunch(game, players, playerManager, cycleManager, worldManager, gameWorld),
+                WORLD_PREP_DELAY_TICKS
+        );
+
+    }
+
+    private static void continueLaunch(Game game, List<LGPlayer> players, PlayerManager playerManager,
+                                        CycleManager cycleManager, WorldManager worldManager, World gameWorld) {
+
+        // La partie peut avoir été arrêtée pendant le délai de préparation du monde.
+        if (!game.getPlayers().equals(players)) {
+            return;
+        }
+
+        game.setLaunching(false);
+
+        worldManager.buildVoteHouses(gameWorld);
 
         game.setState(GameState.SCATTERING);
 
@@ -529,31 +557,38 @@ public class GameStarter {
             if (quickMode) {
                 applyCupidonKitBowEnchants(player);
             } else {
-                player.getInventory().addItem(new ItemStack(Material.BOW));
-                player.getInventory().addItem(createPowerBook());
+                giveItem(player, new ItemStack(Material.BOW));
+                giveItem(player, createPowerBook());
             }
 
-            player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
+            giveItem(player, new ItemStack(Material.ARROW, 64));
 
         } else if (lgPlayer.getRole() instanceof ChasseurRole) {
-            player.getInventory().addItem(createPowerBow());
-            player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
+            giveItem(player, createPowerBow());
+            giveItem(player, new ItemStack(Material.ARROW, 64));
         } else if (lgPlayer.getRole() instanceof BienfaiteurRole) {
-            player.getInventory().addItem(createProtectionBook());
-            player.getInventory().addItem(createProtectionBook());
+            giveItem(player, createProtectionBook());
+            giveItem(player, createProtectionBook());
         } else if (lgPlayer.getRole().getTeam() == RoleTeam.NEUTRAL) {
 
             // En mode rapide, l'épée du kit de départ est déjà enchantée à Tranchant IV pour les rôles
             // solitaires : donner ce livre en plus serait redondant, puisqu'il n'y a rien d'autre à enchanter.
             if (!quickMode) {
-                player.getInventory().addItem(createSharpnessBook());
+                giveItem(player, createSharpnessBook());
             }
 
         }
 
         if (lgPlayer.getRole() instanceof FeuFolletRole) {
-            player.getInventory().addItem(createFeuFolletFeather());
+            giveItem(player, createFeuFolletFeather());
         }
+
+    }
+
+    private static void giveItem(Player player, ItemStack item) {
+
+        player.getInventory().addItem(item).values()
+                .forEach(leftover -> player.getWorld().dropItemNaturally(player.getLocation(), leftover));
 
     }
 

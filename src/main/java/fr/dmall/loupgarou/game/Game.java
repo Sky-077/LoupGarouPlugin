@@ -14,6 +14,7 @@ public class Game {
     private int episode;
     private boolean pvpEnabled;
     private boolean revealed;
+    private boolean launching;
 
     public Game() {
         this.state = GameState.WAITING;
@@ -38,6 +39,14 @@ public class Game {
     public void resetForNewMatch() {
         this.revealed = false;
         this.pvpEnabled = false;
+    }
+
+    public boolean isLaunching() {
+        return launching;
+    }
+
+    public void setLaunching(boolean launching) {
+        this.launching = launching;
     }
 
     public boolean isRevealed() {

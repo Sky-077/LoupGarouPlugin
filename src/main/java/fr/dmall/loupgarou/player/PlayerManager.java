@@ -26,11 +26,7 @@ public class PlayerManager implements Manager {
     }
 
     public void add(Player player) {
-        players.put(player.getUniqueId(), new LGPlayer(player.getUniqueId()));
-    }
-
-    public void remove(Player player) {
-        players.remove(player.getUniqueId());
+        players.computeIfAbsent(player.getUniqueId(), LGPlayer::new);
     }
 
     public LGPlayer get(Player player) {

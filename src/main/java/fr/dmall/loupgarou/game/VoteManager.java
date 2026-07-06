@@ -4,6 +4,8 @@ import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import fr.dmall.loupgarou.player.LGPlayer;
 import fr.dmall.loupgarou.player.PlayerManager;
+import fr.dmall.loupgarou.role.Role;
+import fr.dmall.loupgarou.role.RoleFactory;
 import fr.dmall.loupgarou.role.RoleTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,11 +24,6 @@ import java.util.UUID;
 public class VoteManager implements Manager {
 
     private static final int ROUND_COUNT = 3;
-
-    private static final List<String> ALL_ROLE_NAMES = List.of(
-            "Villageois", "Loup-Garou", "Père des Loups", "Petite Fille",
-            "Voyante", "Sorcière", "Chasseur", "Cupidon"
-    );
 
     private boolean active;
     private int startEpisode;
@@ -88,6 +87,8 @@ public class VoteManager implements Manager {
         if (roundsElapsed >= ROUND_COUNT) {
             active = false;
             Bukkit.broadcastMessage("§7La période de vote est terminée.");
+        } else {
+            Bukkit.broadcastMessage("§6Nouvel épisode de vote ! Rendez-vous dans une maison de vote pour voter à nouveau.");
         }
 
     }
@@ -129,11 +130,11 @@ public class VoteManager implements Manager {
 
         }
 
-        announceMostVoted(playerManager, tally);
+        announceMostVoted(game, playerManager, tally);
 
     }
 
-    private void announceMostVoted(PlayerManager playerManager, Map<UUID, Integer> tally) {
+    private void announceMostVoted(Game game, PlayerManager playerManager, Map<UUID, Integer> tally) {
 
         if (tally.isEmpty()) {
             return;
@@ -172,18 +173,80 @@ public class VoteManager implements Manager {
         Player targetPlayer = Bukkit.getPlayer(topTarget);
         String targetName = (targetPlayer != null) ? targetPlayer.getName() : "un joueur";
 
-        List<String> decoyPool = new ArrayList<>(ALL_ROLE_NAMES);
-        decoyPool.remove(lgTarget.getRole().getName());
-        Collections.shuffle(decoyPool);
-
         List<String> revealed = new ArrayList<>();
         revealed.add(lgTarget.getRole().getName());
-        revealed.add(decoyPool.get(0));
-        revealed.add(decoyPool.get(1));
+        revealed.addAll(pickDecoys(game, lgTarget));
         Collections.shuffle(revealed);
 
         Bukkit.broadcastMessage("§d[Vote] " + targetName + " a été le plus désigné par le village ! "
                 + "§7Rôle possible : §f" + String.join("§7, §f", revealed) + " §7(un seul est le vrai)");
+
+    }
+
+    private List<String> pickDecoys(Game game, LGPlayer target) {
+
+        Map<String, RoleTeam> roleTeams = new LinkedHashMap<>();
+
+        for (String key : RoleFactory.getRegisteredNames()) {
+            Role role = RoleFactory.create(key);
+            roleTeams.put(role.getName(), role.getTeam());
+        }
+
+        String targetName = target.getRole().getName();
+        RoleTeam targetTeam = target.getRole().getTeam();
+
+        Set<String> inPlay = new LinkedHashSet<>();
+
+        for (LGPlayer lgPlayer : game.getPlayers()) {
+
+            if (lgPlayer.getRole() != null && !lgPlayer.getRole().getName().equals(targetName)) {
+                inPlay.add(lgPlayer.getRole().getName());
+            }
+
+        }
+
+        List<String> decoys = new ArrayList<>();
+
+        // Priorité 1 : des rôles réellement présents dans la partie, de camp différent
+        List<String> inPlayOtherCamp = new ArrayList<>(inPlay);
+        inPlayOtherCamp.removeIf(name -> roleTeams.get(name) == targetTeam);
+        Collections.shuffle(inPlayOtherCamp);
+        addUpTo(decoys, inPlayOtherCamp, 2);
+
+        // Priorité 2 : n'importe quel rôle existant de camp différent
+        if (decoys.size() < 2) {
+            List<String> otherCamp = new ArrayList<>(roleTeams.keySet());
+            otherCamp.removeAll(decoys);
+            otherCamp.remove(targetName);
+            otherCamp.removeIf(name -> roleTeams.get(name) == targetTeam);
+            Collections.shuffle(otherCamp);
+            addUpTo(decoys, otherCamp, 2);
+        }
+
+        // Dernier recours : n'importe quel autre rôle existant
+        if (decoys.size() < 2) {
+            List<String> anyOther = new ArrayList<>(roleTeams.keySet());
+            anyOther.removeAll(decoys);
+            anyOther.remove(targetName);
+            Collections.shuffle(anyOther);
+            addUpTo(decoys, anyOther, 2);
+        }
+
+        return decoys;
+
+    }
+
+    private void addUpTo(List<String> target, List<String> pool, int max) {
+
+        for (String value : pool) {
+
+            if (target.size() >= max) {
+                return;
+            }
+
+            target.add(value);
+
+        }
 
     }
 

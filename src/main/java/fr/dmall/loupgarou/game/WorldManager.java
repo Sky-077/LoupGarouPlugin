@@ -32,9 +32,9 @@ public class WorldManager implements Manager {
     public static final double MIN_BORDER_SIZE = 100.0;
 
     private static final int BIOME_SAMPLE_Y = 64;
-    private static final int SEARCH_RINGS = 8;
+    private static final int SEARCH_RINGS = 4; // plafonné (au lieu de 8) pour rester proche de la zone déjà pré-générée par Minecraft à la création du monde, et éviter un blocage du serveur en génération synchrone de chunks lointains jamais touchés
     private static final int POINTS_PER_RING = 6;
-    private static final int RING_STEP = 400;
+    private static final int RING_STEP = 150; // réduit (au lieu de 400) pour la même raison que SEARCH_RINGS
 
     private static final int VOTE_HOUSE_RADIUS = 150;
     private static final int VOTE_HOUSE_HEIGHT = 4;
@@ -130,7 +130,10 @@ public class WorldManager implements Manager {
 
         gameWorld = world;
 
-        buildVoteHouses(world);
+        // buildVoteHouses() n'est plus appelé ici : elle est déclenchée par GameStarter après un délai,
+        // pour laisser la pré-génération ci-dessous avancer en arrière-plan avant de forcer du chargement
+        // de chunks bloquant (sinon, sur un monde tout juste créé, ça peut geler le serveur au point de
+        // faire timeout et déconnecter les joueurs).
         pregenerateScatterArea(world);
 
         return world;
@@ -191,7 +194,7 @@ public class WorldManager implements Manager {
 
     }
 
-    private void buildVoteHouses(World world) {
+    public void buildVoteHouses(World world) {
 
         voteJukeboxes.clear();
         voteHouseBounds.clear();

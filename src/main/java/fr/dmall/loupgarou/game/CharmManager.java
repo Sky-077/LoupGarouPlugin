@@ -26,6 +26,7 @@ import java.util.UUID;
 public class CharmManager implements Manager {
 
     private static final double RADIUS = 20.0;
+    private static final double RADIUS_SQUARED = RADIUS * RADIUS;
     private static final double MAIN_RATE_PER_SECOND = 1.0 / 4.0;
     private static final double CARRIER_RATE_PER_SECOND = 1.0 / 8.0;
     private static final double MELEE_BONUS = 10.0;
@@ -76,6 +77,10 @@ public class CharmManager implements Manager {
 
     public boolean isFluteCarrier(UUID uuid) {
         return fluteCarriers.contains(uuid);
+    }
+
+    public double getCharm(UUID uuid) {
+        return charm.getOrDefault(uuid, 0.0);
     }
 
     public boolean hasBeenGivenFlute(UUID uuid) {
@@ -161,7 +166,7 @@ public class CharmManager implements Manager {
                     continue;
                 }
 
-                if (target.getLocation().distance(source.getLocation()) > RADIUS) {
+                if (target.getLocation().distanceSquared(source.getLocation()) > RADIUS_SQUARED) {
                     continue;
                 }
 

@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitTask;
 public class CraintifManager implements Manager {
 
     private static final double RADIUS = 20.0;
+    private static final double RADIUS_SQUARED = RADIUS * RADIUS;
     private static final double SPEED_BONUS = 0.1; // moitié de Speed I (~0.2)
     private static final long TICK_PERIOD_TICKS = 20L * 5L; // recalcul toutes les 5 secondes
     private static final int EFFECT_DURATION_TICKS = (int) TICK_PERIOD_TICKS + 20; // marge pour éviter tout flicker
@@ -102,7 +103,7 @@ public class CraintifManager implements Manager {
                 continue;
             }
 
-            if (other.getLocation().distance(selfPlayer.getLocation()) <= RADIUS) {
+            if (other.getLocation().distanceSquared(selfPlayer.getLocation()) <= RADIUS_SQUARED) {
                 count++;
             }
 

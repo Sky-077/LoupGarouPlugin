@@ -41,7 +41,7 @@ public class StopSubCommand implements SubCommand {
 
         Game game = gameManager.getCurrentGame();
 
-        if (game.getState() == GameState.WAITING) {
+        if (game.getState() == GameState.WAITING && !game.isLaunching()) {
             sender.sendMessage("§cAucune partie n'est en cours.");
             return true;
         }

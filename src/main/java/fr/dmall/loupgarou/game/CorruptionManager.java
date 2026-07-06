@@ -19,6 +19,7 @@ import java.util.UUID;
 public class CorruptionManager implements Manager {
 
     private static final double RADIUS = 6.0;
+    private static final double RADIUS_SQUARED = RADIUS * RADIUS;
     private static final double PERE_DES_LOUPS_RATE = 1.0;
     private static final double LOUP_GAROU_RATE = 1.0 / 5.0;
 
@@ -51,6 +52,10 @@ public class CorruptionManager implements Manager {
 
     public boolean isFullyCorrupted(UUID uuid) {
         return corruption.getOrDefault(uuid, 0.0) >= 100.0;
+    }
+
+    public double getCorruption(UUID uuid) {
+        return corruption.getOrDefault(uuid, 0.0);
     }
 
     public void resetAll() {
@@ -120,7 +125,7 @@ public class CorruptionManager implements Manager {
                     continue;
                 }
 
-                if (wolf.getLocation().distance(target.getLocation()) > RADIUS) {
+                if (wolf.getLocation().distanceSquared(target.getLocation()) > RADIUS_SQUARED) {
                     continue;
                 }
 

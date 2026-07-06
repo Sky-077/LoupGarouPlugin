@@ -68,7 +68,7 @@ public class ColorSubCommand implements SubCommand {
     private void openColorMenu(Player observer, List<UUID> targets) {
 
         ColorMenuHolder holder = new ColorMenuHolder(targets);
-        Inventory inventory = Bukkit.createInventory(holder, 9, "§6Choisir une couleur");
+        Inventory inventory = Bukkit.createInventory(holder, 18, "§6Choisir une couleur");
         holder.setInventory(inventory);
 
         int slot = 0;

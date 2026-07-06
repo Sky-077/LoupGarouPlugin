@@ -426,7 +426,8 @@ public class DeathManager implements Manager {
             message.addExtra(decline);
 
             pereDesLoups.spigot().sendMessage(message);
-            pereDesLoups.sendMessage("§5Vous avez 10 secondes pour décider.");
+            pereDesLoups.sendMessage("§5Vous avez 10 secondes pour décider. §7(ou tapez /lg infecter " + player.getName()
+                    + " ou /lg laissermourir " + player.getName() + " si vous ne pouvez pas cliquer, ex: Bedrock)");
 
         }
 
@@ -482,7 +483,8 @@ public class DeathManager implements Manager {
             message.addExtra(heal);
 
             sorciere.spigot().sendMessage(message);
-            sorciere.sendMessage("§5Vous avez 10 secondes pour utiliser votre potion de vie.");
+            sorciere.sendMessage("§5Vous avez 10 secondes pour utiliser votre potion de vie. §7(ou tapez /lg soigner "
+                    + player.getName() + " si vous ne pouvez pas cliquer, ex: Bedrock)");
 
         }
 

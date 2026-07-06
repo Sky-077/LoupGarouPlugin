@@ -22,6 +22,7 @@ public class FeuFolletRole extends Role {
     private static final long FOLIE_DURATION_MILLIS = 60L * 1000L; // 1 minute
     private static final long FEATHER_COOLDOWN_MILLIS = 10L * 60L * 1000L; // 10 minutes
     private static final double NEARBY_RADIUS = 50.0;
+    private static final double NEARBY_RADIUS_SQUARED = NEARBY_RADIUS * NEARBY_RADIUS;
 
     private long lastFolieTime = 0L;
     private long folieActiveUntil = 0L;
@@ -42,7 +43,7 @@ public class FeuFolletRole extends Role {
                 continue;
             }
 
-            if (other.getLocation().distance(player.getLocation()) <= NEARBY_RADIUS) {
+            if (other.getLocation().distanceSquared(player.getLocation()) <= NEARBY_RADIUS_SQUARED) {
                 nearby.add(other);
             }
 
