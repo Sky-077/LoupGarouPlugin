@@ -138,8 +138,9 @@ public class SettingsMenuBuilder {
             String name = names.get(i);
             int count = gameRoles.getOrDefault(name, 0);
             Role role = RoleFactory.create(name);
+            ItemStack icon = RoleHeadTextures.createIcon(name, getRoleIcon(role.getTeam()));
 
-            inventory.setItem(i - start, namedItem(getRoleIcon(role.getTeam()), "§e" + role.getName() + " §7(" + count + ")",
+            inventory.setItem(i - start, namedItem(icon, "§e" + role.getName() + " §7(" + count + ")",
                     "§7Clic gauche : +1 §7(+5 avec shift)",
                     "§7Clic droit : -1 §7(-5 avec shift)"));
 
@@ -178,8 +179,11 @@ public class SettingsMenuBuilder {
     }
 
     private static ItemStack namedItem(Material material, String name, String... lore) {
+        return namedItem(new ItemStack(material), name, lore);
+    }
 
-        ItemStack item = new ItemStack(material);
+    private static ItemStack namedItem(ItemStack item, String name, String... lore) {
+
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
 
