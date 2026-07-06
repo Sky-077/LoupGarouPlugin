@@ -17,6 +17,7 @@
 | `/lg host list` | Liste les joueurs éligibles et affiche l'Hôte actif s'il y en a un |
 | `/lg host claim` | Revendique le rôle d'Hôte (si éligible et aucun Hôte actif) |
 | `/lg host release` | Quitte le rôle d'Hôte (si on l'occupe actuellement) |
+| `/lg delais [minjoueurs\|invincibilite\|revelation\|pvp\|vote] [valeur]` | Affiche (ouvert à tous) ou modifie (**réservé à l'Hôte actif**) le minimum de joueurs et les 4 délais de partie, en minutes |
 | `/lg me` | Affiche son propre rôle (bloqué tant que les rôles ne sont pas révélés) |
 | `/lg regle` | Réaffiche l'explication de son rôle (bloqué tant que non révélé) |
 | `/lg bordure <taille>` | Configure la taille de la bordure pour la prochaine partie — **réservé à l'Hôte actif** (sans argument : affiche la valeur actuelle, ouvert à tous) |
@@ -90,6 +91,16 @@
 - [ ] `/lg forcestart`/`/lg forcereveal`/`/lg forcepvp`/`/lg forcevote` (OP) continuent de fonctionner sans avoir besoin d'être l'hôte
 - [ ] `/lg bordure <taille>` refusé à un joueur qui n'est pas l'hôte actif ; `/lg bordure` sans argument (lecture) reste accessible à tous
 - [ ] `/lg role add/remove/clear` refusés à un joueur qui n'est pas l'hôte actif ; `/lg role list`/`/lg role available` restent accessibles à tous
+
+### Délais de partie configurables (`/lg delais`, nécessite un compte Hôte)
+- [ ] `/lg delais` (sans argument) affiche les 5 valeurs actuelles (min joueurs, invincibilité, révélation, pvp, vote), accessible à tous
+- [ ] `/lg delais minjoueurs <nombre>` refusé à un non-Hôte ; appliqué par l'Hôte, `/lg start` respecte bien la nouvelle valeur
+- [ ] `/lg delais invincibilite <minutes>` : la partie suivante respecte bien la nouvelle durée d'invincibilité (message de lancement affiche la bonne valeur)
+- [ ] `/lg delais revelation <minutes>` : la révélation des rôles a bien lieu au bon délai lors de la partie suivante
+- [ ] `/lg delais pvp <minutes>` : le PVP s'active bien au bon délai
+- [ ] `/lg delais vote <minutes>` : le vote s'ouvre bien au bon délai
+- [ ] Tenter de régler la révélation au-dessus du délai PVP (ou le PVP au-dessus du vote) : la valeur est automatiquement plafonnée pour garder l'ordre invincibilité ≤ révélation < pvp < vote, sans message d'erreur bloquant
+- [ ] Les valeurs réglées persistent bien pour la partie suivante (comme `/lg bordure`), pas de reset entre deux `/lg start`
 
 ### Génération du monde
 - [ ] Le monde de partie est bien vierge à chaque `/lg start`, sans trace de constructions/objets d'une partie précédente (corrigé : chaque partie utilise désormais un nom de monde unique — timestamp en suffixe — au lieu de réutiliser/supprimer le même dossier, qui pouvait rester verrouillé sous Windows et laisser resurgir l'ancien monde) — à revalider

@@ -29,13 +29,57 @@ import java.util.stream.Collectors;
 
 public class GameStarter {
 
-    private static final int MIN_PLAYERS = 3;
-    private static final long INVINCIBILITY_DURATION_TICKS = 20L * 60L * 3L; // 3 minutes (laisse le temps à la pré-génération du monde de finir en fond)
-    private static final long PVP_DELAY_TICKS = 20L * 60L * 30L; // 30 minutes
-    private static final long ROLE_REVEAL_DELAY_TICKS = 20L * 60L * 10L; // 10 minutes
-    private static final long VOTE_START_DELAY_TICKS = 20L * 60L * 45L; // 45 minutes
+    private static int minPlayers = 3;
+    private static int invincibilityMinutes = 3; // laisse le temps à la pré-génération du monde de finir en fond
+    private static int roleRevealMinutes = 10;
+    private static int pvpDelayMinutes = 30;
+    private static int voteStartMinutes = 45;
 
     private GameStarter() {
+    }
+
+    public static int getMinPlayers() {
+        return minPlayers;
+    }
+
+    public static void setMinPlayers(int value) {
+        minPlayers = Math.max(1, value);
+    }
+
+    public static int getInvincibilityMinutes() {
+        return invincibilityMinutes;
+    }
+
+    public static void setInvincibilityMinutes(int value) {
+        invincibilityMinutes = Math.max(0, Math.min(value, roleRevealMinutes));
+    }
+
+    public static int getRoleRevealMinutes() {
+        return roleRevealMinutes;
+    }
+
+    public static void setRoleRevealMinutes(int value) {
+        roleRevealMinutes = Math.max(Math.max(1, invincibilityMinutes), Math.min(value, pvpDelayMinutes - 1));
+    }
+
+    public static int getPvpDelayMinutes() {
+        return pvpDelayMinutes;
+    }
+
+    public static void setPvpDelayMinutes(int value) {
+        pvpDelayMinutes = Math.max(roleRevealMinutes + 1, Math.min(value, voteStartMinutes - 1));
+    }
+
+    public static int getVoteStartMinutes() {
+        return voteStartMinutes;
+    }
+
+    public static void setVoteStartMinutes(int value) {
+        voteStartMinutes = Math.max(pvpDelayMinutes + 1, value);
+    }
+
+    private static long minutesToTicks(int minutes) {
+        return 20L * 60L * minutes;
     }
 
     public static boolean start(CommandSender sender, boolean bypassMinPlayers) {
@@ -59,8 +103,8 @@ public class GameStarter {
                 .filter(LGPlayer::isJoined)
                 .collect(Collectors.toList());
 
-        if (!bypassMinPlayers && joinedPlayers.size() < MIN_PLAYERS) {
-            sender.sendMessage("§cIl faut au moins " + MIN_PLAYERS + " joueurs inscrits (/lg join) pour lancer une partie (actuellement "
+        if (!bypassMinPlayers && joinedPlayers.size() < minPlayers) {
+            sender.sendMessage("§cIl faut au moins " + minPlayers + " joueurs inscrits (/lg join) pour lancer une partie (actuellement "
                     + joinedPlayers.size() + ").");
             return false;
         }
@@ -156,10 +200,10 @@ public class GameStarter {
 
         game.setState(GameState.INVINCIBILITY);
 
-        long invincibilitySeconds = INVINCIBILITY_DURATION_TICKS / 20L;
+        long invincibilityTicks = minutesToTicks(invincibilityMinutes);
 
         Bukkit.broadcastMessage("§aLa partie a été lancée ! §7Vous êtes invulnérable pendant "
-                + invincibilitySeconds + " secondes. Les rôles seront révélés dans 10 minutes.");
+                + (invincibilityTicks / 20L) + " secondes. Les rôles seront révélés dans " + roleRevealMinutes + " minutes.");
 
         Bukkit.broadcastMessage("§7Le centre de la zone (maisons de vote) se trouve en X: "
                 + worldManager.getCenterX() + ", Z: " + worldManager.getCenterZ() + ".");
@@ -167,7 +211,7 @@ public class GameStarter {
         Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),
                 () -> beginGame(game, players, cycleManager),
-                INVINCIBILITY_DURATION_TICKS
+                invincibilityTicks
         );
 
     }
@@ -247,26 +291,27 @@ public class GameStarter {
         game.markStarted();
         game.setState(cycleManager.getPhaseForCurrentTime());
 
-        Bukkit.broadcastMessage("§aLa partie commence ! §7Les rôles seront révélés dans 10 minutes, le PVP activé dans 30 minutes.");
+        Bukkit.broadcastMessage("§aLa partie commence ! §7Les rôles seront révélés dans " + roleRevealMinutes
+                + " minutes, le PVP activé dans " + pvpDelayMinutes + " minutes.");
 
         long startedAt = game.getStartTimeMillis();
 
         Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),
                 () -> scheduledReveal(game, startedAt),
-                ROLE_REVEAL_DELAY_TICKS
+                minutesToTicks(roleRevealMinutes)
         );
 
         Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),
                 () -> enablePvp(game, startedAt),
-                PVP_DELAY_TICKS
+                minutesToTicks(pvpDelayMinutes)
         );
 
         Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),
                 () -> startVoting(game, startedAt),
-                VOTE_START_DELAY_TICKS
+                minutesToTicks(voteStartMinutes)
         );
 
     }
