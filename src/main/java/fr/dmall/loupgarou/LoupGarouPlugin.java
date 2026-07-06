@@ -32,6 +32,7 @@ import fr.dmall.loupgarou.listener.PlayerDeathListener;
 import fr.dmall.loupgarou.listener.PortalBlockListener;
 import fr.dmall.loupgarou.listener.PvpListener;
 import fr.dmall.loupgarou.listener.SalvateurProtectionListener;
+import fr.dmall.loupgarou.listener.SettingsMenuListener;
 import fr.dmall.loupgarou.listener.VilainPetitLoupListener;
 import fr.dmall.loupgarou.listener.VoteListener;
 import fr.dmall.loupgarou.manager.ManagerRegistry;
@@ -174,6 +175,11 @@ public final class LoupGarouPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new LavaBucketListener(),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new SettingsMenuListener(),
                 this
         );
 

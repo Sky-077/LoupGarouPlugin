@@ -18,6 +18,7 @@
 | `/lg host claim` | Revendique le rôle d'Hôte (si éligible et aucun Hôte actif) |
 | `/lg host release` | Quitte le rôle d'Hôte (si on l'occupe actuellement) |
 | `/lg delais [minjoueurs\|invincibilite\|revelation\|pvp\|vote] [valeur]` | Affiche (ouvert à tous) ou modifie (**réservé à l'Hôte actif**) le minimum de joueurs et les 4 délais de partie, en minutes |
+| `/lg menu` | Ouvre le menu GUI de paramètres (bordure/min. joueurs/délais/rôles) — **réservé à l'Hôte actif** |
 | `/lg me` | Affiche son propre rôle (bloqué tant que les rôles ne sont pas révélés) |
 | `/lg regle` | Réaffiche l'explication de son rôle (bloqué tant que non révélé) |
 | `/lg bordure <taille>` | Configure la taille de la bordure pour la prochaine partie — **réservé à l'Hôte actif** (sans argument : affiche la valeur actuelle, ouvert à tous) |
@@ -101,6 +102,20 @@
 - [ ] `/lg delais vote <minutes>` : le vote s'ouvre bien au bon délai
 - [ ] Tenter de régler la révélation au-dessus du délai PVP (ou le PVP au-dessus du vote) : la valeur est automatiquement plafonnée pour garder l'ordre invincibilité ≤ révélation < pvp < vote, sans message d'erreur bloquant
 - [ ] Les valeurs réglées persistent bien pour la partie suivante (comme `/lg bordure`), pas de reset entre deux `/lg start`
+
+### Menu GUI de paramètres (`/lg menu`, nécessite un compte Hôte)
+- [ ] `/lg menu` refusé à un joueur qui n'est pas l'hôte actif
+- [ ] Menu principal : 4 icônes cliquables (Bordure/Minimum de joueurs/Délais de partie/Pool de rôles), chacune ouvre la bonne sous-page
+- [ ] Page Bordure : clic gauche +50, clic droit -50, shift+clic gauche +500, shift+clic droit -500 ; la valeur affichée se met à jour immédiatement après chaque clic ; ne descend jamais sous le minimum (100 blocs)
+- [ ] Page Minimum de joueurs : clic gauche +1, clic droit -1, shift = ±5 ; ne descend jamais sous 1
+- [ ] Page Délais : les 4 items (invincibilité/révélation/pvp/vote) s'ajustent chacun indépendamment (±1 min, ±10 avec shift) et respectent le même ordre logique que `/lg delais` (pas de valeur incohérente possible)
+- [ ] Page Pool de rôles : clic gauche +1/clic droit -1 (±5 avec shift) sur un rôle, le nombre affiché dans le lore se met à jour ; un rôle qui retombe à 0 disparaît bien du pool (`RoleManager.getGameRoles()`)
+- [ ] Pagination du pool de rôles : boutons "Page suivante"/"Page précédente" apparaissent seulement quand pertinent (pas de bouton "précédente" sur la première page, pas de "suivante" sur la dernière)
+- [ ] Bouton "Retour" sur chaque sous-page ramène bien au menu principal
+- [ ] Impossible de déplacer/sortir un item du menu (aucun item ne doit atterrir dans l'inventaire du joueur)
+- [ ] Cliquer dans son propre inventaire (en bas de l'écran) pendant que le menu est ouvert ne déclenche aucune modification de paramètre
+- [ ] Si l'hôte perd son statut (déconnexion d'un autre hôte, `/lg host release` par un tiers impossible normalement) pendant que le menu est ouvert, le prochain clic le ferme avec un message d'erreur plutôt que d'appliquer un changement
+- [ ] Toutes les valeurs modifiées via le menu sont bien reflétées par les commandes texte équivalentes (`/lg bordure`, `/lg delais`, `/lg role list`) et vice-versa
 
 ### Génération du monde
 - [ ] Le monde de partie est bien vierge à chaque `/lg start`, sans trace de constructions/objets d'une partie précédente (corrigé : chaque partie utilise désormais un nom de monde unique — timestamp en suffixe — au lieu de réutiliser/supprimer le même dossier, qui pouvait rester verrouillé sous Windows et laisser resurgir l'ancien monde) — à revalider

@@ -87,6 +87,23 @@ public class RoleManager implements Manager {
         return gameRoles.remove(name.toLowerCase()) != null;
     }
 
+    public void adjustGameRole(String name, int delta) {
+
+        if (!RoleFactory.exists(name)) {
+            throw new IllegalArgumentException("Rôle inconnu : " + name);
+        }
+
+        String key = name.toLowerCase();
+        int updated = gameRoles.getOrDefault(key, 0) + delta;
+
+        if (updated <= 0) {
+            gameRoles.remove(key);
+        } else {
+            gameRoles.put(key, updated);
+        }
+
+    }
+
     public void clearGameRoles() {
         gameRoles.clear();
     }
