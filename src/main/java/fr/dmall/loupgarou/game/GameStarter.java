@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class GameStarter {
@@ -32,9 +33,10 @@ public class GameStarter {
     public static final int LOCKED_EXPERIENCE_LEVEL = 30;
     private static final int DIAMOND_LIMIT_NORMAL = 18;
     private static final int DIAMOND_LIMIT_QUICK = 0;
-    // Laisse la pré-génération asynchrone du monde avancer avant de forcer la construction des maisons de vote
-    // et le scattering (bloquants), pour éviter un gel du serveur assez long pour faire timeout les joueurs.
-    private static final long WORLD_PREP_DELAY_TICKS = 20L * 15L;
+    // Filet de sécurité seulement : la construction des maisons de vote et le scattering (bloquants)
+    // attendent normalement la fin réelle de la pré-génération asynchrone (voir launchGame). Ce délai
+    // maximum évite de rester bloqué indéfiniment si la pré-génération n'aboutit jamais.
+    private static final long WORLD_PREP_MAX_DELAY_TICKS = 20L * 60L * 5L;
 
     private static int minPlayers = 3;
     private static int invincibilityMinutes = 3; // laisse le temps à la pré-génération du monde de finir en fond
@@ -188,13 +190,25 @@ public class GameStarter {
 
         World gameWorld = worldManager.prepareGameWorld();
 
-        Bukkit.broadcastMessage("§7Préparation de la zone de jeu, encore " + (WORLD_PREP_DELAY_TICKS / 20L)
-                + " secondes avant le scattering...");
+        Bukkit.broadcastMessage("§7Préparation de la zone de jeu en arrière-plan, le scattering commencera dès que ce sera prêt...");
 
+        AtomicBoolean launched = new AtomicBoolean(false);
+
+        Runnable proceed = () -> {
+            if (launched.compareAndSet(false, true)) {
+                continueLaunch(game, players, playerManager, cycleManager, worldManager, gameWorld);
+            }
+        };
+
+        worldManager.getPregenerationFuture().thenRun(() ->
+                Bukkit.getScheduler().runTask(LoupGarouPlugin.getInstance(), proceed)
+        );
+
+        // Filet de sécurité si la pré-génération n'aboutit jamais (ne devrait normalement jamais se déclencher).
         Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),
-                () -> continueLaunch(game, players, playerManager, cycleManager, worldManager, gameWorld),
-                WORLD_PREP_DELAY_TICKS
+                proceed,
+                WORLD_PREP_MAX_DELAY_TICKS
         );
 
     }

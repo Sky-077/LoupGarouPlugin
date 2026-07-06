@@ -52,6 +52,7 @@ public class WorldManager implements Manager {
     private World gameWorld;
     private int centerX;
     private int centerZ;
+    private CompletableFuture<Void> pregenerationFuture = CompletableFuture.completedFuture(null);
 
     private final List<Location> voteJukeboxes = new ArrayList<>();
     private final List<int[]> voteHouseBounds = new ArrayList<>();
@@ -88,6 +89,10 @@ public class WorldManager implements Manager {
         return centerZ;
     }
 
+    public CompletableFuture<Void> getPregenerationFuture() {
+        return pregenerationFuture;
+    }
+
     public World prepareGameWorld() {
 
         LobbySpawnManager lobbySpawnManager = LoupGarouPlugin.getInstance()
@@ -100,7 +105,10 @@ public class WorldManager implements Manager {
                 player.teleport(lobbySpawnManager.getSpawn());
             }
 
-            Bukkit.unloadWorld(gameWorld, false);
+            if (!Bukkit.unloadWorld(gameWorld, false)) {
+                Bukkit.getLogger().warning("[LoupGarouPlugin] Le monde " + gameWorld.getName()
+                        + " n'a pas pu être déchargé (chunks encore en cours de génération ?) — il restera en mémoire.");
+            }
 
         }
 
@@ -161,7 +169,7 @@ public class WorldManager implements Manager {
         long startedAt = System.currentTimeMillis();
         int chunkCount = futures.size();
 
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() ->
+        pregenerationFuture = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() ->
                 Bukkit.getLogger().info("[LoupGarouPlugin] Pré-génération de " + chunkCount + " chunks terminée en "
                         + (System.currentTimeMillis() - startedAt) + "ms.")
         );
