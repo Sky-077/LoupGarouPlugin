@@ -94,10 +94,10 @@ public class StealthVisionManager implements Manager {
                     continue;
                 }
 
-                // Nombre/étalement réduits (3 -> 1 particule, offsets divisés par ~2) : signalé trop gros et
-                // rapide côté clients Bedrock (Geyser rend certains types de particules "effet" plus gros/rapides
-                // que sur Java, hors de notre contrôle direct) — réduire la quantité limite l'impact visuel.
-                observer.spawnParticle(Particle.WITCH, stealther.getLocation().add(0, 1, 0), 1, 0.1, 0.15, 0.1, 0.0);
+                // Réduire la quantité n'a pas changé le rendu trop gros/rapide côté Bedrock (confirme que c'est
+                // Geyser qui mappe ce type de particule différemment, hors de notre contrôle) : revenu à une
+                // quantité plus généreuse, pensée pour un bon rendu côté Java.
+                observer.spawnParticle(Particle.WITCH, stealther.getLocation().add(0, 1, 0), 5, 0.3, 0.4, 0.3, 0.0);
 
             }
 
