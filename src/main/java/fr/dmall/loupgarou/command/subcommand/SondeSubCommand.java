@@ -101,7 +101,7 @@ public class SondeSubCommand implements SubCommand {
 
         voyante.consumePower();
 
-        sender.sendMessage("§d" + target.getName() + " est §f" + lgTarget.getRole().getName()
+        sender.sendMessage("§d" + target.getName() + " est §e" + lgTarget.getRole().getName()
                 + " §d(équipe " + lgTarget.getRole().getTeam() + ").");
 
         return true;

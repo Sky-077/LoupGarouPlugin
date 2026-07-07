@@ -46,7 +46,7 @@ public abstract class Role {
         player.sendMessage("§eÉquipe : §f" + getTeam());
 
         for (String line : getInstructions()) {
-            player.sendMessage("§7" + line);
+            player.sendMessage("§f" + line);
         }
 
     }

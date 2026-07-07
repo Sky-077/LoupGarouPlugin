@@ -142,7 +142,7 @@ public class GameStarter {
 
         launchGame(joinedPlayers);
 
-        sender.sendMessage("§7Joueurs : §e" + joinedPlayers.size());
+        sender.sendMessage("§fJoueurs : §e" + joinedPlayers.size());
 
         return true;
 
@@ -186,11 +186,11 @@ public class GameStarter {
 
         roleManager.assignRoles(players);
 
-        Bukkit.broadcastMessage("§7Génération du monde de jeu, veuillez patienter...");
+        Bukkit.broadcastMessage("§fGénération du monde de jeu, veuillez patienter...");
 
         World gameWorld = worldManager.prepareGameWorld(players.size());
 
-        Bukkit.broadcastMessage("§7Préparation de la zone de jeu en arrière-plan, le scattering commencera dès que ce sera prêt...");
+        Bukkit.broadcastMessage("§fPréparation de la zone de jeu en arrière-plan, le scattering commencera dès que ce sera prêt...");
 
         AtomicBoolean launched = new AtomicBoolean(false);
 
@@ -276,10 +276,10 @@ public class GameStarter {
 
         long invincibilityTicks = minutesToTicks(invincibilityMinutes);
 
-        Bukkit.broadcastMessage("§aLa partie a été lancée ! §7Vous êtes invulnérable pendant "
+        Bukkit.broadcastMessage("§aLa partie a été lancée ! §fVous êtes invulnérable pendant "
                 + (invincibilityTicks / 20L) + " secondes. Les rôles seront révélés dans " + roleRevealMinutes + " minutes.");
 
-        Bukkit.broadcastMessage("§7Le centre de la zone (maisons de vote) se trouve en X: "
+        Bukkit.broadcastMessage("§fLe centre de la zone (maisons de vote) se trouve en X: "
                 + worldManager.getCenterX() + ", Z: " + worldManager.getCenterZ() + ".");
 
         Bukkit.getScheduler().runTaskLater(
@@ -419,7 +419,7 @@ public class GameStarter {
 
         if (quickMode) {
 
-            Bukkit.broadcastMessage("§aLa partie commence (mode rapide) ! §7Les rôles sont révélés immédiatement, "
+            Bukkit.broadcastMessage("§aLa partie commence (mode rapide) ! §fLes rôles sont révélés immédiatement, "
                     + "le PVP et le vote seront activés dans " + quickModeMinutes + " minutes.");
 
             revealRoles(game);
@@ -440,7 +440,7 @@ public class GameStarter {
 
         }
 
-        Bukkit.broadcastMessage("§aLa partie commence ! §7Les rôles seront révélés dans " + roleRevealMinutes
+        Bukkit.broadcastMessage("§aLa partie commence ! §fLes rôles seront révélés dans " + roleRevealMinutes
                 + " minutes, le PVP activé dans " + pvpDelayMinutes + " minutes.");
 
         Bukkit.getScheduler().runTaskLater(

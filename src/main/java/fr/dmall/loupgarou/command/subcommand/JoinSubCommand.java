@@ -54,7 +54,7 @@ public class JoinSubCommand implements SubCommand {
         }
 
         if (lgPlayer.isJoined()) {
-            sender.sendMessage("§7Vous êtes déjà inscrit.");
+            sender.sendMessage("§fVous êtes déjà inscrit.");
             return true;
         }
 

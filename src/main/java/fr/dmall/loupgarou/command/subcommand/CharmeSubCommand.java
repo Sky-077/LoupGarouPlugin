@@ -39,7 +39,7 @@ public class CharmeSubCommand extends DebugSubCommand {
 
         double charm = charmManager.getCharm(target.getUniqueId());
 
-        sender.sendMessage("§7Charme de " + target.getName() + " : §f" + String.format("%.1f", charm) + "%");
+        sender.sendMessage("§fCharme de " + target.getName() + " : §e" + String.format("%.1f", charm) + "%");
 
         return true;
     }

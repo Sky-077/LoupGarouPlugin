@@ -39,7 +39,7 @@ public class InfoSubCommand implements SubCommand {
 
         for (LGPlayer player : game.getPlayers()) {
             if (player.getRole() != null) {
-                sender.sendMessage(" §7- §f" + player.getRole().getName());
+                sender.sendMessage(" §f- §e" + player.getRole().getName());
             }
         }
 

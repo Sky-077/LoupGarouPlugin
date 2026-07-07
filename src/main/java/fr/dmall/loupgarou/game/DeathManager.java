@@ -94,7 +94,7 @@ public class DeathManager implements Manager {
         player.setGameMode(GameMode.SPECTATOR);
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) DYING_DURATION_TICKS, 0, false, true));
 
-        player.sendTitle("§4Vous agonisez...", "§7Vous allez mourir dans 15 secondes", 10, 60, 10);
+        player.sendTitle("§4Vous agonisez...", "§fVous allez mourir dans 15 secondes", 10, 60, 10);
 
         BukkitTask task = Bukkit.getScheduler().runTaskLater(
                 LoupGarouPlugin.getInstance(),
@@ -175,7 +175,7 @@ public class DeathManager implements Manager {
             player.setFireTicks(0);
             player.setRemainingAir(player.getMaximumAir());
 
-            player.sendTitle("§aVous avez survécu !", "§7Le PVP n'est pas encore activé", 5, 40, 10);
+            player.sendTitle("§aVous avez survécu !", "§fLe PVP n'est pas encore activé", 5, 40, 10);
 
             return;
 
@@ -264,7 +264,7 @@ public class DeathManager implements Manager {
 
         player.sendTitle("§aVous survivez... par pure bêtise !", "", 5, 40, 10);
         Bukkit.broadcastMessage("§6" + player.getName() + " aurait dû mourir, mais il est bien trop bête pour ça ! "
-                + "§7Il est en réalité l'Idiot du Village.");
+                + "§fIl est en réalité l'Idiot du Village.");
 
     }
 
@@ -316,7 +316,7 @@ public class DeathManager implements Manager {
 
         revive(player);
 
-        player.sendMessage("§7Vous perdez définitivement votre Résistance 0.5.");
+        player.sendMessage("§fVous perdez définitivement votre Résistance 0.5.");
 
     }
 
@@ -408,7 +408,7 @@ public class DeathManager implements Manager {
             message.addExtra(decline);
 
             pereDesLoups.spigot().sendMessage(message);
-            pereDesLoups.sendMessage("§5Vous avez 10 secondes pour décider. §7(ou tapez /lg infecter " + player.getName()
+            pereDesLoups.sendMessage("§5Vous avez 10 secondes pour décider. §f(ou tapez /lg infecter " + player.getName()
                     + " ou /lg laissermourir " + player.getName() + " si vous ne pouvez pas cliquer, ex: Bedrock)");
 
         }
@@ -465,7 +465,7 @@ public class DeathManager implements Manager {
             message.addExtra(heal);
 
             sorciere.spigot().sendMessage(message);
-            sorciere.sendMessage("§5Vous avez 10 secondes pour utiliser votre potion de vie. §7(ou tapez /lg soigner "
+            sorciere.sendMessage("§5Vous avez 10 secondes pour utiliser votre potion de vie. §f(ou tapez /lg soigner "
                     + player.getName() + " si vous ne pouvez pas cliquer, ex: Bedrock)");
 
         }

@@ -68,7 +68,7 @@ public class LoupGarouPerfideRole extends WolfRole implements NightInvisibilityR
         ));
 
         if (!alreadyInvisible) {
-            player.sendMessage("§7Vous êtes désormais invisible.");
+            player.sendMessage("§fVous êtes désormais invisible.");
         }
 
     }
@@ -81,7 +81,7 @@ public class LoupGarouPerfideRole extends WolfRole implements NightInvisibilityR
         player.removePotionEffect(PotionEffectType.INVISIBILITY);
 
         if (wasInvisible) {
-            player.sendMessage("§7Vous n'êtes plus invisible.");
+            player.sendMessage("§fVous n'êtes plus invisible.");
         }
 
     }

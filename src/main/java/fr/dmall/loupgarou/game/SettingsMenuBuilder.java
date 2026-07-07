@@ -29,19 +29,19 @@ public class SettingsMenuBuilder {
         Inventory inventory = Bukkit.createInventory(holder, 27, "§6Paramètres de la partie");
         holder.setInventory(inventory);
 
-        inventory.setItem(10, namedItem(Material.BARRIER, "§eBordure", "§7Taille de la bordure de monde"));
-        inventory.setItem(12, namedItem(Material.PLAYER_HEAD, "§eMinimum de joueurs", "§7Nombre de joueurs requis pour /lg start"));
-        inventory.setItem(14, namedItem(Material.CLOCK, "§eDélais de partie", "§7Invincibilité, révélation, PVP, vote"));
-        inventory.setItem(16, namedItem(Material.BOOK, "§ePool de rôles", "§7Ajoute/retire des rôles à la partie"));
+        inventory.setItem(10, namedItem(Material.BARRIER, "§eBordure", "§fTaille de la bordure de monde"));
+        inventory.setItem(12, namedItem(Material.PLAYER_HEAD, "§eMinimum de joueurs", "§fNombre de joueurs requis pour /lg start"));
+        inventory.setItem(14, namedItem(Material.CLOCK, "§eDélais de partie", "§fInvincibilité, révélation, PVP, vote"));
+        inventory.setItem(16, namedItem(Material.BOOK, "§ePool de rôles", "§fAjoute/retire des rôles à la partie"));
 
         boolean quickMode = GameStarter.isQuickMode();
 
         inventory.setItem(22, namedItem(quickMode ? Material.LIME_WOOL : Material.RED_WOOL,
                 "§eMode rapide : " + (quickMode ? "§aactivé" : "§cdésactivé"),
-                "§7Skip la partie farm : stuff de départ,",
-                "§7révélation immédiate, PVP + vote au même délai",
-                "§7(réglable via /lg delais rapide <minutes>)",
-                "§7Clic pour basculer"));
+                "§fSkip la partie farm : stuff de départ,",
+                "§frévélation immédiate, PVP + vote au même délai",
+                "§f(réglable via /lg delais rapide <minutes>)",
+                "§fClic pour basculer"));
 
         player.openInventory(inventory);
 
@@ -60,8 +60,8 @@ public class SettingsMenuBuilder {
         long size = (long) worldManager.getBorderSize();
 
         inventory.setItem(13, namedItem(Material.BARRIER, "§e" + size + " blocs",
-                "§7Clic gauche : +50 §7(+500 avec shift)",
-                "§7Clic droit : -50 §7(-500 avec shift)"));
+                "§fClic gauche : +50 §f(+500 avec shift)",
+                "§fClic droit : -50 §f(-500 avec shift)"));
 
         inventory.setItem(22, backButton());
 
@@ -76,8 +76,8 @@ public class SettingsMenuBuilder {
         holder.setInventory(inventory);
 
         inventory.setItem(13, namedItem(Material.PLAYER_HEAD, "§e" + GameStarter.getMinPlayers() + " joueurs",
-                "§7Clic gauche : +1 §7(+5 avec shift)",
-                "§7Clic droit : -1 §7(-5 avec shift)"));
+                "§fClic gauche : +1 §f(+5 avec shift)",
+                "§fClic droit : -1 §f(-5 avec shift)"));
 
         inventory.setItem(22, backButton());
 
@@ -92,20 +92,20 @@ public class SettingsMenuBuilder {
         holder.setInventory(inventory);
 
         inventory.setItem(10, namedItem(Material.SHIELD, "§eInvincibilité : " + GameStarter.getInvincibilityMinutes() + " min",
-                "§7Clic gauche : +1 min §7(+10 avec shift)",
-                "§7Clic droit : -1 min §7(-10 avec shift)"));
+                "§fClic gauche : +1 min §f(+10 avec shift)",
+                "§fClic droit : -1 min §f(-10 avec shift)"));
 
         inventory.setItem(12, namedItem(Material.ENDER_EYE, "§eRévélation : " + GameStarter.getRoleRevealMinutes() + " min",
-                "§7Clic gauche : +1 min §7(+10 avec shift)",
-                "§7Clic droit : -1 min §7(-10 avec shift)"));
+                "§fClic gauche : +1 min §f(+10 avec shift)",
+                "§fClic droit : -1 min §f(-10 avec shift)"));
 
         inventory.setItem(14, namedItem(Material.IRON_SWORD, "§ePVP : " + GameStarter.getPvpDelayMinutes() + " min",
-                "§7Clic gauche : +1 min §7(+10 avec shift)",
-                "§7Clic droit : -1 min §7(-10 avec shift)"));
+                "§fClic gauche : +1 min §f(+10 avec shift)",
+                "§fClic droit : -1 min §f(-10 avec shift)"));
 
         inventory.setItem(16, namedItem(Material.JUKEBOX, "§eVote : " + GameStarter.getVoteStartMinutes() + " min",
-                "§7Clic gauche : +1 min §7(+10 avec shift)",
-                "§7Clic droit : -1 min §7(-10 avec shift)"));
+                "§fClic gauche : +1 min §f(+10 avec shift)",
+                "§fClic droit : -1 min §f(-10 avec shift)"));
 
         inventory.setItem(22, backButton());
 
@@ -140,9 +140,9 @@ public class SettingsMenuBuilder {
             Role role = RoleFactory.create(name);
             ItemStack icon = RoleHeadTextures.createIcon(name, getRoleIcon(role.getTeam()));
 
-            inventory.setItem(i - start, namedItem(icon, "§e" + role.getName() + " §7(" + count + ")",
-                    "§7Clic gauche : +1 §7(+5 avec shift)",
-                    "§7Clic droit : -1 §7(-5 avec shift)"));
+            inventory.setItem(i - start, namedItem(icon, "§e" + role.getName() + " §f(" + count + ")",
+                    "§fClic gauche : +1 §f(+5 avec shift)",
+                    "§fClic droit : -1 §f(-5 avec shift)"));
 
         }
 

@@ -26,8 +26,8 @@ public class BordureSubCommand implements SubCommand {
                 .getManager(WorldManager.class);
 
         if (args.length < 2) {
-            sender.sendMessage("§7Bordure actuelle : §f" + (long) worldManager.getBorderSize() + " blocs");
-            sender.sendMessage("§7Usage : /lg bordure <taille>");
+            sender.sendMessage("§fBordure actuelle : §e" + (long) worldManager.getBorderSize() + " blocs");
+            sender.sendMessage("§fUsage : /lg bordure <taille>");
             return true;
         }
 

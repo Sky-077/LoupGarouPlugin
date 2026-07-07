@@ -35,13 +35,13 @@ public class LeaveSubCommand implements SubCommand {
         LGPlayer lgPlayer = playerManager.get(player);
 
         if (lgPlayer == null || !lgPlayer.isJoined()) {
-            sender.sendMessage("§7Vous n'êtes pas inscrit.");
+            sender.sendMessage("§fVous n'êtes pas inscrit.");
             return true;
         }
 
         lgPlayer.setJoined(false);
 
-        sender.sendMessage("§7Vous n'êtes plus inscrit pour la prochaine partie.");
+        sender.sendMessage("§fVous n'êtes plus inscrit pour la prochaine partie.");
 
         return true;
     }

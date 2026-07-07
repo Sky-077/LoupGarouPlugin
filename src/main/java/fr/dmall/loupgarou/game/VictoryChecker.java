@@ -49,7 +49,7 @@ public class VictoryChecker {
         }
 
         if (loupsAlive == 0 && villageAlive == 0 && soloAlive == 0 && amoureuxAlive == 0) {
-            endGame("§7Plus aucun survivant. Partie terminée sans vainqueur.");
+            endGame("§fPlus aucun survivant. Partie terminée sans vainqueur.");
         }
 
     }

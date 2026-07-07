@@ -172,7 +172,7 @@ public class FakeSubCommand extends DebugSubCommand {
         Map<UUID, String> bots = fakePlayerManager.getBots();
 
         if (bots.isEmpty()) {
-            sender.sendMessage("§7Aucun bot actif.");
+            sender.sendMessage("§fAucun bot actif.");
             return true;
         }
 
@@ -184,7 +184,7 @@ public class FakeSubCommand extends DebugSubCommand {
             LGPlayer lgPlayer = (bot != null) ? playerManager.get(bot) : null;
             String roleName = (lgPlayer != null && lgPlayer.getRole() != null) ? lgPlayer.getRole().getName() : "?";
 
-            sender.sendMessage("§7- §e" + entry.getValue() + " §7(" + roleName + ")");
+            sender.sendMessage("§f- §e" + entry.getValue() + " §f(" + roleName + ")");
 
         }
 
@@ -255,7 +255,7 @@ public class FakeSubCommand extends DebugSubCommand {
     }
 
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage("§eUsage : /lg fake spawn <nom> <role> §7| §e/lg fake remove <nom> §7| §e/lg fake list §7| §e/lg fake clear");
+        sender.sendMessage("§eUsage : /lg fake spawn <nom> <role> §f| §e/lg fake remove <nom> §f| §e/lg fake list §f| §e/lg fake clear");
     }
 
 }

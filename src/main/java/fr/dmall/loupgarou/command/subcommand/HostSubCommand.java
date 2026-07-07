@@ -113,10 +113,10 @@ public class HostSubCommand implements SubCommand {
 
     private boolean handleList(CommandSender sender, HostManager hostManager) {
 
-        sender.sendMessage("§7Joueurs éligibles : §f" + String.join(", ", hostManager.listEligible()));
+        sender.sendMessage("§fJoueurs éligibles : §e" + String.join(", ", hostManager.listEligible()));
         sender.sendMessage(hostManager.hasActiveHost()
-                ? "§7Hôte actuel : §e" + hostManager.getActiveHostName()
-                : "§7Aucun hôte actif actuellement.");
+                ? "§fHôte actuel : §e" + hostManager.getActiveHostName()
+                : "§fAucun hôte actif actuellement.");
 
         return true;
 
@@ -132,7 +132,7 @@ public class HostSubCommand implements SubCommand {
         Player player = (Player) sender;
 
         if (hostManager.isActiveHost(player)) {
-            sender.sendMessage("§7Vous êtes déjà l'hôte.");
+            sender.sendMessage("§fVous êtes déjà l'hôte.");
             return true;
         }
 

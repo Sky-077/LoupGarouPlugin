@@ -167,7 +167,7 @@ public class HostManager implements Manager {
         TextComponent accept = new TextComponent("§a[Oui]");
         accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/lg host claim"));
         message.addExtra(accept);
-        message.addExtra(new TextComponent(" §7(ou plus tard via /lg host claim)"));
+        message.addExtra(new TextComponent(" §f(ou plus tard via /lg host claim)"));
 
         player.spigot().sendMessage(message);
 

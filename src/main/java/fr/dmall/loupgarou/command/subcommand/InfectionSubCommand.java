@@ -39,7 +39,7 @@ public class InfectionSubCommand extends DebugSubCommand {
 
         double corruption = corruptionManager.getCorruption(target.getUniqueId());
 
-        sender.sendMessage("§7Corruption de " + target.getName() + " : §f" + String.format("%.1f", corruption) + "%");
+        sender.sendMessage("§fCorruption de " + target.getName() + " : §e" + String.format("%.1f", corruption) + "%");
 
         return true;
     }

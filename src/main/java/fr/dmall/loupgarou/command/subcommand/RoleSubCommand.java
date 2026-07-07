@@ -106,7 +106,7 @@ public class RoleSubCommand implements SubCommand {
                 sender.sendMessage("§6===== Rôles disponibles =====");
 
                 for (String name : RoleFactory.getRegisteredNames()) {
-                    sender.sendMessage(" §7- §e" + name);
+                    sender.sendMessage(" §f- §e" + name);
                 }
 
                 return true;
@@ -119,10 +119,10 @@ public class RoleSubCommand implements SubCommand {
                 sender.sendMessage("§6===== Rôles configurés =====");
 
                 if (gameRoles.isEmpty()) {
-                    sender.sendMessage("§7Aucun rôle configuré (tout le monde sera Villageois).");
+                    sender.sendMessage("§fAucun rôle configuré (tout le monde sera Villageois).");
                 } else {
                     for (Map.Entry<String, Integer> entry : gameRoles.entrySet()) {
-                        sender.sendMessage(" §7- §e" + entry.getValue() + " §f" + entry.getKey());
+                        sender.sendMessage(" §f- §e" + entry.getValue() + " §e" + entry.getKey());
                     }
                 }
 

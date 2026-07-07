@@ -47,7 +47,7 @@ public class HonneurSubCommand extends DebugSubCommand {
         }
 
         if (args.length < 3) {
-            sender.sendMessage("§7Honneur de " + target.getName() + " : §f" + lgTarget.getHonor());
+            sender.sendMessage("§fHonneur de " + target.getName() + " : §e" + lgTarget.getHonor());
             return true;
         }
 
@@ -62,7 +62,7 @@ public class HonneurSubCommand extends DebugSubCommand {
 
         HonorManager.setHonor(lgTarget, target, value);
 
-        sender.sendMessage("§aHonneur de " + target.getName() + " réglé sur §f" + lgTarget.getHonor() + "§a.");
+        sender.sendMessage("§aHonneur de " + target.getName() + " réglé sur §e" + lgTarget.getHonor() + "§a.");
 
         return true;
     }

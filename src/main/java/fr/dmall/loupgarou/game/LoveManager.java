@@ -122,7 +122,7 @@ public class LoveManager implements Manager {
             lgCupidon.setRole(new VillageoisRole());
 
             if (cupidonPlayer != null) {
-                cupidonPlayer.sendMessage("§7Vos amoureux sont tous les deux morts... Vous redevenez un simple Villageois.");
+                cupidonPlayer.sendMessage("§fVos amoureux sont tous les deux morts... Vous redevenez un simple Villageois.");
             }
 
         }

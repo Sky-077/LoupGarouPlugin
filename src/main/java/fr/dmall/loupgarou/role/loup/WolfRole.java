@@ -55,7 +55,7 @@ public abstract class WolfRole extends Role {
         List<String> lines = new ArrayList<>();
 
         if (knownWolves.isEmpty()) {
-            lines.add("§7Vous êtes le seul loup de cette partie.");
+            lines.add("§fVous êtes le seul loup de cette partie.");
             return lines;
         }
 

@@ -73,7 +73,7 @@ public class LaisserMourirSubCommand implements SubCommand {
 
         deathManager.declineConversion(target);
 
-        sender.sendMessage("§7Vous avez laissé " + target.getName() + " mourir.");
+        sender.sendMessage("§fVous avez laissé " + target.getName() + " mourir.");
 
         return true;
     }

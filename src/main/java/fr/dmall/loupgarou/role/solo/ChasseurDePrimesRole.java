@@ -91,9 +91,9 @@ public class ChasseurDePrimesRole extends Role {
             lines.add("§eContrat en cours : " + name);
 
         } else if (allContracts.size() < CONTRACT_COUNT) {
-            lines.add("§7Aucun contrat actif pour l'instant.");
+            lines.add("§fAucun contrat actif pour l'instant.");
         } else {
-            lines.add("§7Vous n'avez plus de contrat à accomplir.");
+            lines.add("§fVous n'avez plus de contrat à accomplir.");
         }
 
         return lines.toArray(new String[0]);

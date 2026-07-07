@@ -117,7 +117,7 @@ public class PlayerDeathListener implements Listener {
                         && killerLgPlayer.getEffectiveTeam() != RoleTeam.LOUP
                         && killerLgPlayer.getEffectiveTeam() != RoleTeam.NEUTRAL) {
                     AncienManager.halveMaxHealth(killer);
-                    killer.sendMessage("§7Vous avez tué l'Ancien : votre vie maximale est réduite de moitié, définitivement.");
+                    killer.sendMessage("§fVous avez tué l'Ancien : votre vie maximale est réduite de moitié, définitivement.");
                 }
 
                 if (killerLgPlayer.getRole() instanceof ImitateurRole) {
@@ -138,9 +138,9 @@ public class PlayerDeathListener implements Listener {
         if (!(role instanceof LoupGarouCraintifRole)) {
 
             if (killer != null) {
-                Bukkit.broadcastMessage("§c☠ " + player.getName() + " est mort, tué par " + killer.getName() + " ! §7(Rôle : " + roleName + ")");
+                Bukkit.broadcastMessage("§c☠ " + player.getName() + " est mort, tué par " + killer.getName() + " ! §f(Rôle : " + roleName + ")");
             } else {
-                Bukkit.broadcastMessage("§c☠ " + player.getName() + " est mort ! §7(Rôle : " + roleName + ")");
+                Bukkit.broadcastMessage("§c☠ " + player.getName() + " est mort ! §f(Rôle : " + roleName + ")");
             }
 
         }
@@ -199,7 +199,7 @@ public class PlayerDeathListener implements Listener {
             Player hunterPlayer = Bukkit.getPlayer(lgHunter.getUuid());
 
             if (hunterPlayer != null) {
-                hunterPlayer.sendMessage("§7Votre cible a été éliminée par quelqu'un d'autre. Contrat annulé, en attente du suivant.");
+                hunterPlayer.sendMessage("§fVotre cible a été éliminée par quelqu'un d'autre. Contrat annulé, en attente du suivant.");
             }
 
         }

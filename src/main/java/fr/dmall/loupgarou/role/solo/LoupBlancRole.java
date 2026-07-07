@@ -52,7 +52,7 @@ public class LoupBlancRole extends Role {
         lines.add("Vous connaissez l'identité des Loups-Garous, mais vous devrez tous les éliminer (eux comme les autres) pour gagner.");
 
         if (knownWolves.isEmpty()) {
-            lines.add("§7Aucun Loup-Garou dans cette partie.");
+            lines.add("§fAucun Loup-Garou dans cette partie.");
         } else {
 
             lines.add("§eLoups connus :");

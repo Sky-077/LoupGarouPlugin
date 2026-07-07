@@ -45,7 +45,7 @@ public class RegleSubCommand implements SubCommand {
         Role role = lgPlayer.getRole();
 
         if (role == null) {
-            sender.sendMessage("§7Vous n'avez pas encore de rôle (la partie n'a peut-être pas démarré).");
+            sender.sendMessage("§fVous n'avez pas encore de rôle (la partie n'a peut-être pas démarré).");
             return true;
         }
 
@@ -56,7 +56,7 @@ public class RegleSubCommand implements SubCommand {
         Game game = gameManager.getCurrentGame();
 
         if (!game.isRevealed()) {
-            sender.sendMessage("§7Les rôles n'ont pas encore été révélés.");
+            sender.sendMessage("§fLes rôles n'ont pas encore été révélés.");
             return true;
         }
 

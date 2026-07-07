@@ -104,7 +104,7 @@ public class ScoreboardManager implements Manager {
             Objective objective = scoreboard.registerNewObjective(
                     OBJECTIVE_NAME,
                     "dummy",
-                    "§8§lLoup-Garou §f§lUHC"
+                    "§8§lLoup-Garou §e§lUHC"
             );
 
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -150,15 +150,15 @@ public class ScoreboardManager implements Manager {
 
         int line = 9;
 
-        objective.getScore("§e» §fInformations").setScore(line--);
-        objective.getScore("§7Durée: §f" + duration).setScore(line--);
-        objective.getScore("§7Cycle: §f" + cycle).setScore(line--);
-        objective.getScore("§7Épisode: §f" + episode).setScore(line--);
-        objective.getScore("§7Groupe: §f" + group).setScore(line--);
-        objective.getScore("§7Joueurs: §f" + players).setScore(line--);
-        objective.getScore("§7Bordure: §f" + border).setScore(line--);
-        objective.getScore("§7Kills: §f" + kills).setScore(line--);
-        objective.getScore("§bDiamants: §f" + diamonds).setScore(line--);
+        objective.getScore("§e» §eInformations").setScore(line--);
+        objective.getScore("§fDurée: §e" + duration).setScore(line--);
+        objective.getScore("§fCycle: §e" + cycle).setScore(line--);
+        objective.getScore("§fÉpisode: §e" + episode).setScore(line--);
+        objective.getScore("§fGroupe: §e" + group).setScore(line--);
+        objective.getScore("§fJoueurs: §e" + players).setScore(line--);
+        objective.getScore("§fBordure: §e" + border).setScore(line--);
+        objective.getScore("§fKills: §e" + kills).setScore(line--);
+        objective.getScore("§bDiamants: §e" + diamonds).setScore(line--);
 
     }
 

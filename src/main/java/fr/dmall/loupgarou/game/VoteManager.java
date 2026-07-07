@@ -86,7 +86,7 @@ public class VoteManager implements Manager {
 
         if (roundsElapsed >= ROUND_COUNT) {
             active = false;
-            Bukkit.broadcastMessage("§7La période de vote est terminée.");
+            Bukkit.broadcastMessage("§fLa période de vote est terminée.");
         } else {
             Bukkit.broadcastMessage("§6Nouvel épisode de vote ! Rendez-vous dans une maison de vote pour voter à nouveau.");
         }
@@ -179,7 +179,7 @@ public class VoteManager implements Manager {
         Collections.shuffle(revealed);
 
         Bukkit.broadcastMessage("§d[Vote] " + targetName + " a été le plus désigné par le village ! "
-                + "§7Rôle possible : §f" + String.join("§7, §f", revealed) + " §7(un seul est le vrai)");
+                + "§fRôle possible : §e" + String.join("§f, §e", revealed) + " §f(un seul est le vrai)");
 
     }
 

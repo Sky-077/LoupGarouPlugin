@@ -102,19 +102,19 @@ public class DelaisSubCommand implements SubCommand {
     private void sendCurrentValues(CommandSender sender) {
 
         sender.sendMessage("§6===== Délais de partie =====");
-        sender.sendMessage("§7Minimum de joueurs : §f" + GameStarter.getMinPlayers());
-        sender.sendMessage("§7Invincibilité : §f" + GameStarter.getInvincibilityMinutes() + " min");
-        sender.sendMessage("§7Révélation des rôles : §f" + GameStarter.getRoleRevealMinutes() + " min");
-        sender.sendMessage("§7Activation du PVP : §f" + GameStarter.getPvpDelayMinutes() + " min");
-        sender.sendMessage("§7Ouverture du vote : §f" + GameStarter.getVoteStartMinutes() + " min");
-        sender.sendMessage("§7Mode rapide : §f" + (GameStarter.isQuickMode() ? "activé" : "désactivé") + " §7(bascule via /lg menu)");
-        sender.sendMessage("§7Délai PVP/vote en mode rapide : §f" + GameStarter.getQuickModeMinutes() + " min");
+        sender.sendMessage("§fMinimum de joueurs : §e" + GameStarter.getMinPlayers());
+        sender.sendMessage("§fInvincibilité : §e" + GameStarter.getInvincibilityMinutes() + " min");
+        sender.sendMessage("§fRévélation des rôles : §e" + GameStarter.getRoleRevealMinutes() + " min");
+        sender.sendMessage("§fActivation du PVP : §e" + GameStarter.getPvpDelayMinutes() + " min");
+        sender.sendMessage("§fOuverture du vote : §e" + GameStarter.getVoteStartMinutes() + " min");
+        sender.sendMessage("§fMode rapide : §e" + (GameStarter.isQuickMode() ? "activé" : "désactivé") + " §f(bascule via /lg menu)");
+        sender.sendMessage("§fDélai PVP/vote en mode rapide : §e" + GameStarter.getQuickModeMinutes() + " min");
         sendUsage(sender);
 
     }
 
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage("§7Usage : /lg delais <minjoueurs|invincibilite|revelation|pvp|vote|rapide> [valeur]");
+        sender.sendMessage("§fUsage : /lg delais <minjoueurs|invincibilite|revelation|pvp|vote|rapide> [valeur]");
     }
 
 }

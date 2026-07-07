@@ -64,7 +64,7 @@ public class PetiteFilleRole extends Role implements NightInvisibilityRole {
         ));
 
         if (!alreadyInvisible) {
-            player.sendMessage("§7Vous êtes désormais invisible.");
+            player.sendMessage("§fVous êtes désormais invisible.");
         }
 
     }
@@ -77,7 +77,7 @@ public class PetiteFilleRole extends Role implements NightInvisibilityRole {
         player.removePotionEffect(PotionEffectType.INVISIBILITY);
 
         if (wasInvisible) {
-            player.sendMessage("§7Vous n'êtes plus invisible.");
+            player.sendMessage("§fVous n'êtes plus invisible.");
         }
 
     }

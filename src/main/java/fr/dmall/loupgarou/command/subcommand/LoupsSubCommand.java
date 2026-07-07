@@ -100,7 +100,7 @@ public class LoupsSubCommand implements SubCommand {
             Player recipient = Bukkit.getPlayer(lgRecipient.getUuid());
 
             if (recipient != null) {
-                recipient.sendMessage("§5[Meute] §7" + message);
+                recipient.sendMessage("§5[Meute] §f" + message);
             }
 
         }

@@ -118,7 +118,7 @@ public class VoteListener implements Listener {
 
         ItemStack passItem = new ItemStack(Material.PAPER);
         ItemMeta passMeta = passItem.getItemMeta();
-        passMeta.setDisplayName("§7Passer");
+        passMeta.setDisplayName("§fPasser");
         passItem.setItemMeta(passMeta);
 
         inventory.setItem(size - 1, passItem);
@@ -169,8 +169,8 @@ public class VoteListener implements Listener {
         if (target.equals(VoteInventoryHolder.PASS) || forcedBlank) {
             voteManager.castPass(voter);
             voter.sendMessage(forcedBlank
-                    ? "§7Trop craintif pour désigner qui que ce soit... vote blanc."
-                    : "§7Vous avez choisi de passer.");
+                    ? "§fTrop craintif pour désigner qui que ce soit... vote blanc."
+                    : "§fVous avez choisi de passer.");
         } else {
             Player targetPlayer = Bukkit.getPlayer(target);
             voteManager.castVote(voter, target);
