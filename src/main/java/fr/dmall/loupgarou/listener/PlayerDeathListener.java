@@ -95,7 +95,7 @@ public class PlayerDeathListener implements Listener {
 
                 if (killerLgPlayer.getEffectiveTeam() != null
                         && killerLgPlayer.getEffectiveTeam() == lgPlayer.getEffectiveTeam()) {
-                    HonorManager.loseHonor(killerLgPlayer, killer);
+                    HonorManager.applyBetrayalPenalty(killerLgPlayer, killer);
                 }
 
                 if (killerLgPlayer.getRole() instanceof ChasseurDePrimesRole) {

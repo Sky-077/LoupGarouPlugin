@@ -140,10 +140,13 @@ Le spawn où les joueurs sont renvoyés en fin de partie (victoire ou `/lg stop`
 ## Système d'honneur (`HonorManager`)
 
 - Jauge **individuelle** par joueur (`LGPlayer.honor`, -3 à +3, clampée dans `setHonor()`).
-- `HonorManager.gainHonor(lgPlayer, player)` / `loseHonor(lgPlayer, player)` : font varier la jauge d'1 point et recalculent l'effet de cœur.
-- Effet aux extrêmes, basé sur `getEffectiveTeam()` : à **+3**, un Villageois gagne un cœur (+2 PV max) et un Loup en perd un (-2 PV max) ; à **-3** c'est l'inverse (Villageois puni, Loup récompensé). Implémenté via un `AttributeModifier` nommé (`NamespacedKey "honor_hearts"`) sur `Attribute.MAX_HEALTH`, recalculé à chaque changement (donc réversible si l'honneur repasse sous le seuil). Aucun effet pour les Amoureux/solos.
-- **Déclencheurs actuellement branchés** : +1 honneur en votant (`VoteManager.resolveRound`), -1 en ne votant pas sans passer explicitement (`/lg` ne rien faire pendant le vote), +1 pour la Sorcière qui soigne quelqu'un (`SoignerSubCommand`), -1 pour un kill sur un joueur du **même camp effectif** (trahison/tir ami, `PlayerDeathListener`).
-- `GameEnder.end()` nettoie le modificateur (`HonorManager.clearModifier()`) et `LGPlayer.resetStats()` remet l'honneur à 0 en fin de partie.
+- `HonorManager.gainHonor(lgPlayer, player)` / `loseHonor(lgPlayer, player)` : font varier la jauge d'1 point et recalculent les effets (cœur + vitesse).
+- Effets aux extrêmes, basés sur `getEffectiveTeam()` (comparaisons `>=`/`<=` plutôt que `==` pour que les paliers s'additionnent au lieu de s'exclure — atteindre +3 conserve le bonus de vitesse de +2) :
+  - À **±3** : un Villageois gagne un cœur à +3 et en perd un à -3 (+2/-2 PV max) ; pour un Loup c'est l'inverse (puni à +3, récompensé à -3). `AttributeModifier` nommé (`NamespacedKey "honor_hearts"`) sur `Attribute.MAX_HEALTH`.
+  - À **±2** : même logique mais avec Speed 0.5 (`AttributeModifier` `"honor_speed"` sur `Attribute.MOVEMENT_SPEED`, `MULTIPLY_SCALAR_1` ±0.1, même convention que `CraintifManager`/`VilainPetitLoupManager`) au lieu d'un cœur.
+  - Recalculé à chaque changement d'honneur (donc réversible si l'honneur repasse sous un seuil). Aucun effet pour les Amoureux/solos.
+- **Déclencheurs actuellement branchés** : +1 honneur en votant (`VoteManager.resolveRound`), -1 en ne votant pas sans passer explicitement (`/lg` ne rien faire pendant le vote), +1 pour la Sorcière qui soigne quelqu'un (`SoignerSubCommand`), et pour un kill sur un joueur du **même camp effectif** (trahison/tir ami, `PlayerDeathListener`) → `HonorManager.applyBetrayalPenalty()`, qui pousse **toujours** l'honneur vers l'extrême défavorable au camp du tueur (pas systématiquement -1) : -1 pour tout camp sauf Loup, **+1 pour un Loup** — sinon un Loup qui trahit/tue un autre Loup se rapprochait du -3 qui les récompense, un effet pervers désormais corrigé (trahir doit toujours coûter, jamais avantager).
+- `GameEnder.end()` nettoie les deux modificateurs (`HonorManager.clearModifier()`) et `LGPlayer.resetStats()` remet l'honneur à 0 en fin de partie.
 - `/lg honneur <joueur> [valeur]` (debug, OP) : sans valeur affiche l'honneur actuel, avec une valeur (-3 à 3) le règle directement via `HonorManager.setHonor()` et recalcule immédiatement l'effet de cœur.
 
 ## Système de vote (`VoteManager` + maisons de vote `WorldManager` + `VoteListener`)

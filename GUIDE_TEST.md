@@ -435,10 +435,13 @@
 
 ### Honneur (au-delà du vote)
 - [🟢] Sorcière qui soigne quelqu'un (`/lg soigner`) gagne +1 honneur
-- [🟢] Un joueur qui tue un allié de son propre camp (Village tue Village, ou Loup tue Loup) perd -1 honneur
-- [🟢] À +3 d'honneur : Villageois gagne un cœur, Loup en perd un ; à -3 c'est l'inverse (vérifier via `/lg regle` ou en comptant les cœurs à l'écran)
-- [🟢] L'effet de cœur disparaît si l'honneur redescend sous le seuil (pas un bonus figé)
-- [🟢] L'honneur et l'effet de cœur sont bien réinitialisés entre deux parties
+- [ ] Un Villageois qui tue un allié Village perd -1 honneur (comportement inchangé)
+- [ ] **Corrigé** : un Loup qui tue un allié Loup gagne désormais **+1** honneur (pas -1) — se rapproche du +3 qui punit les Loups, au lieu de se rapprocher à tort du -3 qui les récompenserait (ancien effet pervers "trahir un Loup avantage le tueur")
+- [ ] À +3 d'honneur : Villageois gagne un cœur, Loup en perd un ; à -3 c'est l'inverse (vérifier via `/lg regle` ou en comptant les cœurs à l'écran)
+- [ ] **Nouveau palier ±2** : à +2, un Villageois gagne un bonus de vitesse (Speed 0.5) et un Loup le perd (plus lent que la normale) ; à -2 c'est l'inverse
+- [ ] Le bonus de vitesse à ±2 reste actif en atteignant ±3 en plus du cœur (les paliers s'additionnent, ne s'excluent pas)
+- [ ] L'effet de cœur et l'effet de vitesse disparaissent si l'honneur repasse sous leur seuil respectif (pas des bonus figés)
+- [ ] L'honneur et les effets (cœur + vitesse) sont bien réinitialisés entre deux parties
 
 ### Fin de partie / spawn du lobby
 - [🟢] Après une victoire ou un `/lg stop`, tous les joueurs atterrissent bien à cet endroit précis (pas dans un bloc, pas dans le vide)
