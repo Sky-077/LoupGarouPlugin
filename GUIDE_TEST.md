@@ -547,4 +547,5 @@
 - [ ] À revalider : surveiller la RAM du serveur juste après une fin de partie (pas seulement au prochain `/lg start`) pour confirmer que le pic redescend bien immédiatement.
 
 ## a rajouter 
-- les particules que voient les joueurs bedrock en etant feu follet ou un role qui peut voir l'invisibilite des autres roles invisibles sont trop grosse et rapide
+- ~~les particules que voient les joueurs bedrock en etant feu follet ou un role qui peut voir l'invisibilite des autres roles invisibles sont trop grosse et rapide~~ → tenté : `StealthVisionManager` réduit la quantité (3→1) et l'étalement (offsets divisés par ~2) des particules `WITCH` envoyées. **Limite possible** : si le rendu reste trop gros/rapide malgré ça, c'est probablement Geyser qui mappe ce type de particule "effet" différemment côté Bedrock (comme la désynchro de mouvement déjà identifiée comme limitation Geyser) — pas de levier supplémentaire côté plugin dans ce cas, à confirmer en testant à nouveau.
+- [ ] À revalider en jeu (client Bedrock) : les particules d'invisibilité (Feu Follet/Petite Fille/Loup-Garou Perfide, `StealthVisionManager`) sont-elles maintenant d'une taille/vitesse correcte ?
