@@ -56,10 +56,9 @@ public class FakePlayerManager implements Manager {
         GameProfile profile = new GameProfile(UUID.randomUUID(), name);
 
         ServerPlayer nmsPlayer = new ServerPlayer(server, level, profile, ClientInformation.createDefault());
-        nmsPlayer.forceSetPositionRotation(
-                location.getX(), location.getY(), location.getZ(),
-                location.getYaw(), location.getPitch()
-        );
+        nmsPlayer.setPos(location.getX(), location.getY(), location.getZ());
+        nmsPlayer.setYRot(location.getYaw());
+        nmsPlayer.setXRot(location.getPitch());
 
         Connection connection = new Connection(PacketFlow.SERVERBOUND);
         connection.channel = new EmbeddedChannel(new DiscardingOutboundHandler());
@@ -68,7 +67,7 @@ public class FakePlayerManager implements Manager {
 
         playerList.placeNewPlayer(connection, nmsPlayer, cookie);
 
-        bots.put(profile.getId(), name);
+        bots.put(profile.id(), name);
 
         return nmsPlayer.getBukkitEntity();
 

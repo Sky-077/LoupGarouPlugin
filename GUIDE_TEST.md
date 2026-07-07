@@ -71,7 +71,8 @@
 
 ---
 
-### Faux joueurs de test (`/lg fake`, nouveau — nécessite le build paperweight-userdev)
+### Faux joueurs de test (`/lg fake`, nouveau — nécessite le build paperweight-userdev, Java 25, serveur 26.1.2)
+- **Bug critique déjà rencontré et corrigé** : le premier `./gradlew build` déployé plantait sur `/lg fake spawn` avec `NoClassDefFoundError: org/bukkit/craftbukkit/v1_21_R5/CraftServer` — le projet ciblait par erreur `1.21.8-R0.1-SNAPSHOT` (avec un `reobfJar`, aujourd'hui supprimé) alors que le serveur réel tourne en **26.1.2** (mappings Mojang natifs, plus de remappage Spigot possible pour cette version, package `org.bukkit.craftbukkit.CraftServer` non versionné). Corrigé en ciblant `paperDevBundle("26.1.2.build.+")` et en migrant vers Java 25 (le serveur 26.1+ refuse de démarrer en dessous). `./gradlew build` produit désormais un seul jar (`LoupGarouPlugin-1.0.0.jar`, mêmes mappings que le serveur, pas de jar `-dev` séparé) — recompilé et vérifié (les références `org/bukkit/craftbukkit/*` du jar final correspondent bien au layout non versionné), mais **pas encore validé en jeu réel** après ce correctif.
 - [ ] `/lg fake spawn <nom> <role>` spawne bien un bot à la position de l'OP, visible dans le tab list et par les autres joueurs comme un vrai joueur (nom au-dessus de la tête, skin par défaut)
 - [ ] Le rôle assigné au spawn est correct (`/lg fake list` l'affiche) et n'est jamais réassigné par la suite (le bot n'apparaît pas dans le pool `/lg role`)
 - [ ] Spawné pendant une partie en cours (rôles révélés) : le bot compte bien pour la corruption (loup à proximité) et/ou le charme (Joueur de Flûte à proximité) en approchant un vrai joueur du bot ou l'inverse
@@ -79,7 +80,7 @@
 - [ ] Le bot apparaît bien comme candidat/électeur dans le système de vote (compte dans les votes Village/Loups si son rôle le permet)
 - [ ] `/lg fake remove <nom>` et `/lg fake clear` suppriment bien le bot du serveur (plus dans le tab list) sans laisser d'erreur en console
 - [ ] Aucune erreur/exception dans les logs serveur pendant toute la durée de vie d'un bot (tick de jeu, changement jour/nuit, scoreboard, etc.)
-- [ ] `./gradlew build` produit bien `LoupGarouPlugin-1.0.0.jar` (déployable) — vérifier qu'on n'a pas accidentellement déployé `LoupGarouPlugin-1.0.0-dev.jar` (mappings Mojang, ne démarre pas sur Purpur)
+- [ ] Vérifier que le reste du plugin (tout le code sans NMS) continue de fonctionner normalement après la migration Java 25 / mappings Mojang natifs — aucune régression attendue (API Bukkit inchangée) mais premier vrai test en conditions réelles sur cette base
 
 ---
 
