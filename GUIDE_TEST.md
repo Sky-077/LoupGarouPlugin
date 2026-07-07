@@ -113,9 +113,9 @@
 - [🟢] Page Minimum de joueurs : clic gauche +1, clic droit -1, shift = ±5 ; ne descend jamais sous 1
 - [🟢] Page Délais : les 4 items (invincibilité/révélation/pvp/vote) s'ajustent chacun indépendamment (±1 min, ±10 avec shift) et respectent le même ordre logique que `/lg delais` (pas de valeur incohérente possible)
 - [🟢] Page Pool de rôles : clic gauche +1/clic droit -1 (±5 avec shift) sur un rôle, le nombre affiché dans le lore se met à jour ; un rôle qui retombe à 0 disparaît bien du pool (`RoleManager.getGameRoles()`)
-- [ ] Les 22 rôles affichent bien chacun leur tête personnalisée dans le pool de rôles au lieu de l'ancienne icône générique par camp (loup/village/solo)
-- [ ] Villageois et Bienfaiteur affichent bien le skin d'un vrai joueur (`DrTestificate_MD`/`King`) plutôt qu'une texture custom — vérifier que la tête se charge correctement (pas de tête vierge/erreur si le joueur référencé n'a jamais joué sur le serveur)
-- [ ] Un futur rôle ajouté sans tête définie retomberait bien sur l'icône générique par camp (plus de cas réel à tester tant que les 22 rôles actuels sont couverts, mais le repli `getRoleIcon` doit rester fonctionnel)
+- [🟢] Les 22 rôles affichent bien chacun leur tête personnalisée dans le pool de rôles au lieu de l'ancienne icône générique par camp (loup/village/solo)
+- [🔴] Villageois et Bienfaiteur affichent bien le skin d'un vrai joueur (`DrTestificate_MD`/`King`) plutôt qu'une texture custom — vérifier que la tête se charge correctement (pas de tête vierge/erreur si le joueur référencé n'a jamais joué sur le serveur)
+- [🟢] Un futur rôle ajouté sans tête définie retomberait bien sur l'icône générique par camp (plus de cas réel à tester tant que les 22 rôles actuels sont couverts, mais le repli `getRoleIcon` doit rester fonctionnel)
 - [🟢] Pagination du pool de rôles : boutons "Page suivante"/"Page précédente" apparaissent seulement quand pertinent (pas de bouton "précédente" sur la première page, pas de "suivante" sur la dernière)
 - [🟢] Bouton "Retour" sur chaque sous-page ramène bien au menu principal
 - [🟢] Impossible de déplacer/sortir un item du menu (aucun item ne doit atterrir dans l'inventaire du joueur)
@@ -124,14 +124,14 @@
 - [🟢] Toutes les valeurs modifiées via le menu sont bien reflétées par les commandes texte équivalentes (`/lg bordure`, `/lg delais`, `/lg role list`) et vice-versa
 
 ### Mode partie rapide (interrupteur dans `/lg menu`, nécessite un compte Hôte)
-- [ ] Clic sur l'item du menu principal (laine rouge par défaut) : bascule en "activé" (laine verte), reclic revient à "désactivé" — pas de commande dédiée pour ce toggle, uniquement le menu
-- [ ] Mode rapide activé + `/lg start` : chaque joueur reçoit au scattering, en plus des steaks, un casque/jambières/bottes en fer Protection III et un **plastron en diamant** Protection II, une **épée en diamant** Tranchant III (IV si rôle solitaire), un **arc** Puissance III (IV si Chasseur ou rôle solitaire), 2 stacks de feuilles de chêne, 2 stacks de flèches, 10 pommes d'or et 32 lingots de fer
-- [ ] Un rôle solitaire en mode rapide ne reçoit **pas** le livre Tranchant IV habituel à la révélation (son épée du kit l'a déjà) ; en mode normal, il le reçoit toujours
-- [ ] Cupidon en mode rapide : à la révélation, ne reçoit **ni** second arc **ni** livre séparé — l'arc du kit déjà en sa possession devient directement Puissance IV + Punch I ; en mode normal, il garde son arc simple + livre séparé comme avant
-- [ ] Mode rapide activé : les rôles sont révélés (message + objets de rôle + pouvoir jour/nuit) **dès la fin de l'invincibilité**, sans attendre `roleRevealMinutes`
-- [ ] Mode rapide activé : le PVP s'active et le vote s'ouvre **au même instant**, au délai réglé par `/lg delais rapide` (10 min par défaut)
-- [ ] Mode rapide désactivé (mode normal) : `/lg start` se comporte exactement comme avant (pas de stuff de départ, révélation/pvp/vote à leurs délais respectifs `/lg delais`), aucune régression
-- [ ] Désactiver le mode rapide après l'avoir activé, puis relancer une partie : les valeurs `revelation`/`pvp`/`vote` du mode normal (configurées via `/lg delais`) n'ont pas été altérées entre-temps
+- [🟢] Clic sur l'item du menu principal (laine rouge par défaut) : bascule en "activé" (laine verte), reclic revient à "désactivé" — pas de commande dédiée pour ce toggle, uniquement le menu
+- [🟢] Mode rapide activé + `/lg start` : chaque joueur reçoit au scattering, en plus des steaks, un casque/jambières/bottes en fer Protection III et un **plastron en diamant** Protection II, une **épée en diamant** Tranchant III (IV si rôle solitaire), un **arc** Puissance III (IV si Chasseur ou rôle solitaire), 2 stacks de feuilles de chêne, 2 stacks de flèches, 10 pommes d'or et 32 lingots de fer
+- [🟢] Un rôle solitaire en mode rapide ne reçoit **pas** le livre Tranchant IV habituel à la révélation (son épée du kit l'a déjà) ; en mode normal, il le reçoit toujours
+- [🟢] Cupidon en mode rapide : à la révélation, ne reçoit **ni** second arc **ni** livre séparé — l'arc du kit déjà en sa possession devient directement Puissance IV + Punch I ; en mode normal, il garde son arc simple + livre séparé comme avant
+- [🟢] Mode rapide activé : les rôles sont révélés (message + objets de rôle + pouvoir jour/nuit) **dès la fin de l'invincibilité**, sans attendre `roleRevealMinutes`
+- [🟢] Mode rapide activé : le PVP s'active et le vote s'ouvre **au même instant**, au délai réglé par `/lg delais rapide` (10 min par défaut)
+- [🟢] Mode rapide désactivé (mode normal) : `/lg start` se comporte exactement comme avant (pas de stuff de départ, révélation/pvp/vote à leurs délais respectifs `/lg delais`), aucune régression
+- [🟢] Désactiver le mode rapide après l'avoir activé, puis relancer une partie : les valeurs `revelation`/`pvp`/`vote` du mode normal (configurées via `/lg delais`) n'ont pas été altérées entre-temps
 
 ### Verrou d'expérience à 30 (tous modes)
 - [🟢] Chaque joueur démarre la partie (scattering) avec exactement le niveau 30 et une barre d'XP vide
@@ -187,22 +187,22 @@
 - [🟢] Une fois le PVP activé : la mort redevient réelle dans les mêmes conditions
 
 ### Système de mort en deux temps (refonte : vrai mode spectateur au lieu d'Invisibilité/Lenteur simulées)
-- [ ] Un coup mortel s'applique réellement (flash rouge, son de coup et recul visibles pour l'attaquant), mais la vie de la victime ne tombe jamais à 0 à ce moment (reste à 1, ou à la moitié de sa vie si déjà très basse) — **aucune animation de chute au sol** (limitation connue, réservée à la vraie mort)
-- [ ] Après ce coup, la victime passe en **vrai mode spectateur** au tick suivant (léger délai imperceptible), avec un titre "Vous agonisez..."
-- [ ] Deux coups mortels rapprochés sur la même victime (avant le passage en spectateur) ne déclenchent l'agonie qu'une seule fois, sans dégât excessif ni double déclenchement
-- [ ] Le joueur agonisant est bien invisible pour les autres joueurs, **y compris en vue 3ᵉ personne** de lui-même (l'ancien bug de corps semi-transparent a disparu, puisque le mode spectateur ne rend aucun corps du tout)
-- [ ] Le joueur agonisant ne peut ni bouger (position bloquée par `AgonyListener`, seule la rotation caméra est libre) ni subir/infliger de dégâts (natif au mode spectateur, plus besoin d'un listener dédié pour ça)
-- [ ] L'inventaire (armure comprise) n'est jamais touché ni caché pendant l'agonie (visible si on inspecte via `/lg` ou en cas de reconnexion) — contrairement à l'ancien système qui devait temporairement le retirer
-- [ ] Le joueur tue réellement 15 secondes plus tard (+ jusqu'à 10s supplémentaires si une offre de soin ou de conversion est en cours, voir sections dédiées) : repasse d'abord en survie à l'endroit exact de l'agonie, puis meurt et drop son inventaire normalement à cet endroit
-- [ ] Le message de mort (avec rôle révélé) et le kill crédité au bon joueur ne se déclenchent qu'à la mort réelle confirmée, jamais avant (donc jamais si le joueur est finalement sauvé)
-- [ ] Le respawn remet bien le joueur en mode spectateur (après la mort réelle, comme avant)
-- [ ] Une résurrection (Sorcière, Père des Loups, Ancien, Idiot du Village) repasse bien le joueur en survie avec sa vie et son inventaire intacts, sans qu'aucun message de mort/kill n'ait été envoyé entre-temps
-- [ ] `/lg tirer` (Chasseur) fonctionne bien pendant sa propre fenêtre de mort différée (commande, non affectée par le mode spectateur)
-- [ ] Un `/lg stop` ou la fin de partie pendant qu'un joueur agonise le repasse bien en survie (`GameEnder`/`DeathManager.resetAll`)
+- [🟢] Un coup mortel s'applique réellement (flash rouge, son de coup et recul visibles pour l'attaquant), mais la vie de la victime ne tombe jamais à 0 à ce moment (reste à 1, ou à la moitié de sa vie si déjà très basse) — **aucune animation de chute au sol** (limitation connue, réservée à la vraie mort)
+- [🟢] Après ce coup, la victime passe en **vrai mode spectateur** au tick suivant (léger délai imperceptible), avec un titre "Vous agonisez..."
+- [🟢] Deux coups mortels rapprochés sur la même victime (avant le passage en spectateur) ne déclenchent l'agonie qu'une seule fois, sans dégât excessif ni double déclenchement
+- [🟢] Le joueur agonisant est bien invisible pour les autres joueurs, **y compris en vue 3ᵉ personne** de lui-même (l'ancien bug de corps semi-transparent a disparu, puisque le mode spectateur ne rend aucun corps du tout)
+- [🟢] Le joueur agonisant ne peut ni bouger (position bloquée par `AgonyListener`, seule la rotation caméra est libre) ni subir/infliger de dégâts (natif au mode spectateur, plus besoin d'un listener dédié pour ça)
+- [🟢] L'inventaire (armure comprise) n'est jamais touché ni caché pendant l'agonie (visible si on inspecte via `/lg` ou en cas de reconnexion) — contrairement à l'ancien système qui devait temporairement le retirer
+- [🟢] Le joueur tue réellement 15 secondes plus tard (+ jusqu'à 10s supplémentaires si une offre de soin ou de conversion est en cours, voir sections dédiées) : repasse d'abord en survie à l'endroit exact de l'agonie, puis meurt et drop son inventaire normalement à cet endroit
+- [🟢] Le message de mort (avec rôle révélé) et le kill crédité au bon joueur ne se déclenchent qu'à la mort réelle confirmée, jamais avant (donc jamais si le joueur est finalement sauvé)
+- [🟢] Le respawn remet bien le joueur en mode spectateur (après la mort réelle, comme avant)
+- [🟢] Une résurrection (Sorcière, Père des Loups, Ancien, Idiot du Village) repasse bien le joueur en survie avec sa vie et son inventaire intacts, sans qu'aucun message de mort/kill n'ait été envoyé entre-temps
+- [🟢] `/lg tirer` (Chasseur) fonctionne bien pendant sa propre fenêtre de mort différée (commande, non affectée par le mode spectateur)
+- [🟢] Un `/lg stop` ou la fin de partie pendant qu'un joueur agonise le repasse bien en survie (`GameEnder`/`DeathManager.resetAll`)
 
 ### Potion de vie de la Sorcière (offre automatique, remplace l'ancien `/lg soigner` disponible à tout moment)
 - [🟢] Si une Sorcière vivante n'a pas encore utilisé sa potion de vie : à la fin de l'agonie (15s) de tout joueur qui n'est pas éligible à l'infection, la mort réelle est suspendue et la Sorcière reçoit un message cliquable "[Soigner]" pendant 10 secondes
-- [ ] En cliquant (ou via `/lg soigner <joueur>`) dans les 10s : le joueur est sauvé (repasse en survie, inventaire intact puisqu'il n'a jamais été touché), la Sorcière gagne +1 honneur, sa potion de vie est consommée
+- [🟢] En cliquant (ou via `/lg soigner <joueur>`) dans les 10s : le joueur est sauvé (repasse en survie, inventaire intact puisqu'il n'a jamais été touché), la Sorcière gagne +1 honneur, sa potion de vie est consommée
 - [🟢] Sans réaction de la Sorcière dans les 10s : la mort réelle a bien lieu normalement
 - [🟢] Si aucune Sorcière n'est vivante, ou si sa potion de vie est déjà utilisée : aucune offre n'est envoyée, la mort réelle a lieu immédiatement à la fin de l'agonie
 - [🟢] La Sorcière peut recevoir l'offre pour sa propre mort et se sauver elle-même (`/lg soigner <sonNom>`)
@@ -223,7 +223,7 @@
 - [🟢] Le Loup Blanc ne participe **pas** à la corruption (solo, hors meute)
 - [🟢] Quand un joueur corrompu à 100% meurt de la main d'un Loup-Garou ou Père des Loups (pas un autre camp) : sa mort réelle est suspendue, et c'est le **Père des Loups** (pas la victime) qui reçoit un message cliquable dans le chat pendant 10 secondes ("Infecter" / "Laisser mourir")
 - [🟢] Si aucun Père des Loups n'est vivant au moment du kill : la victime meurt normalement, aucune offre n'est envoyée
-- [ ] En cliquant "Infecter" (ou `/lg infecter <joueur>`) dans les 10s : la victime devient Loup-Garou, repasse en survie (inventaire intact), rejoint la liste des loups connus (et réciproquement), `/lg regle` reflète le nouveau rôle
+- [🟢] En cliquant "Infecter" (ou `/lg infecter <joueur>`) dans les 10s : la victime devient Loup-Garou, repasse en survie (inventaire intact), rejoint la liste des loups connus (et réciproquement), `/lg regle` reflète le nouveau rôle
 - [🟢] En cliquant "Laisser mourir" (ou `/lg laissermourir <joueur>`) : la mort réelle a lieu immédiatement, sans attendre la fin des 10s
 - [🟢] Sans réponse du Père des Loups dans les 10s : la mort réelle a bien lieu normalement (comportement par défaut)
 - [🟢] La victime elle-même ne reçoit aucun message pendant ce délai (silencieux jusqu'au résultat final)
@@ -253,9 +253,9 @@
 ### Rôles (un par un, en conditions réelles avec plusieurs joueurs)
 - [🟢] **Villageois** : aucun comportement particulier
 - [🟢] **Loup-Garou** : Force I la nuit, retirée le jour ; `/lg regle` liste bien les autres Loups-Garous/Père des Loups de la partie (pas lui-même)
-- [ ] **Père des Loups** : Force I comme un loup, corrompt les autres joueurs plus vite qu'un Loup-Garou classique (voir section Corruption) ; `/lg regle` liste bien les autres loups
-- [ ] **Grand Méchant Loup** : Force I en **permanence**, jour et nuit (contrairement au Loup-Garou classique qui la perd le jour) ; tous les autres aspects d'un loup normal fonctionnent (corruption, `/lg loups`, liste des loups connus, bonus de kill Speed/Absorption)
-- [ ] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups, Grand Méchant Loup **et** Loup Blanc
+- [🟢] **Père des Loups** : Force I comme un loup, corrompt les autres joueurs plus vite qu'un Loup-Garou classique (voir section Corruption) ; `/lg regle` liste bien les autres loups
+- [🟢] **Grand Méchant Loup** : Force I en **permanence**, jour et nuit (contrairement au Loup-Garou classique qui la perd le jour) ; tous les autres aspects d'un loup normal fonctionnent (corruption, `/lg loups`, liste des loups connus, bonus de kill Speed/Absorption)
+- [🟢] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups, Grand Méchant Loup **et** Loup Blanc
 - [ ] **Loup-Garou Craintif** : tous les aspects normaux d'un loup (corruption, `/lg loups`, liste des loups connus) — mais Force I/Faiblesse/Résistance dynamiques selon le nombre de Loups-Garous à moins de 20 blocs (lui inclus), recalculé toutes les 5 secondes
   - [ ] Plus de 4 loups à portée → Faiblesse I
   - [ ] 2 loups ou moins à portée → Résistance I le jour, Force I la nuit (aucun effet si entre 3 et 4 loups à portée)
@@ -266,13 +266,13 @@
   - [ ] Corrompu à 100% et tué par un loup : **aucune offre d'infection** n'est envoyée au Père des Loups (mort réelle directe)
   - [ ] Tué alors qu'une Sorcière vivante a encore sa potion de vie : **aucune offre de soin** ne lui est envoyée (mort réelle directe)
   - [ ] Tous les effets (Faiblesse, Résistance, bonus de vitesse) sont bien nettoyés en fin de partie (`CraintifManager.clear`)
-- [ ] **Loup-Garou Perfide** : tous les aspects normaux d'un loup (Force I la nuit, corruption, `/lg loups`, liste des loups connus)
-  - [ ] Retirer toute son armure pendant la nuit déclenche l'invisibilité 5 minutes, 1x/nuit (comme la Petite Fille)
-  - [ ] Remettre une pièce d'armure annule l'effet pour le reste de la nuit (pas de réactivation avant la nuit suivante)
-  - [ ] Le jour, l'invisibilité est retirée automatiquement même si les 5 minutes ne sont pas écoulées
+- [🟢] **Loup-Garou Perfide** : tous les aspects normaux d'un loup (Force I la nuit, corruption, `/lg loups`, liste des loups connus)
+  - [🟢] Retirer toute son armure pendant la nuit déclenche l'invisibilité 5 minutes, 1x/nuit (comme la Petite Fille)
+  - [🟢] Remettre une pièce d'armure annule l'effet pour le reste de la nuit (pas de réactivation avant la nuit suivante)
+  - [🟢] Le jour, l'invisibilité est retirée automatiquement même si les 5 minutes ne sont pas écoulées
   - [ ] Pendant l'invisibilité, seuls la Petite Fille et le Feu Follet (vivants) voient ses particules ; les autres joueurs ne voient rien
   - [ ] Il voit aussi les particules d'une Petite Fille ou d'un Feu Follet actuellement invisible
-  - [ ] Partage bien le même mécanisme que la Petite Fille (`NightInvisibilityRole`, `InvisibilityListener` généralisé — vérifier qu'aucune régression n'est apparue pour la Petite Fille elle-même)
+  - [🟢] Partage bien le même mécanisme que la Petite Fille (`NightInvisibilityRole`, `InvisibilityListener` généralisé — vérifier qu'aucune régression n'est apparue pour la Petite Fille elle-même)
 - [ ] **Vilain Petit Loup** : tous les aspects normaux d'un loup (corruption, `/lg loups`, liste des loups connus), mais **pas** de Force I classique (ni jour, ni nuit)
   - [ ] Bonus de dégâts au corps-à-corps équivalent à Force 0.5 (+1.5 dégâts) actif en permanence, jour **et** nuit
   - [ ] Bonus de vitesse de déplacement (Speed 0.5, custom) actif uniquement la nuit, retiré au lever du jour
@@ -316,19 +316,19 @@
 - [🟢] **Cupidon** : reçoit un arc simple + livre Puissance IV + Punch I + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
 - [🟢] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering
   - [🟢] Aucun contrat avant l'activation du PVP (`/lg regle` dit "Aucun contrat actif")
-  - [ ] Premier contrat reçu **à l'activation du PVP** (testable via `/lg forcepvp`, pas besoin d'attendre 30 min)
-  - [ ] Tuer la cible du 1er contrat donne un arc Puissance IV + 64 flèches et marque le contrat "rempli"
-  - [ ] Tuer la cible du 2e contrat donne des bottes en diamant Chute Amortie III
-  - [ ] Le second contrat n'arrive **pas** tout de suite après le premier, mais au **lever du jour suivant** (nouvel épisode)
+  - [🟢] Premier contrat reçu **à l'activation du PVP** (testable via `/lg forcepvp`, pas besoin d'attendre 30 min)
+  - [🟢] Tuer la cible du 1er contrat donne un arc Puissance IV + 64 flèches et marque le contrat "rempli"
+  - [🟢] Tuer la cible du 2e contrat donne des bottes en diamant Chute Amortie III
+  - [🟢] Le second contrat n'arrive **pas** tout de suite après le premier, mais au **lever du jour suivant** (nouvel épisode)
   - [ ] Si la cible du contrat en cours meurt d'une autre main (PVP, chute...), le contrat est annulé (message au Chasseur de Primes) et le contrat suivant arrive au lever du jour suivant, comme pour un succès
   - [ ] Une fois les 2 contrats résolus (remplis ou annulés), `/lg regle` affiche "Vous n'avez plus de contrat à accomplir"
 - [🟢] **Loup Blanc** : reçoit Force I la nuit comme un loup ; `/lg regle` liste bien les Loups-Garous/Père des Loups de la partie ; reçoit le livre Tranchant IV comme tout solo ; camp `Solitaire` dans le scoreboard (pas `Loups`) ; gagne seul même si tous les autres morts sont des loups
   - [🟢] Obtient bien 15 cœurs (30 PV) au moment de la révélation des rôles, plein de vie à cet instant
   - [🟢] Le bonus de cœurs est bien nettoyé en fin de partie (`/lg stop` ou victoire), retour à 10 cœurs normaux au lobby
 - [🟢] **Ange** : reçoit le livre Tranchant IV comme tout solo ; à la révélation, `/lg regle` invite à choisir sa forme
-  - [ ] `/lg ange dechu` : passe à 12 cœurs, une cible vivante aléatoire est assignée (rôle révélé dans le message et via `/lg regle`)
+  - [🟢] `/lg ange dechu` : passe à 12 cœurs, une cible vivante aléatoire est assignée (rôle révélé dans le message et via `/lg regle`)
   - [ ] Tuer sa cible (crédité comme tueur) fait passer l'Ange Déchu à 15 cœurs (message dédié) ; gagne seul
-  - [ ] `/lg ange gardien` : passe à 15 cœurs, un protégé vivant aléatoire est assigné (rôle révélé) ; l'Ange rejoint le camp effectif de son protégé (`teamOverride`, vérifier le scoreboard)
+  - [🟢] `/lg ange gardien` : passe à 15 cœurs, un protégé vivant aléatoire est assigné (rôle révélé) ; l'Ange rejoint le camp effectif de son protégé (`teamOverride`, vérifier le scoreboard)
   - [ ] Si le protégé meurt : l'Ange Gardien passe à 12 cœurs + Faiblesse I permanente, redevient solitaire (`teamOverride` retiré), doit désormais gagner seul
   - [ ] `/lg regen` : utilisable seulement en forme Gardien, seulement si le protégé est sous 4 cœurs et vivant, 1x/partie — donne Régénération I 1 minute au protégé
   - [ ] Impossible de choisir une forme deux fois, ou avant la révélation des rôles
@@ -355,10 +355,10 @@
   - [ ] Clic droit avec la Plume : téléporte 50 blocs dans la direction visée (s'arrête avant un mur/obstacle rencontré en chemin), 1x/10 minutes réelles, message si pas encore rechargée
   - [ ] Chaque début de nuit : révèle le rôle d'un joueur aléatoire à moins de 50 blocs (message privé) ; si personne à portée, message dédié et aucune info cette nuit-là
   - [ ] Tous les effets (Invisibilité, Speed) sont bien nettoyés en fin de partie, pas de fuite après `/lg stop`
-- [ ] **Imitateur** : Force I permanente (jour et nuit) dès la révélation
-  - [ ] La Force I disparaît automatiquement au milieu de l'épisode 6 (transition vers la nuit de l'épisode 6), sans avoir besoin de tuer qui que ce soit
-  - [ ] La première victime qu'il tue (peu importe le camp) lui transmet son rôle : `/lg me` et `/lg regle` affichent le nouveau rôle juste après le kill, message dédié reçu
-  - [ ] Le rôle copié est une version **neuve** (charges/cooldowns non consommés), pas l'état exact de la victime
+- [🟢] **Imitateur** : Force I permanente (jour et nuit) dès la révélation
+  - [🟢] La Force I disparaît automatiquement au milieu de l'épisode 6 (transition vers la nuit de l'épisode 6), sans avoir besoin de tuer qui que ce soit
+  - [🟢] La première victime qu'il tue (peu importe le camp) lui transmet son rôle : `/lg me` et `/lg regle` affichent le nouveau rôle juste après le kill, message dédié reçu
+  - [🟢] Le rôle copié est une version **neuve** (charges/cooldowns non consommés), pas l'état exact de la victime
   - [ ] Il reçoit immédiatement les objets associés au rôle copié (arc du Chasseur, livres du Cupidon/Bienfaiteur, etc.) et le message d'explication du nouveau rôle
   - [ ] La Force I est immédiatement retirée dès qu'il imite un rôle (même si le milieu de l'épisode 6 n'est pas encore atteint)
   - [ ] Un second kill après avoir déjà imité un rôle **ne déclenche pas** une seconde imitation (il n'est plus Imitateur, désormais un rôle normal)
@@ -369,12 +369,12 @@
   - [ ] **Copie du Cupidon, cas 2 (victime avait déjà lié 2 joueurs)** : devient immédiatement membre du camp Amoureux existant, sa potion de lien est déjà consommée, il remplace la victime comme "Cupidon" du couple (si les deux amoureux meurent plus tard, c'est lui qui redeviendrait Villageois)
   - [ ] **Copie du Cupidon, cas 3 (les deux amoureux de la victime étaient déjà morts)** : la victime était déjà redevenue Villageois avant sa mort, donc l'Imitateur copie simplement Villageois (comportement automatique, rien de spécial à coder/tester à part vérifier que ça tombe bien sur Villageois)
   - [ ] **Copie de l'Ange** : reste Solitaire par défaut (Déchu) ; s'il choisit ensuite Gardien via `/lg ange`, son camp change bien pour rejoindre son protégé (pas de verrouillage forcé pour ce rôle précis, contrairement aux autres)
-  - [ ] Pour tous les autres rôles (Villageois, Sorcière, Voyante, Petite Fille, Salvateur, Ancien, Idiot du Village, Bienfaiteur) : camp verrouillé Solitaire en permanence malgré le nouveau rôle
+  - [🟢] Pour tous les autres rôles (Villageois, Sorcière, Voyante, Petite Fille, Salvateur, Ancien, Idiot du Village, Bienfaiteur) : camp verrouillé Solitaire en permanence malgré le nouveau rôle
 - [🟢] **Joueur de Flûte** : reçoit le livre Tranchant IV (comme tout solo), pas de Flûte de départ (doit la fabriquer) — bug trouvé et corrigé : à la révélation (10 min après le début), l'inventaire du joueur n'est plus vide (ressources minées entre-temps), et `Inventory.addItem()` ne fait **pas** apparaître au sol l'objet s'il ne reste plus de place, il est silencieusement perdu ; touchait potentiellement tous les objets de rôle donnés à la révélation (livres, arcs, plume du Feu Follet), pas seulement ce livre. Corrigé via un nouveau helper `GameStarter.giveItem()` qui droppe au sol tout surplus retourné par `addItem()`.
-  - [ ] Craft d'une Flûte : 8 lingots d'or autour d'un bâton (recette 3x3) → 1 bâton nommé "§6Flûte" (changé depuis une Corne de Chèvre qui jouait un son de cor au clic droit, pas discret) — à revalider que le clic droit ne fait plus aucun bruit
-  - [ ] Tant qu'il porte une Flûte dans son inventaire (pas besoin de l'avoir en main), charme tous les joueurs vivants à moins de 20 blocs à 1% toutes les 4 secondes (aucune info donnée aux charmés, mécanisme silencieux)
-  - [ ] Sans Flûte dans l'inventaire, le charme passif s'arrête immédiatement
-  - [ ] Frapper un joueur au corps-à-corps donne +10% de charme instantané, une seule fois par joueur (un second coup sur le même joueur ne fait rien)
+  - [🟢] Craft d'une Flûte : 8 lingots d'or autour d'un bâton (recette 3x3) → 1 bâton nommé "§6Flûte" (changé depuis une Corne de Chèvre qui jouait un son de cor au clic droit, pas discret) — à revalider que le clic droit ne fait plus aucun bruit
+  - [🟢] Tant qu'il porte une Flûte dans son inventaire (pas besoin de l'avoir en main), charme tous les joueurs vivants à moins de 20 blocs à 1% toutes les 4 secondes (aucune info donnée aux charmés, mécanisme silencieux)
+  - [🟢] Sans Flûte dans l'inventaire, le charme passif s'arrête immédiatement
+  - [🟢] Frapper un joueur au corps-à-corps donne +10% de charme instantané, une seule fois par joueur (un second coup sur le même joueur ne fait rien)
   - [🟢] Clic droit avec une Flûte en main + un joueur visé à moins de 5 blocs (ligne de mire) : lui donne une Flûte (consomme 1 Flûte de son inventaire), message de confirmation à lui uniquement
   - [🟢] Impossible de donner une seconde Flûte à un joueur qui en a déjà reçu une
   - [🟢] Le joueur ayant reçu une Flûte ne peut pas la jeter (`/drop` ou touche Q annulés avec message)
@@ -508,9 +508,22 @@
 - **Ce correctif était nécessaire mais pas suffisant** : un nouveau log fourni après redéploiement montre un gel de 10+ secondes **à un endroit différent** — cette fois directement dans `WorldManager.pregenerateScatterArea`, sur le tout premier appel à `world.getChunkAtAsync(...)` de la boucle. Thread dump confirmé : le thread principal reste bloqué dans le système de tickets de chunks du serveur (contention de verrous internes), non pas parce que le chargement est synchrone, mais parce que ~2600 appels à `getChunkAtAsync` sont lancés d'un coup dans une seule boucle `for` sans étalement — même si chaque appel est individuellement asynchrone, en solliciter des milliers en une seule frame serveur contend avec le système de chunks au point de bloquer le thread principal. La partie a fini par démarrer après ~6 minutes (pas de crash, juste très lent et avec des watchdogs à répétition).
 - **Correctif appliqué** : `pregenerateScatterArea` étale désormais les appels `getChunkAtAsync` sur plusieurs ticks (`PREGEN_CHUNKS_PER_TICK` = 20 par tick via `runTaskTimer`, au lieu d'une seule boucle synchrone qui les lance tous d'un coup). Le `CompletableFuture` exposé (`getPregenerationFuture()`) ne se termine qu'une fois tous les chunks effectivement demandés ET chargés. Ce correctif élimine le gel mais **ne réduit pas le temps total** de génération (~6 min pour une bordure de 1000 blocs sur ce matériel) : pour ça, il faudrait réduire la taille de la bordure (`/lg bordure`), pas de levier côté code.
 - **Root cause traité à la racine (sur demande explicite, sans changer la bordure)** : le view-distance/simulation-distance du serveur a été réduit côté config (6, en dehors du plugin). Côté code, `WorldManager` ne pré-génère plus tout le rayon de scattering (~2600 chunks) mais **seulement ce qui sera réellement utilisé** : `prepareGameWorld(int scatterCount)` reçoit désormais le nombre de joueurs inscrits et `pregenerateForLaunch` ne demande que ces `scatterCount` positions de scatter (tirées et validées à l'avance via `attemptScatterLocation`, retry asynchrone récursif si eau/lave, jusqu'à 10 tentatives) + le voisinage 3x3 des 4 maisons de vote — au lieu de toute la zone. `findScatterLocation` (synchrone, forçait un chargement de chunk bloquant) est supprimée, remplacée par `takeScatterLocation` qui consomme une position déjà calculée et déjà chargée. Gain attendu : quelques dizaines de chunks à générer/garder en mémoire au lieu de milliers, donc RAM et temps de lancement bien plus bas, sans changer la taille de la bordure ni la zone où les joueurs peuvent se déplacer.
-- [ ] À revalider en jeu : relancer plusieurs parties, y compris rapprochées (comme dans les logs), et vérifier qu'aucun watchdog/gel ne se reproduit à aucune étape (ni pré-génération, ni maisons de vote, ni scattering), et que le lancement est nettement plus rapide qu'avant (bien en dessous des ~6 min constatées).
-- [ ] Vérifier l'usage mémoire après plusieurs parties rapprochées (le scénario exact du bug rapporté) pour confirmer que le pic de RAM disparaît ou diminue nettement.
-- [ ] Vérifier que le scattering ne place jamais deux joueurs sur des positions identiques/aberrantes (le nouveau système tire les positions indépendamment par joueur, comme l'ancien) et que les maisons de vote se construisent normalement (pas de bloc manquant à cause d'un chunk voisin non chargé).
+- [🟢] À revalider en jeu : relancer plusieurs parties, y compris rapprochées (comme dans les logs), et vérifier qu'aucun watchdog/gel ne se reproduit à aucune étape (ni pré-génération, ni maisons de vote, ni scattering), et que le lancement est nettement plus rapide qu'avant (bien en dessous des ~6 min constatées).
+- [🔴] Vérifier l'usage mémoire après plusieurs parties rapprochées (le scénario exact du bug rapporté) pour confirmer que le pic de RAM disparaît ou diminue nettement.
+- [🟢] Vérifier que le scattering ne place jamais deux joueurs sur des positions identiques/aberrantes (le nouveau système tire les positions indépendamment par joueur, comme l'ancien) et que les maisons de vote se construisent normalement (pas de bloc manquant à cause d'un chunk voisin non chargé).
 
 
-- le joueur de flute n'a pas son livre tranchant IV
+## bug — joueur figé pour les autres au moment d'un tp (début/fin de partie)
+
+- Signalé : un joueur (Java **et** Bedrock) peut se déplacer normalement de son côté, mais reste figé à l'endroit du tp pour les autres joueurs, au moment du scattering (début de partie) ou du retour au lobby (fin de partie/`/lg stop`).
+- Cause identifiée pour la fin de partie : `GameEnder.end()` appelait `player.spigot().respawn()` **puis**, sans condition, `player.setGameMode(GameMode.SURVIVAL)` + `player.teleport(lobbySpawn)` juste après, dans le même tick, pour TOUS les joueurs y compris ceux qui venaient d'être respawnés. Or `respawn()` déclenche déjà `PlayerRespawnEvent` → `PlayerDeathListener.onRespawn()`, qui repositionne au lobby (`event.setRespawnLocation`) et programme le passage en survie au tick suivant. Faire un second `teleport()` immédiatement après ce respawn (deux repositionnements concurrents dans la même fenêtre) provoque une désynchronisation de la position broadcastée aux autres joueurs, alors que le client du joueur lui-même absorbe la correction sans problème apparent.
+- Corrigé : `GameEnder.end()` ne fait plus le `setGameMode`/`teleport` manuel que pour les joueurs qui n'étaient **pas** morts (`respawn()` gère déjà entièrement le cas des joueurs morts).
+- [ ] À revalider : `/lg stop` ou fin de partie avec au moins un joueur mort/en agonie au moment de l'arrêt — vérifier qu'il est bien visible en mouvement pour les autres une fois de retour au lobby.
+- [ ] Cause encore non identifiée pour le cas "début de partie" (scattering) : le code de téléportation dans `GameStarter.continueLaunch` ne fait qu'un seul `teleport()` par joueur, pas de double repositionnement équivalent trouvé. Pourrait être lié au problème de mémoire/performance ci-dessous plutôt qu'à un bug de code isolé — à revalider après un test propre, et fournir un nouveau log si ça se reproduit.
+
+## bug — la mémoire ne redescend pas après une partie
+
+- Signalé : le pic de RAM constaté pendant la génération/pré-génération du monde ne redescend pas une fois la partie terminée (`/lg stop` ou victoire), même après `WorldManager.clearGameWorld()`.
+- Cause identifiée : `GameEnder.end()` appelait seulement `worldManager.clearGameWorld()` (qui ne fait que libérer la référence Java, `gameWorld = null`) — le monde de partie n'était en réalité déchargé (`Bukkit.unloadWorld`) qu'au **prochain** `/lg start` (dans `prepareGameWorld`). Entre deux parties, l'ancien monde restait donc entièrement chargé en mémoire (chunks, entités) sans qu'aucun joueur ne s'y trouve.
+- Corrigé : `GameEnder.end()` décharge maintenant le monde immédiatement (`Bukkit.unloadWorld`, après que tous les joueurs en aient été téléportés par la boucle qui précède), avant de libérer la référence. `WorldManager.prepareGameWorld()` garde son propre déchargement défensif (au cas où le monde n'a pas pu être libéré plus tôt, ex: `/lg stop` jamais appelé).
+- [ ] À revalider : surveiller la RAM du serveur juste après une fin de partie (pas seulement au prochain `/lg start`) pour confirmer que le pic redescend bien immédiatement.

@@ -120,12 +120,16 @@ public class GameEnder {
                     player.removePotionEffect(effect);
                 }
 
+                // Un joueur mort est repositionné par PlayerDeathListener.onRespawn() (déclenché par
+                // respawn(), qui gère déjà le lobbySpawn et le passage en survie) : appeler teleport()
+                // une seconde fois dans le même tick provoquait une désynchronisation de position pour
+                // les autres joueurs (le joueur se voyait bouger normalement, mais restait figé pour eux).
                 if (player.isDead()) {
                     player.spigot().respawn();
+                } else {
+                    player.setGameMode(GameMode.SURVIVAL);
+                    player.teleport(lobbySpawn);
                 }
-
-                player.setGameMode(GameMode.SURVIVAL);
-                player.teleport(lobbySpawn);
 
             }
 

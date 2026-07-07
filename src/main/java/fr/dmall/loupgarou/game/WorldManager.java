@@ -77,8 +77,18 @@ public class WorldManager implements Manager {
         return gameWorld;
     }
 
+    // Décharge le monde immédiatement en fin de partie (tous les joueurs viennent d'en être téléportés) au lieu
+    // d'attendre le prochain /lg start : sinon le monde restait chargé en mémoire (chunks, entités) sans aucun
+    // joueur dedans entre deux parties, gonflant la RAM du serveur qui ne redescendait jamais.
     public void clearGameWorld() {
+
+        if (gameWorld != null && !Bukkit.unloadWorld(gameWorld, false)) {
+            Bukkit.getLogger().warning("[LoupGarouPlugin] Le monde " + gameWorld.getName()
+                    + " n'a pas pu être déchargé en fin de partie (chunks encore en cours de génération ?) — il restera en mémoire.");
+        }
+
         gameWorld = null;
+
     }
 
     public int getCenterX() {
