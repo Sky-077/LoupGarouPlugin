@@ -81,6 +81,7 @@
 - [ ] `/lg fake remove <nom>` et `/lg fake clear` suppriment bien le bot du serveur (plus dans le tab list) sans laisser d'erreur en console
 - [ ] Aucune erreur/exception dans les logs serveur pendant toute la durée de vie d'un bot (tick de jeu, changement jour/nuit, scoreboard, etc.)
 - [ ] Vérifier que le reste du plugin (tout le code sans NMS) continue de fonctionner normalement après la migration Java 25 / mappings Mojang natifs — aucune régression attendue (API Bukkit inchangée) mais premier vrai test en conditions réelles sur cette base
+- **🔵 En pause — hypothèse d'hébergeur, pas confirmée** : `/lg fake spawn TestBot villageois` fonctionne bien côté plugin (`TestBot joined the game`, `logged in with entity id 242` dans les logs), mais le serveur s'arrête tout seul 1 seconde plus tard. Ce n'est **pas un crash** (log `logs/latest.log` complet vérifié) : c'est un arrêt propre et normal (`Stopping server` → `Disabling LoupGarouPlugin` → `Saving players/worlds`, comme un `stop` tapé en console), sans aucune exception. Hypothèse la plus probable : l'hébergeur (Falix) fait tourner une détection anti-abus qui repère la connexion locale falsifiée (`TestBot[local]`, sans vraie authentification réseau — exactement le pattern utilisé par des plugins malveillants de crash/exploit) et coupe le serveur par précaution. Pas de confirmation reçue par email de Falix. Impossible de tester en local pour isoler la cause (pas d'environnement local disponible). **Mis en pause, pas abandonné** : le code `/lg fake`/`FakePlayerManager` reste en place (ne coûte rien tant qu'il n'est pas utilisé) ; à reprendre si besoin, soit en contactant le support Falix, soit en basculant vers une approche sans fausse connexion NMS (debug commands qui assignent un rôle à un vrai joueur connecté / forcent une valeur de corruption-charme, sans spawn de bot).
 
 ---
 
@@ -287,8 +288,8 @@
   - [🟢] Retirer toute son armure pendant la nuit déclenche l'invisibilité 5 minutes, 1x/nuit (comme la Petite Fille)
   - [🟢] Remettre une pièce d'armure annule l'effet pour le reste de la nuit (pas de réactivation avant la nuit suivante)
   - [🟢] Le jour, l'invisibilité est retirée automatiquement même si les 5 minutes ne sont pas écoulées
-  - [ ] Pendant l'invisibilité, seuls la Petite Fille et le Feu Follet (vivants) voient ses particules ; les autres joueurs ne voient rien
-  - [ ] Il voit aussi les particules d'une Petite Fille ou d'un Feu Follet actuellement invisible
+  - [🟢] Pendant l'invisibilité, seuls la Petite Fille et le Feu Follet (vivants) voient ses particules ; les autres joueurs ne voient rien
+  - [🟢] Il voit aussi les particules d'une Petite Fille ou d'un Feu Follet actuellement invisible
   - [🟢] Partage bien le même mécanisme que la Petite Fille (`NightInvisibilityRole`, `InvisibilityListener` généralisé — vérifier qu'aucune régression n'est apparue pour la Petite Fille elle-même)
 - [ ] **Vilain Petit Loup** : tous les aspects normaux d'un loup (corruption, `/lg loups`, liste des loups connus), mais **pas** de Force I classique (ni jour, ni nuit)
   - [ ] Bonus de dégâts au corps-à-corps équivalent à Force 0.5 (+1.5 dégâts) actif en permanence, jour **et** nuit
@@ -544,3 +545,6 @@
 - Cause identifiée : `GameEnder.end()` appelait seulement `worldManager.clearGameWorld()` (qui ne fait que libérer la référence Java, `gameWorld = null`) — le monde de partie n'était en réalité déchargé (`Bukkit.unloadWorld`) qu'au **prochain** `/lg start` (dans `prepareGameWorld`). Entre deux parties, l'ancien monde restait donc entièrement chargé en mémoire (chunks, entités) sans qu'aucun joueur ne s'y trouve.
 - Corrigé : `GameEnder.end()` décharge maintenant le monde immédiatement (`Bukkit.unloadWorld`, après que tous les joueurs en aient été téléportés par la boucle qui précède), avant de libérer la référence. `WorldManager.prepareGameWorld()` garde son propre déchargement défensif (au cas où le monde n'a pas pu être libéré plus tôt, ex: `/lg stop` jamais appelé).
 - [ ] À revalider : surveiller la RAM du serveur juste après une fin de partie (pas seulement au prochain `/lg start`) pour confirmer que le pic redescend bien immédiatement.
+
+## a rajouter 
+- les particules que voient les joueurs bedrock en etant feu follet ou un role qui peut voir l'invisibilite des autres roles invisibles sont trop grosse et rapide

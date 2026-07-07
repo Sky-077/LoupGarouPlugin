@@ -34,8 +34,18 @@ public class FakeSubCommand extends DebugSubCommand {
         return "[Debug] Faux joueurs de test : /lg fake spawn|remove|list|clear.";
     }
 
+    // Désactivée temporairement : /lg fake spawn a coïncidé avec un arrêt propre du serveur (probablement
+    // une protection anti-abus de l'hébergeur détectant la fausse connexion NMS locale), pas confirmé.
+    // Le code reste en place pour une reprise ultérieure, voir GUIDE_TEST.md.
+    private static final boolean ENABLED = false;
+
     @Override
     protected boolean executeDebug(CommandSender sender, String[] args) {
+
+        if (!ENABLED) {
+            sender.sendMessage("§cCette commande est temporairement désactivée.");
+            return true;
+        }
 
         if (args.length < 2) {
             sendUsage(sender);
