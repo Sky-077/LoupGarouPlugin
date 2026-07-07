@@ -6,6 +6,7 @@ import fr.dmall.loupgarou.game.CorruptionManager;
 import fr.dmall.loupgarou.game.CraintifManager;
 import fr.dmall.loupgarou.game.CycleManager;
 import fr.dmall.loupgarou.game.DeathManager;
+import fr.dmall.loupgarou.game.FakePlayerManager;
 import fr.dmall.loupgarou.game.GameManager;
 import fr.dmall.loupgarou.game.HostManager;
 import fr.dmall.loupgarou.game.LobbySpawnManager;
@@ -74,6 +75,7 @@ public final class LoupGarouPlugin extends JavaPlugin {
         managerRegistry.register(new StealthVisionManager());
         managerRegistry.register(new CharmManager());
         managerRegistry.register(new CraintifManager());
+        managerRegistry.register(new FakePlayerManager());
 
         managerRegistry.enableAll();
 

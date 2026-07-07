@@ -5,8 +5,8 @@
 - Plugin Minecraft **Paper** qui recrée le fonctionnement du plugin **LG UHC** de TheGuill / uhcworld.fr (Loup-Garou + UHC en PVP libre).
 - Repo GitHub : https://github.com/Sky-077/LoupGarouPlugin.git (branche `main`)
 - Package racine : `fr.dmall.loupgarou`
-- Java 21, Gradle Kotlin DSL, `io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT` (`compileOnly`).
-- Le développeur teste souvent **seul** (pas toujours 3 comptes Minecraft dispo) → des commandes de debug existent pour contourner les contraintes (voir plus bas).
+- Java 21, Gradle Kotlin DSL. Depuis l'ajout des faux joueurs de test (voir plus bas), le build utilise `paperweight-userdev` (`paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")`) au lieu d'un simple `compileOnly("io.papermc.paper:paper-api:...")` — nécessaire pour accéder aux classes internes NMS (mappings Mojang). **`./gradlew build` produit désormais deux jars** dans `build/libs/` : `LoupGarouPlugin-1.0.0.jar` (jar reobfusqué/déployable, celui à copier sur le serveur — chemin inchangé par rapport à avant) et `LoupGarouPlugin-1.0.0-dev.jar` (mappings Mojang bruts, **ne tourne pas** sur un serveur Paper/Purpur classique, à ignorer). Le premier téléchargement de `paperweight-userdev` (dev bundle) est plus lourd que l'ancien `paper-api` seul et peut re-déclencher le blocage SSL AVG déjà rencontré (voir plus bas) — même contournement (désactiver le Web Shield le temps du téléchargement).
+- Le développeur teste souvent **seul** (pas toujours 3 comptes Minecraft dispo) → des commandes de debug existent pour contourner les contraintes (voir plus bas), y compris de faux joueurs (`/lg fake`, voir section dédiée).
 
 ## Règles de travail à respecter absolument
 
@@ -185,6 +185,14 @@ Basées sur `LGPlayer.getEffectiveTeam()` (pas `role.getTeam()` directement, pou
 - **Seaux de lave désactivés** (`LavaBucketListener`, annule `PlayerBucketEmptyEvent` pour `LAVA_BUCKET`).
 - **Enclume aussi plafonnée** (`onAnvilPrepare(PrepareAnvilEvent)` + `applyEnchantCaps`) : le résultat prévisualisé à l'enclume subit les mêmes plafonds catégorie/Solidité que la table, pour les objets directs et pour les livres enchantés (`EnchantmentStorageMeta`) — ferme la porte dérobée qui permettait de dépasser un plafond en fusionnant deux objets identiques obtenus légitimement via la table.
 - La correspondance aperçu/résultat de la table est garantie via un cache (`shownLevels`, un niveau exact par bouton d'offre 0/1/2 rempli dans `onPrepare`) que `onEnchant` réutilise au lieu de faire confiance au tirage interne de Minecraft (`EnchantItemEvent.whichButton()`), qui pouvait diverger de l'aperçu affiché.
+
+## Faux joueurs de test (`FakePlayerManager`, `/lg fake`)
+
+- Objectif : tester en solo les rôles qui ont besoin de la proximité de plusieurs joueurs (corruption, charme, Loup-Garou Craintif, votes...) sans avoir besoin de plusieurs comptes réels.
+- **De vrais `ServerPlayer` NMS**, pas de simples mobs déguisés : nécessaire car la quasi-totalité de la logique de proximité (`CorruptionManager`, `CharmManager`, `CraintifManager`, `VoteManager`...) itère sur `game.getPlayers()` puis résout chaque `LGPlayer` en `Player` réel via `Bukkit.getPlayer(uuid)` — un mob normal n'y apparaîtrait jamais. `FakePlayerManager.spawn()` construit un `ServerPlayer` avec un `GameProfile` factice (UUID aléatoire) et l'enregistre auprès du `PlayerList` du serveur (`placeNewPlayer`, comme une vraie connexion) via une `Connection` reliée à un `EmbeddedChannel` Netty dont les écritures sortantes sont simplement avalées (personne n'est réellement connecté de l'autre côté) — le bot apparaît donc comme un joueur en ligne normal (tab list, `Bukkit.getOnlinePlayers()`, scoreboard) sans jamais planter sur l'envoi de paquets. Aucune IA : le bot reste immobile à l'endroit du spawn.
+- **`/lg fake spawn <nom> <role>`** (debug, OP) : spawne le bot à la position du joueur qui exécute la commande, lui assigne directement le rôle donné (`RoleFactory.create`, **jamais** réassigné ensuite — n'entre pas dans le tirage aléatoire de `RoleManager.assignRoles`, donc invisible à `/lg role`/au pool). Si une partie est en cours (`game.getState() != WAITING`), le bot est ajouté à `game.getPlayers()` (sinon les systèmes de proximité/vote ne le voient pas) et `RoleManager.assignKnownWolves()` (rendue publique pour ce cas) est rappelée si le rôle est un loup, pour qu'il rejoigne/soit rejoint par la liste `knownWolves`.
+- **`/lg fake remove <nom>`** / **`/lg fake clear`** : désinscrit le bot du `PlayerList` (`PlayerList.remove`), le retire de `game.getPlayers()` si présent, et oublie son `LGPlayer` via `PlayerManager.forget(uuid)` (nouvelle méthode, à ne jamais utiliser pour un vrai joueur — `PlayerManager` ne supprime plus les vrais joueurs à la déconnexion, voir plus haut). **`/lg fake list`** affiche les bots actifs et leur rôle.
+- Portée volontairement limitée : pas de gestion spéciale pour la mort/l'agonie/le vote GUI d'un bot (hors scope, un bot ne clique pas) — outil de debug pour les systèmes passifs de proximité, pas un substitut complet à un vrai joueur.
 
 ## Commandes
 

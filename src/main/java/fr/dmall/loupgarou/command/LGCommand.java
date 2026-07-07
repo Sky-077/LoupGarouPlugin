@@ -48,6 +48,7 @@ public class LGCommand implements CommandExecutor {
         register(new HostSubCommand());
         register(new DelaisSubCommand());
         register(new MenuSubCommand());
+        register(new FakeSubCommand());
     }
 
     private void register(SubCommand subCommand) {

@@ -64,6 +64,22 @@
 | `/lg honneur <joueur> [valeur]` | Sans valeur : affiche l'honneur du joueur. Avec valeur (-3 à 3) : le règle directement et recalcule l'effet de cœur |
 | `/lg infection <joueur>` | Affiche le taux de corruption (%) actuel d'un joueur |
 | `/lg charme <joueur>` | Affiche le taux de charme (%) actuel d'un joueur (Joueur de Flûte) |
+| `/lg fake spawn <nom> <role>` | Spawne un faux joueur (vrai bot NMS) à la position de l'OP, avec le rôle donné fixé définitivement |
+| `/lg fake remove <nom>` | Supprime un faux joueur |
+| `/lg fake list` | Liste les faux joueurs actifs et leur rôle |
+| `/lg fake clear` | Supprime tous les faux joueurs |
+
+---
+
+### Faux joueurs de test (`/lg fake`, nouveau — nécessite le build paperweight-userdev)
+- [ ] `/lg fake spawn <nom> <role>` spawne bien un bot à la position de l'OP, visible dans le tab list et par les autres joueurs comme un vrai joueur (nom au-dessus de la tête, skin par défaut)
+- [ ] Le rôle assigné au spawn est correct (`/lg fake list` l'affiche) et n'est jamais réassigné par la suite (le bot n'apparaît pas dans le pool `/lg role`)
+- [ ] Spawné pendant une partie en cours (rôles révélés) : le bot compte bien pour la corruption (loup à proximité) et/ou le charme (Joueur de Flûte à proximité) en approchant un vrai joueur du bot ou l'inverse
+- [ ] Un bot avec un rôle Loup rejoint bien la liste `knownWolves` (visible via `/lg loups`/`/lg regle` des autres loups)
+- [ ] Le bot apparaît bien comme candidat/électeur dans le système de vote (compte dans les votes Village/Loups si son rôle le permet)
+- [ ] `/lg fake remove <nom>` et `/lg fake clear` suppriment bien le bot du serveur (plus dans le tab list) sans laisser d'erreur en console
+- [ ] Aucune erreur/exception dans les logs serveur pendant toute la durée de vie d'un bot (tick de jeu, changement jour/nuit, scoreboard, etc.)
+- [ ] `./gradlew build` produit bien `LoupGarouPlugin-1.0.0.jar` (déployable) — vérifier qu'on n'a pas accidentellement déployé `LoupGarouPlugin-1.0.0-dev.jar` (mappings Mojang, ne démarre pas sur Purpur)
 
 ---
 

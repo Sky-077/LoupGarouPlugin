@@ -138,7 +138,10 @@ public class RoleManager implements Manager {
 
     }
 
-    private void assignKnownWolves(List<LGPlayer> players) {
+    // Publique pour permettre à FakeSubCommand de relier un bot de test aux loups déjà en jeu
+    // (le bot n'entre pas dans le tirage aléatoire de assignRoles, donc les listes de loups connus
+    // ne sont sinon jamais recalculées pour lui).
+    public void assignKnownWolves(List<LGPlayer> players) {
 
         List<LGPlayer> wolves = players.stream()
                 .filter(lgPlayer -> lgPlayer.getRole() != null && lgPlayer.getRole().getTeam() == RoleTeam.LOUP)

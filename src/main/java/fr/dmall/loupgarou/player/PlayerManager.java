@@ -29,6 +29,12 @@ public class PlayerManager implements Manager {
         players.computeIfAbsent(player.getUniqueId(), LGPlayer::new);
     }
 
+    // Réservé aux faux joueurs de debug (FakeSubCommand) : contrairement à un vrai joueur (jamais oublié
+    // pour survivre à une reconnexion en pleine partie), un bot supprimé doit disparaître complètement.
+    public void forget(UUID uuid) {
+        players.remove(uuid);
+    }
+
     public LGPlayer get(Player player) {
         return players.get(player.getUniqueId());
     }
