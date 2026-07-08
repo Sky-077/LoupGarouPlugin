@@ -1,0 +1,32 @@
+require("dotenv").config();
+const { REST, Routes, SlashCommandBuilder } = require("discord.js");
+const roles = require("./roles");
+
+const { DISCORD_TOKEN, CLIENT_ID, GUILD_ID } = process.env;
+
+if (!DISCORD_TOKEN || !CLIENT_ID) {
+    console.error("DISCORD_TOKEN et CLIENT_ID sont requis dans .env");
+    process.exit(1);
+}
+
+const commands = roles.map((role) =>
+    new SlashCommandBuilder()
+        .setName(role.command)
+        .setDescription(`Affiche les infos du rôle ${role.name}`)
+        .toJSON()
+);
+
+const rest = new REST().setToken(DISCORD_TOKEN);
+
+(async () => {
+    const target = GUILD_ID
+        ? Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID)
+        : Routes.applicationCommands(CLIENT_ID);
+
+    console.log(`Déploiement de ${commands.length} commandes ${GUILD_ID ? "(guilde)" : "(globales, propagation ~1h)"}...`);
+    await rest.put(target, { body: commands });
+    console.log("Commandes déployées avec succès.");
+})().catch((error) => {
+    console.error(error);
+    process.exit(1);
+});
