@@ -1,6 +1,9 @@
 require("dotenv").config();
-const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
+const { Client, GatewayIntentBits, EmbedBuilder, MessageFlags } = require("discord.js");
 const roles = require("./roles");
+const { startKeepAliveServer } = require("./keepalive");
+
+startKeepAliveServer();
 
 const TEAM_COLORS = {
     VILLAGE: 0x57f287,
@@ -34,7 +37,11 @@ client.on("interactionCreate", async (interaction) => {
         .addFields({ name: "Camp", value: TEAM_LABELS[role.team] })
         .setDescription(role.lines.join("\n\n"));
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    try {
+        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+    } catch (error) {
+        console.error(`Échec de réponse pour /${interaction.commandName} :`, error.message);
+    }
 });
 
 client.login(process.env.DISCORD_TOKEN);

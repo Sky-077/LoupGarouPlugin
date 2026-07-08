@@ -17,3 +17,15 @@ Bot Discord séparé du plugin Minecraft (Node.js). Il ajoute une commande slash
 ## Mettre à jour les textes de rôle
 
 Les textes sont dans `src/roles.js`, un objet par rôle. Ils sont recopiés depuis les `getInstructions()` du plugin Java — si ces textes changent côté plugin, il faut répercuter manuellement le changement ici (pas de lien automatique entre les deux projets).
+
+## Hébergement permanent (Replit + UptimeRobot)
+
+Pour que le bot reste en ligne 24/7 sans payer ni fournir de carte bancaire :
+
+1. Créer un compte sur https://replit.com (gratuit, sans CB) et importer ce dossier `discord-bot` (import depuis GitHub, ou créer un Repl Node.js et coller les fichiers).
+2. Dans l'onglet **Secrets** du Repl (pas de fichier `.env`, Replit gère ça séparément et de façon chiffrée), ajouter `DISCORD_TOKEN`, `CLIENT_ID`, `GUILD_ID`.
+3. Lancer le Repl une première fois (`npm install` puis `npm run deploy-commands` dans la console Replit, une seule fois), puis `npm start` (ou configurer la commande `run` du Repl sur `npm start`).
+4. Le Repl expose une URL web (visible dans l'onglet Webview) — c'est le petit serveur de `src/keepalive.js` qui répond "Le Cercle des Loups — bot en ligne".
+5. Sur https://uptimerobot.com (gratuit, sans CB), créer un moniteur HTTP(s) pointant vers cette URL, intervalle 5 minutes — ça empêche le Repl de s'endormir par inactivité.
+
+Limite connue : ce n'est pas un hébergement garanti par Replit pour ce cas d'usage (contournement de la mise en veille), donc de rares coupures/redémarrages peuvent survenir. Suffisant pour un petit bot comme celui-ci.
