@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { REST, Routes, SlashCommandBuilder } = require("discord.js");
 const roles = require("./roles");
+const { CATEGORIES } = require("./tickets");
 
 const { DISCORD_TOKEN, CLIENT_ID, GUILD_ID } = process.env;
 
@@ -9,12 +10,21 @@ if (!DISCORD_TOKEN || !CLIENT_ID) {
     process.exit(1);
 }
 
-const commands = roles.map((role) =>
+const roleCommands = roles.map((role) =>
     new SlashCommandBuilder()
         .setName(role.command)
         .setDescription(`Affiche les infos du rôle ${role.name}`)
         .toJSON()
 );
+
+const ticketCommands = Object.entries(CATEGORIES).map(([command, category]) =>
+    new SlashCommandBuilder()
+        .setName(command)
+        .setDescription(`Envoyer ${category === "Bug" ? "un bug" : `une ${category.toLowerCase()}`} au staff en privé`)
+        .toJSON()
+);
+
+const commands = [...roleCommands, ...ticketCommands];
 
 const rest = new REST().setToken(DISCORD_TOKEN);
 

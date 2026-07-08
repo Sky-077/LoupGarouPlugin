@@ -2,7 +2,7 @@
 
 Bot Discord séparé du plugin Minecraft (Node.js). Il ajoute :
 - Une commande slash par rôle (`/villageois`, `/loup_garou`, `/sorciere`, ...) : chacune répond en privé (ephemeral, visible seulement par celui qui l'utilise) avec le camp et les pouvoirs du rôle.
-- Un système de tickets (`src/tickets.js`) : tout message posté dans les salons de support configurés est automatiquement relayé dans un salon de logs, avec un lien vers le message d'origine et des boutons d'action réservés au staff (Pris en charge / Résolu / Ignoré).
+- Un système de tickets (`src/tickets.js`) : `/probleme`, `/bug`, `/suggestion` et `/candidature` ouvrent un formulaire privé (rien n'est jamais posté publiquement), et le contenu est relayé dans un salon de logs avec des boutons d'action réservés au staff (Pris en charge / Résolu / Ignoré).
 
 ## Installation
 
@@ -13,7 +13,6 @@ Bot Discord séparé du plugin Minecraft (Node.js). Il ajoute :
    - `CLIENT_ID` : l'Application ID
    - `GUILD_ID` : l'ID du serveur "Le Cercle des Loups" (clic droit sur le serveur → Copier l'identifiant, mode développeur à activer dans les paramètres Discord). Recommandé : les commandes de guilde s'activent instantanément, contrairement aux commandes globales (~1h de propagation).
 4. Pour le système de tickets, compléter aussi dans `.env` :
-   - `TICKET_CHANNEL_IDS` : les ID des salons à surveiller, séparés par des virgules (ex: `111,222,333`)
    - `LOG_CHANNEL_ID` : l'ID du salon où les tickets sont relayés (ex: `#logs-modération`)
    - `STAFF_ROLE_ID` : l'ID du rôle autorisé à cliquer sur les boutons d'action (ex: le rôle Modérateur)
 5. `npm install`

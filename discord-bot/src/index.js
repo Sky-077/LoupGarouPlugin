@@ -2,7 +2,7 @@ require("dotenv").config();
 const { Client, GatewayIntentBits, EmbedBuilder, MessageFlags } = require("discord.js");
 const roles = require("./roles");
 const { startKeepAliveServer } = require("./keepalive");
-const { handleTicketMessage, handleTicketButton } = require("./tickets");
+const { handleTicketCommand, handleTicketModalSubmit, handleTicketButton } = require("./tickets");
 
 startKeepAliveServer();
 
@@ -20,20 +20,16 @@ const TEAM_LABELS = {
 
 const rolesByCommand = new Map(roles.map((role) => [role.command, role]));
 
-const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
-});
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once("ready", () => {
     console.log(`Connecté en tant que ${client.user.tag}`);
 });
 
-client.on("messageCreate", (message) => {
-    handleTicketMessage(message).catch((error) => console.error("Erreur ticket :", error));
-});
-
 client.on("interactionCreate", async (interaction) => {
     if (await handleTicketButton(interaction)) return;
+    if (await handleTicketCommand(interaction)) return;
+    if (await handleTicketModalSubmit(interaction)) return;
     if (!interaction.isChatInputCommand()) return;
 
     const role = rolesByCommand.get(interaction.commandName);
