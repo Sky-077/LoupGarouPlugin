@@ -76,9 +76,9 @@ public class ChasseurDePrimesRole extends Role {
     public String[] getInstructions() {
 
         List<String> lines = new ArrayList<>();
-        lines.add("Vous êtes solitaire : vous gagnez seul en étant l'unique survivant, tout le monde éliminé (y compris les autres solitaires).");
-        lines.add("À l'activation du PVP, vous recevez un premier contrat secret. Le second arrive à l'épisode suivant votre premier succès.");
-        lines.add("Éliminer votre cible en cours remplit le contrat et vous rapporte du matériel utile.");
+        lines.add("Rôle solitaire : la victoire exige d'être le dernier en vie, tous les autres camps et solitaires éliminés.");
+        lines.add("Un premier contrat secret vous est confié dès l'activation du PVP ; le suivant tombe à l'épisode qui suit la réussite du précédent.");
+        lines.add("Abattre la cible actuellement visée valide le contrat et vous octroie du matériel.");
 
         if (currentContract != null) {
 
@@ -88,12 +88,12 @@ public class ChasseurDePrimesRole extends Role {
                 name = "Inconnu";
             }
 
-            lines.add("§eContrat en cours : " + name);
+            lines.add("§eCible actuelle : " + name);
 
         } else if (allContracts.size() < CONTRACT_COUNT) {
-            lines.add("§fAucun contrat actif pour l'instant.");
+            lines.add("§fAucune cible ne vous est actuellement assignée.");
         } else {
-            lines.add("§fVous n'avez plus de contrat à accomplir.");
+            lines.add("§fTous vos contrats ont déjà été traités.");
         }
 
         return lines.toArray(new String[0]);

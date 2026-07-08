@@ -14,9 +14,9 @@ public class IdiotDuVillageRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Vous devez gagner avec le Village.",
-                "Si un joueur qui n'appartient pas au camp des Loups-Garous vous tue, vous survivez (1 fois par partie) avec 8 cœurs de vie, et tout le monde apprend que vous êtes l'Idiot du Village.",
-                "Face à un Loup-Garou ou un Père des Loups, vous mourez normalement.",
+                "Votre camp est le Village, et sa victoire est la vôtre.",
+                "Tant que celui qui vous porte le coup fatal n'appartient pas au camp des Loups, vous survivez automatiquement (une fois par partie) avec 8 cœurs de vie restants, et votre identité d'Idiot du Village est alors révélée à tous.",
+                "Un Loup-Garou ou un Père des Loups, en revanche, vous tue sans recours.",
         };
     }
 

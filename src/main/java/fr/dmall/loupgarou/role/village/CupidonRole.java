@@ -14,10 +14,10 @@ public class CupidonRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Vous spawnez avec un arc, un livre enchanté Puissance III + Punch I et des flèches : combinez-les sur une enclume.",
-                "Une fois par partie, liez deux joueurs par l'amour avec /lg lier <joueur1> <joueur2>.",
-                "Si l'un des deux meurt, l'autre meurt aussi de chagrin.",
-                "S'ils sont de camps opposés, ils forment avec vous un camp Amoureux à part, qui gagne en étant le dernier camp survivant.",
+                "Votre équipement de départ comprend un arc, des flèches et un livre enchanté Puissance III + Punch I, à assembler sur une enclume.",
+                "/lg lier <joueur1> <joueur2> unit deux joueurs par les liens de l'amour, une seule fois par partie.",
+                "La mort de l'un entraîne immédiatement celle de l'autre, de chagrin.",
+                "Quel que soit leur camp d'origine, un camp Amoureux distinct se forme avec vous dès ce moment, et l'emporte en restant le dernier camp en lice.",
         };
     }
 

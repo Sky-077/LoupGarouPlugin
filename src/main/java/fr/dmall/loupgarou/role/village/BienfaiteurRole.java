@@ -31,11 +31,11 @@ public class BienfaiteurRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Vous devez gagner avec le Village.",
-                "Vous recevez 2 livres Protection II.",
-                "Offrez 1 cœur permanent à 3 joueurs différents (jamais vous-même) avec /lg conferer <joueur> (1 fois toutes les 5 minutes).",
-                "Le joueur visé reçoit le don discrètement, 3 minutes après votre commande.",
-                "Une fois vos 3 dons utilisés, vous obtenez une régénération lente permanente (1 cœur par minute).",
+                "Votre victoire passe par celle du Village.",
+                "Deux livres enchantés Protection II vous sont remis en dotation.",
+                "/lg conferer <joueur> offre discrètement 1 cœur de vie permanent à un joueur (jamais à vous-même), utilisable sur 3 joueurs distincts, au rythme d'une fois toutes les 5 minutes.",
+                "Le bénéficiaire reçoit le don 3 minutes plus tard, sans en avoir été averti.",
+                "Vos 3 dons épuisés, vous obtenez à votre tour une régénération continue d'1 cœur par minute.",
         };
     }
 

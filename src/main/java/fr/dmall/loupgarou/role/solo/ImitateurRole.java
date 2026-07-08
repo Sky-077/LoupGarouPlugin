@@ -58,11 +58,11 @@ public class ImitateurRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Vous devez gagner seul.",
-                "Vous disposez de Force I en permanence jusqu'au milieu de l'épisode 6.",
-                "Le premier joueur que vous tuez vous transmet son rôle : vous volez ses pouvoirs, ses commandes et ses effets.",
-                "Vous conservez cependant votre condition de victoire : vous devez gagner seul dans tous les cas.",
-                "Imiter un rôle vous fait immédiatement perdre votre Force I.",
+                "Comme tout rôle solitaire, votre victoire ne peut être que personnelle.",
+                "Force I reste active en continu jusqu'à la moitié de l'épisode 6.",
+                "Éliminer votre toute première victime vous fait hériter intégralement de son rôle : ses pouvoirs, ses commandes et ses effets deviennent les vôtres.",
+                "Votre condition de victoire ne change pas pour autant : rester l'unique survivant demeure obligatoire.",
+                "L'instant où vous imitez un rôle, votre Force I disparaît aussitôt.",
         };
     }
 

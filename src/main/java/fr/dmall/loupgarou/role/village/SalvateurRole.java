@@ -39,9 +39,9 @@ public class SalvateurRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Vous devez gagner avec le Village.",
-                "Une fois par épisode, protégez un joueur jusqu'à la fin de l'épisode avec /lg proteger <joueur>.",
-                "Le joueur protégé reçoit Résistance I et 50% de réduction des dégâts de chute, sans en être informé.",
+                "Le Village est votre camp, et sa victoire scelle la vôtre.",
+                "/lg proteger <joueur> place un joueur sous protection jusqu'à la fin de l'épisode en cours, une fois par épisode.",
+                "La cible bénéficie de Résistance I et d'une réduction de 50% des dégâts de chute, sans jamais en être avertie.",
         };
     }
 

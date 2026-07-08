@@ -13,10 +13,10 @@ public class PereDesLoupsRole extends WolfRole {
     public String[] getInstructions() {
 
         List<String> lines = new ArrayList<>();
-        lines.add("Vous recevez Force I chaque nuit, comme un Loup-Garou.");
-        lines.add("En restant à proximité d'un joueur, vous le corrompez bien plus vite qu'un Loup-Garou classique (1% par seconde).");
-        lines.add("Quand un joueur corrompu à 100% meurt de la main d'un loup, vous recevez un message cliquable (10s) :");
-        lines.add("§a/lg infecter <joueur> §fpour le transformer en Loup-Garou, ou §c/lg laissermourir <joueur> §fpour le laisser mourir.");
+        lines.add("Comme un Loup-Garou, vous bénéficiez de Force I chaque nuit.");
+        lines.add("Votre proximité corrompt les joueurs à un rythme bien plus élevé qu'un Loup-Garou ordinaire : +1% chaque seconde.");
+        lines.add("Lorsqu'une victime corrompue à 100% succombe sous les coups d'un Loup, un message cliquable vous est envoyé, valable 10 secondes :");
+        lines.add("§a/lg infecter <joueur> §fla convertit en Loup-Garou, §c/lg laissermourir <joueur> §fla laisse mourir.");
         lines.addAll(getWolfPackLines());
 
         return lines.toArray(new String[0]);

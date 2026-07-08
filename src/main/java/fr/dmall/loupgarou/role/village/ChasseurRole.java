@@ -18,14 +18,14 @@ public class ChasseurRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Vous recevez un arc enchanté Puissance IV et des flèches.",
-                "Vous infligez un bonus de dégâts contre le camp des Loups-Garous (Force 0.5), qui augmente de 0.1 à chaque Loup tué, jusqu'à Force I maximum.",
-                "Quand vous recevez un coup mortel, vous disposez de 15 secondes avant de mourir réellement.",
-                "Pendant ce délai, ripostez avec /lg tirer <joueur> (autre que votre tueur), 1 fois par partie :",
-                "  - Sur un Loup-Garou/Père des Loups : sa vie maximale est réduite de moitié, définitivement.",
-                "  - Sur un solitaire : il perd un quart de sa vie maximale, définitivement.",
-                "  - Sur un villageois : il perd 6 cœurs (non définitif).",
-                "Si un Loup-Garou ou un Père des Loups vous tue, il ne reçoit pas son bonus de Speed/Absorption habituel.",
+                "Un arc enchanté Puissance IV, accompagné de flèches, vous est fourni.",
+                "Contre le camp des Loups, vos coups portent un bonus de dégâts (Force 0.5 de base), qui progresse de 0.1 à chaque Loup abattu, jusqu'à un plafond de Force I.",
+                "Un coup normalement fatal vous laisse 15 secondes de sursis avant la mort définitive.",
+                "Durant ce sursis, /lg tirer <joueur> permet une dernière riposte sur une cible différente de votre tueur (une seule fois par partie) :",
+                "  - Contre un Loup-Garou/Père des Loups : sa vie maximale chute de moitié, de façon irréversible.",
+                "  - Contre un solitaire : sa vie maximale diminue d'un quart, de façon irréversible.",
+                "  - Contre un villageois : il perd 6 cœurs de vie actuelle (récupérables).",
+                "Vous éliminer ne procure à un Loup-Garou ou un Père des Loups aucun de leurs bonus habituels de Speed/Absorption.",
         };
     }
 

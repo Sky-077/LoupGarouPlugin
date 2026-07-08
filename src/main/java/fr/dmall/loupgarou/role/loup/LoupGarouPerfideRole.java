@@ -106,12 +106,12 @@ public class LoupGarouPerfideRole extends WolfRole implements NightInvisibilityR
     public String[] getInstructions() {
 
         List<String> lines = new ArrayList<>();
-        lines.add("Vous recevez Force I chaque nuit, comme un loup.");
-        lines.add("Éliminez les villageois en combat direct (PVP libre, pas de vote ni de ciblage).");
-        lines.add("En restant à proximité d'un joueur, vous le corrompez (1% toutes les 5 secondes).");
-        lines.add("Retirez toute votre armure pendant la nuit pour devenir invisible durant 5 minutes (1 fois par nuit).");
-        lines.add("Remettre une pièce d'armure annule l'effet pour le reste de la nuit.");
-        lines.add("Pendant l'invisibilité, vous générez des particules visibles par la Petite Fille et le Feu Follet, et vous voyez aussi les leurs.");
+        lines.add("Comme tout Loup, vous bénéficiez de Force I chaque nuit.");
+        lines.add("Aucune procédure de vote ou de ciblage : vous éliminez le Village directement au corps-à-corps, en PVP libre.");
+        lines.add("Rester proche d'un joueur le corrompt progressivement : +1% toutes les 5 secondes.");
+        lines.add("En vous délestant complètement de votre armure la nuit, vous devenez invisible pour 5 minutes (une activation par nuit).");
+        lines.add("Le fait de renfiler ne serait-ce qu'une pièce d'armure met fin à l'invisibilité jusqu'au matin.");
+        lines.add("Tant que vous êtes invisible, la Petite Fille et le Feu Follet peuvent repérer votre position via des particules, et vous repérez les leurs de la même façon.");
         lines.addAll(getWolfPackLines());
 
         return lines.toArray(new String[0]);

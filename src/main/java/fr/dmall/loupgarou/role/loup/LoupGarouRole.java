@@ -13,10 +13,10 @@ public class LoupGarouRole extends WolfRole {
     public String[] getInstructions() {
 
         List<String> lines = new ArrayList<>();
-        lines.add("Vous recevez Force I chaque nuit.");
-        lines.add("Éliminez les villageois en combat direct (PVP libre, pas de vote ni de ciblage).");
-        lines.add("En restant à proximité d'un joueur, vous le corrompez (1% toutes les 5 secondes).");
-        lines.add("Si un joueur corrompu à 100% meurt de la main d'un loup, le Père des Loups peut choisir de l'infecter.");
+        lines.add("La nuit venue, vous bénéficiez de Force I.");
+        lines.add("Aucune procédure de vote ou de ciblage : vous éliminez le Village directement au corps-à-corps, en PVP libre.");
+        lines.add("Rester proche d'un joueur le corrompt progressivement : +1% toutes les 5 secondes.");
+        lines.add("Quand une victime corrompue à 100% meurt sous les coups d'un Loup, le Père des Loups a la possibilité de la convertir plutôt que de la laisser mourir.");
         lines.addAll(getWolfPackLines());
 
         return lines.toArray(new String[0]);

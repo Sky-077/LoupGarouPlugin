@@ -26,11 +26,11 @@ public class VilainPetitLoupRole extends WolfRole {
     public String[] getInstructions() {
 
         List<String> lines = new ArrayList<>();
-        lines.add("Vous disposez en permanence d'un bonus de dégâts au corps-à-corps équivalent à Force 0.5 (+1.5 dégâts), jour et nuit.");
-        lines.add("La nuit, vous bénéficiez en plus d'un bonus de vitesse de déplacement (Speed 0.5).");
-        lines.add("Éliminez les villageois en combat direct (PVP libre, pas de vote ni de ciblage).");
-        lines.add("En restant à proximité d'un joueur, vous le corrompez (1% toutes les 5 secondes).");
-        lines.add("Si un joueur corrompu à 100% meurt de la main d'un loup, le Père des Loups peut choisir de l'infecter.");
+        lines.add("En permanence, jour et nuit, vos attaques au corps-à-corps bénéficient d'un bonus de dégâts équivalent à Force 0.5 (+1.5 dégâts).");
+        lines.add("Un bonus de vitesse supplémentaire (Speed 0.5) s'ajoute à cela durant la nuit.");
+        lines.add("Aucune procédure de vote ou de ciblage : vous éliminez le Village directement au corps-à-corps, en PVP libre.");
+        lines.add("Rester proche d'un joueur le corrompt progressivement : +1% toutes les 5 secondes.");
+        lines.add("Quand une victime corrompue à 100% meurt sous les coups d'un Loup, le Père des Loups a la possibilité de la convertir plutôt que de la laisser mourir.");
         lines.addAll(getWolfPackLines());
 
         return lines.toArray(new String[0]);

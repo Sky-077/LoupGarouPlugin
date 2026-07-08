@@ -15,8 +15,8 @@ public class SorciereRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Potion de vie : quand un joueur non infecté est sur le point de mourir, vous recevez un message cliquable (10s) pour le sauver avec /lg soigner <joueur> (1 fois par partie).",
-                "Potion de mort : retirez 2 cœurs de vie maximum, définitivement, à un joueur avec /lg empoisonner <joueur> (1 fois par partie).",
+                "Potion de vie : la mort imminente d'un joueur non infecté vous envoie un message cliquable (valable 10s) permettant de le sauver via /lg soigner <joueur> (une fois par partie).",
+                "Potion de mort : /lg empoisonner <joueur> retire 2 cœurs de vie maximum à une cible, de façon irréversible (une fois par partie).",
         };
     }
 

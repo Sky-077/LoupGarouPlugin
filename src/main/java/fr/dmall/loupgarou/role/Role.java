@@ -37,7 +37,7 @@ public abstract class Role {
     }
 
     public String[] getInstructions() {
-        return new String[] { "Aucun pouvoir spécial." };
+        return new String[] { "Pas de pouvoir particulier associé à ce rôle." };
     }
 
     public void sendInstructions(Player player) {

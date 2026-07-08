@@ -46,16 +46,16 @@ public class LoupBlancRole extends Role {
     public String[] getInstructions() {
 
         List<String> lines = new ArrayList<>();
-        lines.add("Vous êtes solitaire : vous gagnez seul en étant l'unique survivant, même face aux Loups.");
-        lines.add("Vous recevez la Force I chaque nuit, comme un loup.");
-        lines.add("Vous obtenez 15 cœurs de vie à la révélation des rôles.");
-        lines.add("Vous connaissez l'identité des Loups-Garous, mais vous devrez tous les éliminer (eux comme les autres) pour gagner.");
+        lines.add("Rôle solitaire : la victoire n'est acquise qu'en étant l'ultime survivant, Loups compris.");
+        lines.add("À la manière d'un Loup, vous obtenez Force I chaque nuit.");
+        lines.add("La révélation des rôles vous porte à 15 cœurs de vie.");
+        lines.add("L'identité des Loups-Garous vous est connue, mais gagner exige de tous les éliminer, eux inclus.");
 
         if (knownWolves.isEmpty()) {
-            lines.add("§fAucun Loup-Garou dans cette partie.");
+            lines.add("§fCette partie ne compte aucun Loup-Garou.");
         } else {
 
-            lines.add("§eLoups connus :");
+            lines.add("§eLoups identifiés :");
 
             for (UUID wolf : knownWolves) {
 

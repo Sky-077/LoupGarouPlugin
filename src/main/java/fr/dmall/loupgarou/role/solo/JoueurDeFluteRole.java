@@ -19,12 +19,12 @@ public class JoueurDeFluteRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Vous devez gagner seul.",
-                "Tant que vous portez une Flûte sur vous, vous charmez les joueurs à moins de 20 blocs (1% toutes les 4 secondes).",
-                "Frapper un joueur au corps-à-corps augmente son charme de 10% (1 fois par joueur).",
-                "Fabriquez des Flûtes (8 lingots d'or autour d'un bâton) et donnez-en une à un joueur visé par clic droit (portée 5 blocs, 1 flûte par joueur).",
-                "Un joueur ayant reçu une Flûte charme les autres à son insu, 2 fois plus lentement que vous, sans pouvoir s'en débarrasser (notifié au début de l'épisode suivant).",
-                "Paliers de joueurs charmés à 100% dans la partie (comptent même après leur mort) : 3 → +2 cœurs, 6 → Force 0.5, 9 → Force I + Speed 0.5, 12 → +1 cœur, tous les joueurs vivants (min. 6) → Résistance I.",
+                "Votre victoire est strictement individuelle.",
+                "Porter une Flûte sur vous charme automatiquement les joueurs situés à moins de 20 blocs, à raison de +1% toutes les 4 secondes.",
+                "Un coup au corps-à-corps ajoute instantanément 10% de charme à la cible touchée (une seule fois par joueur).",
+                "Craftez des Flûtes supplémentaires (8 lingots d'or autour d'un bâton) et transmettez-en une par clic droit sur un joueur visé (portée 5 blocs, une seule par joueur).",
+                "Le joueur qui reçoit une Flûte charme à son tour les autres, sans le savoir, deux fois plus lentement que vous, et ne peut plus s'en séparer (il ne l'apprendra qu'au début de l'épisode suivant).",
+                "Des bonus cumulatifs se débloquent selon le nombre total de joueurs charmés à 100% (comptés même après leur mort) : 3 → +2 cœurs, 6 → Force 0.5, 9 → Force I + Speed 0.5, 12 → +1 cœur, la totalité des vivants (au moins 6) → Résistance I.",
         };
     }
 

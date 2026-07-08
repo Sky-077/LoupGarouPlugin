@@ -128,12 +128,12 @@ public class FeuFolletRole extends Role {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Vous devez gagner seul.",
-                "Retirez toute votre armure quand vous le souhaitez pour devenir invisible en permanence (annulé en remettant une pièce d'armure).",
-                "Dans cet état, vous générez des particules visibles par la Petite Fille (et le Loup-Garou Perfide), mais vous voyez aussi les leurs.",
-                "Activez votre Folie Incendiaire avec /lg folie (1 fois toutes les 10 minutes, dure 1 minute) : Speed I, et vos coups au corps-à-corps mettent le feu.",
-                "Votre Plume vous téléporte 50 blocs dans la direction visée par clic droit (1 fois toutes les 10 minutes).",
-                "Chaque début de nuit, vous ressentez le rôle d'un joueur aléatoire à moins de 50 blocs (aucune info s'il n'y a personne à portée).",
+                "Vous ne pouvez l'emporter que seul, sans allié.",
+                "Se dépouiller entièrement de son armure, à n'importe quel moment, déclenche une invisibilité sans limite de durée (stoppée dès qu'une pièce d'armure est remise).",
+                "Une fois invisible, des particules trahissent votre position aux yeux de la Petite Fille et du Loup-Garou Perfide — et réciproquement, vous percevez les leurs.",
+                "/lg folie déclenche votre Folie Incendiaire (rechargement de 10 minutes, effet d'1 minute) : Speed I, et chacun de vos coups au corps-à-corps enflamme l'adversaire.",
+                "Un clic droit avec votre Plume vous projette 50 blocs dans la direction regardée (rechargement de 10 minutes).",
+                "À chaque tombée de la nuit, le rôle d'un joueur aléatoire situé à moins de 50 blocs vous est révélé (rien ne se passe si personne n'est à portée).",
         };
     }
 

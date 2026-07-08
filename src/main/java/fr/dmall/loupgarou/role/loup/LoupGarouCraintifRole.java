@@ -25,13 +25,13 @@ public class LoupGarouCraintifRole extends WolfRole {
     public String[] getInstructions() {
 
         List<String> lines = new ArrayList<>();
-        lines.add("Éliminez les villageois en combat direct (PVP libre, pas de vote ni de ciblage).");
-        lines.add("En restant à proximité d'un joueur, vous le corrompez (1% toutes les 5 secondes).");
-        lines.add("Vos effets dépendent du nombre de Loups-Garous à moins de 20 blocs de vous (vous inclus) :");
-        lines.add("  - Plus de 4 loups : Faiblesse I.");
-        lines.add("  - 2 loups ou moins : Résistance I le jour, Force I la nuit.");
-        lines.add("  - Seul (vous êtes l'unique loup à portée) : Speed 0.5, en plus de l'effet précédent.");
-        lines.add("Vous ne pouvez voter que blanc, et votre mort ne produit aucun message : vous ne pouvez être ni sauvé par la Sorcière, ni infecté par le Père des Loups.");
+        lines.add("Aucune procédure de vote ou de ciblage : vous éliminez le Village directement au corps-à-corps, en PVP libre.");
+        lines.add("Rester proche d'un joueur le corrompt progressivement : +1% toutes les 5 secondes.");
+        lines.add("Votre état varie selon le nombre de Loups-Garous présents dans un rayon de 20 blocs autour de vous (vous y compris) :");
+        lines.add("  - Au-delà de 4 loups à portée : Faiblesse I.");
+        lines.add("  - 2 loups ou moins à portée : Résistance I de jour, Force I de nuit.");
+        lines.add("  - Si vous êtes l'unique loup présent : Speed 0.5 s'ajoute à l'effet ci-dessus.");
+        lines.add("Votre vote est toujours neutralisé en blanc, et votre mort reste silencieuse : ni la Sorcière ni le Père des Loups ne peuvent intervenir sur votre sort.");
         lines.addAll(getWolfPackLines());
 
         return lines.toArray(new String[0]);

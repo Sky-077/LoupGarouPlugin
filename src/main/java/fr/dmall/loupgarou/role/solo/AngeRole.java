@@ -76,12 +76,12 @@ public class AngeRole extends Role {
     public String[] getInstructions() {
 
         List<String> lines = new ArrayList<>();
-        lines.add("Vous êtes l'Ange, un rôle solitaire à deux visages.");
+        lines.add("L'Ange est un rôle solitaire qui peut prendre deux formes distinctes.");
 
         if (form == Form.UNDECIDED) {
-            lines.add("§eChoisissez votre forme avec /lg ange dechu ou /lg ange gardien :");
-            lines.add(" - Ange Déchu : 12 cœurs, doit tuer une cible (ou contribuer à sa mort) pour passer à 15 cœurs. Gagne seul.");
-            lines.add(" - Ange Gardien : 15 cœurs, doit faire gagner son protégé en priorité. Si le protégé meurt, passe à 12 cœurs + Faiblesse permanente et doit gagner seul.");
+            lines.add("§eDéterminez votre forme via /lg ange dechu ou /lg ange gardien :");
+            lines.add(" - Ange Déchu : débute à 12 cœurs, passe à 15 en provoquant (ou en contribuant à) la mort de sa cible. Victoire en solitaire.");
+            lines.add(" - Ange Gardien : débute à 15 cœurs, sa priorité est la victoire de son protégé. La mort de ce dernier le fait retomber à 12 cœurs avec une Faiblesse permanente, et il doit alors gagner seul.");
             return lines.toArray(new String[0]);
         }
 
@@ -89,17 +89,17 @@ public class AngeRole extends Role {
 
         if (form == Form.DECHU) {
 
-            lines.add("§cAnge Déchu : vous devez gagner seul.");
-            lines.add("Votre cible : " + linkedName + (conditionFulfilled ? " §a(éliminée, vous êtes à 15 cœurs)" : ""));
+            lines.add("§cForme Déchue : la victoire ne peut venir que de vous seul.");
+            lines.add("Cible assignée : " + linkedName + (conditionFulfilled ? " §a(éliminée — vous êtes passé à 15 cœurs)" : ""));
 
         } else {
 
-            lines.add("§bAnge Gardien : vous devez faire gagner " + linkedName + " en priorité.");
+            lines.add("§bForme Gardienne : la victoire de " + linkedName + " est votre priorité absolue.");
 
             if (protegeDead) {
-                lines.add("§cVotre protégé est mort. Vous êtes à 12 cœurs avec Faiblesse permanente, et devez désormais gagner seul.");
+                lines.add("§cVotre protégé n'a pas survécu. Vous êtes retombé à 12 cœurs, affligé d'une Faiblesse permanente, et devez désormais viser la victoire seul.");
             } else {
-                lines.add("Si votre protégé passe sous 4 cœurs, utilisez /lg regen pour lui donner Régénération I (1 minute, 1x/partie).");
+                lines.add("Dès que votre protégé descend sous 4 cœurs, /lg regen lui accorde Régénération I pendant 1 minute (utilisable une seule fois par partie).");
             }
 
         }

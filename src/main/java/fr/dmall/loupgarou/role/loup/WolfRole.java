@@ -55,11 +55,11 @@ public abstract class WolfRole extends Role {
         List<String> lines = new ArrayList<>();
 
         if (knownWolves.isEmpty()) {
-            lines.add("§fVous êtes le seul loup de cette partie.");
+            lines.add("§fAucun autre Loup dans cette partie : vous êtes seul de votre camp.");
             return lines;
         }
 
-        lines.add("§eAutres Loups :");
+        lines.add("§eMembres de la meute :");
 
         for (UUID wolf : knownWolves) {
 

@@ -85,9 +85,9 @@ public class PetiteFilleRole extends Role implements NightInvisibilityRole {
     @Override
     public String[] getInstructions() {
         return new String[] {
-                "Retirez toute votre armure pendant la nuit pour devenir invisible durant 5 minutes.",
-                "Remettre une pièce d'armure annule l'effet immédiatement.",
-                "Ce pouvoir n'est utilisable qu'une fois par nuit.",
+                "Vous délester entièrement de votre armure durant la nuit déclenche une invisibilité de 5 minutes.",
+                "Renfiler ne serait-ce qu'une pièce d'armure met fin à l'effet sur-le-champ.",
+                "Une seule activation possible par nuit.",
         };
     }
 
