@@ -12,6 +12,7 @@
 
 ## Règles de travail à respecter absolument
 
+0. **Toujours répondre en français** dans la conversation avec l'utilisateur.
 1. **Toujours proposer un commit + push après chaque étape terminée et compilée**, et attendre la confirmation de l'utilisateur avant de commit/push (ne jamais commit sans qu'il ait dit "oui"/"vas-y").
 2. **Compiler (`./gradlew compileJava -q`) après chaque modification** avant de proposer le commit, pour être sûr que ça build.
 3. Progression **incrémentale, étape par étape** : une fonctionnalité à la fois.
