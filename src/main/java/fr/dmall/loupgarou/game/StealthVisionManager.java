@@ -7,6 +7,7 @@ import fr.dmall.loupgarou.role.loup.LoupGarouPerfideRole;
 import fr.dmall.loupgarou.role.solo.FeuFolletRole;
 import fr.dmall.loupgarou.role.village.PetiteFilleRole;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
@@ -86,6 +87,8 @@ public class StealthVisionManager implements Manager {
 
         }
 
+        Color invisibilityColor = PotionEffectType.INVISIBILITY.getColor();
+
         for (Player stealther : stealthers) {
 
             for (Player observer : observers) {
@@ -94,10 +97,7 @@ public class StealthVisionManager implements Manager {
                     continue;
                 }
 
-                // Réduire la quantité n'a pas changé le rendu trop gros/rapide côté Bedrock (confirme que c'est
-                // Geyser qui mappe ce type de particule différemment, hors de notre contrôle) : revenu à une
-                // quantité plus généreuse, pensée pour un bon rendu côté Java.
-                observer.spawnParticle(Particle.WITCH, stealther.getLocation().add(0, 1, 0), 5, 0.3, 0.4, 0.3, 0.0);
+                observer.spawnParticle(Particle.ENTITY_EFFECT, stealther.getLocation().add(0, 1, 0), 5, invisibilityColor);
 
             }
 
