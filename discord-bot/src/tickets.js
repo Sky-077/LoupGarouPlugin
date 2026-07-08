@@ -7,6 +7,7 @@ const {
     TextInputBuilder,
     TextInputStyle,
     MessageFlags,
+    ChannelType,
 } = require("discord.js");
 
 const LOG_CHANNEL_ID = process.env.LOG_CHANNEL_ID;
@@ -72,27 +73,36 @@ async function handleTicketModalSubmit(interaction) {
 
     const content = interaction.fields.getTextInputValue("content");
 
-    if (LOG_CHANNEL_ID) {
-        const logChannel = await interaction.client.channels.fetch(LOG_CHANNEL_ID).catch(() => null);
-        if (logChannel) {
-            const embed = new EmbedBuilder()
-                .setColor(STATUS.OPEN.color)
-                .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-                .setDescription(content)
-                .addFields(
-                    { name: "Catégorie", value: category, inline: true },
-                    { name: "Statut", value: STATUS.OPEN.label, inline: true }
-                )
-                .setTimestamp();
-
-            await logChannel.send({ embeds: [embed], components: [buildActionRow(false)] });
-        } else {
-            console.error("LOG_CHANNEL_ID introuvable ou inaccessible.");
-        }
+    const logChannel = LOG_CHANNEL_ID ? await interaction.client.channels.fetch(LOG_CHANNEL_ID).catch(() => null) : null;
+    if (!logChannel) {
+        console.error("LOG_CHANNEL_ID introuvable ou inaccessible.");
+        await interaction.reply({ content: "Ton message n'a pas pu être transmis, préviens un admin.", flags: MessageFlags.Ephemeral });
+        return true;
     }
 
+    const thread = await logChannel.threads.create({
+        name: `${category} - ${interaction.user.username}`,
+        type: ChannelType.PrivateThread,
+        invitable: false,
+        reason: `Ticket ouvert par ${interaction.user.tag}`,
+    });
+
+    await thread.members.add(interaction.user.id);
+
+    const embed = new EmbedBuilder()
+        .setColor(STATUS.OPEN.color)
+        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+        .setDescription(content)
+        .addFields(
+            { name: "Catégorie", value: category, inline: true },
+            { name: "Statut", value: STATUS.OPEN.label, inline: true }
+        )
+        .setTimestamp();
+
+    await thread.send({ embeds: [embed], components: [buildActionRow(false)] });
+
     await interaction.reply({
-        content: "Ton message a été transmis au staff en privé, merci !",
+        content: `Ton message a été transmis au staff. Un salon privé a été créé pour continuer la conversation : <#${thread.id}>`,
         flags: MessageFlags.Ephemeral,
     });
     return true;
@@ -121,6 +131,11 @@ async function handleTicketButton(interaction) {
 
     const closed = newStatus === STATUS.RESOLVED || newStatus === STATUS.IGNORED;
     await interaction.update({ embeds: [embed], components: [buildActionRow(closed)] });
+
+    if (closed && interaction.channel.isThread()) {
+        await interaction.channel.setArchived(true, `Ticket ${newStatus.label.toLowerCase()}`).catch(() => {});
+    }
+
     return true;
 }
 
