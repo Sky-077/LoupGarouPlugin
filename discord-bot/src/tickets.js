@@ -73,38 +73,46 @@ async function handleTicketModalSubmit(interaction) {
 
     const content = interaction.fields.getTextInputValue("content");
 
-    const logChannel = LOG_CHANNEL_ID ? await interaction.client.channels.fetch(LOG_CHANNEL_ID).catch(() => null) : null;
-    if (!logChannel) {
-        console.error("LOG_CHANNEL_ID introuvable ou inaccessible.");
-        await interaction.reply({ content: "Ton message n'a pas pu être transmis, préviens un admin.", flags: MessageFlags.Ephemeral });
-        return true;
+    try {
+        const logChannel = LOG_CHANNEL_ID ? await interaction.client.channels.fetch(LOG_CHANNEL_ID).catch(() => null) : null;
+        if (!logChannel) {
+            console.error("LOG_CHANNEL_ID introuvable ou inaccessible.");
+            await interaction.reply({ content: "Ton message n'a pas pu être transmis, préviens un admin.", flags: MessageFlags.Ephemeral });
+            return true;
+        }
+
+        const thread = await logChannel.threads.create({
+            name: `${category} - ${interaction.user.username}`,
+            type: ChannelType.PrivateThread,
+            invitable: false,
+            reason: `Ticket ouvert par ${interaction.user.tag}`,
+        });
+
+        await thread.members.add(interaction.user.id);
+
+        const embed = new EmbedBuilder()
+            .setColor(STATUS.OPEN.color)
+            .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+            .setDescription(content)
+            .addFields(
+                { name: "Catégorie", value: category, inline: true },
+                { name: "Statut", value: STATUS.OPEN.label, inline: true }
+            )
+            .setTimestamp();
+
+        await thread.send({ embeds: [embed], components: [buildActionRow(false)] });
+
+        await interaction.reply({
+            content: `Ton message a été transmis au staff. Un salon privé a été créé pour continuer la conversation : <#${thread.id}>`,
+            flags: MessageFlags.Ephemeral,
+        });
+    } catch (error) {
+        console.error("Erreur lors de la création du ticket :", error.message);
+        await interaction
+            .reply({ content: "Une erreur est survenue, préviens un admin.", flags: MessageFlags.Ephemeral })
+            .catch(() => {});
     }
 
-    const thread = await logChannel.threads.create({
-        name: `${category} - ${interaction.user.username}`,
-        type: ChannelType.PrivateThread,
-        invitable: false,
-        reason: `Ticket ouvert par ${interaction.user.tag}`,
-    });
-
-    await thread.members.add(interaction.user.id);
-
-    const embed = new EmbedBuilder()
-        .setColor(STATUS.OPEN.color)
-        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-        .setDescription(content)
-        .addFields(
-            { name: "Catégorie", value: category, inline: true },
-            { name: "Statut", value: STATUS.OPEN.label, inline: true }
-        )
-        .setTimestamp();
-
-    await thread.send({ embeds: [embed], components: [buildActionRow(false)] });
-
-    await interaction.reply({
-        content: `Ton message a été transmis au staff. Un salon privé a été créé pour continuer la conversation : <#${thread.id}>`,
-        flags: MessageFlags.Ephemeral,
-    });
     return true;
 }
 
@@ -114,26 +122,30 @@ async function handleTicketButton(interaction) {
     if (!newStatus) return false;
 
     if (STAFF_ROLE_ID && !interaction.member.roles.cache.has(STAFF_ROLE_ID)) {
-        await interaction.reply({ content: "Cette action est réservée au staff.", flags: MessageFlags.Ephemeral });
+        await interaction.reply({ content: "Cette action est réservée au staff.", flags: MessageFlags.Ephemeral }).catch(() => {});
         return true;
     }
 
-    const oldEmbed = interaction.message.embeds[0];
-    const embed = EmbedBuilder.from(oldEmbed)
-        .setColor(newStatus.color)
-        .setFields(
-            oldEmbed.fields.map((field) =>
-                field.name === "Statut"
-                    ? { name: "Statut", value: `${newStatus.label} (par ${interaction.user.username})`, inline: true }
-                    : field
-            )
-        );
+    try {
+        const oldEmbed = interaction.message.embeds[0];
+        const embed = EmbedBuilder.from(oldEmbed)
+            .setColor(newStatus.color)
+            .setFields(
+                oldEmbed.fields.map((field) =>
+                    field.name === "Statut"
+                        ? { name: "Statut", value: `${newStatus.label} (par ${interaction.user.username})`, inline: true }
+                        : field
+                )
+            );
 
-    const closed = newStatus === STATUS.RESOLVED || newStatus === STATUS.IGNORED;
-    await interaction.update({ embeds: [embed], components: [buildActionRow(closed)] });
+        const closed = newStatus === STATUS.RESOLVED || newStatus === STATUS.IGNORED;
+        await interaction.update({ embeds: [embed], components: [buildActionRow(closed)] });
 
-    if (closed && interaction.channel.isThread()) {
-        await interaction.channel.setArchived(true, `Ticket ${newStatus.label.toLowerCase()}`).catch(() => {});
+        if (closed && interaction.channel.isThread()) {
+            await interaction.channel.setArchived(true, `Ticket ${newStatus.label.toLowerCase()}`).catch(() => {});
+        }
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour du ticket :", error.message);
     }
 
     return true;
