@@ -16,6 +16,9 @@ Bot Discord séparé du plugin Minecraft (Node.js). Il ajoute :
    - `LOG_CHANNEL_ID` : l'ID du salon **parent** des fils de tickets (ex: `#tickets`) — doit être visible par tout le monde (sinon l'ajout de l'auteur au fil échoue avec une erreur "Missing Access"), mais avec "Envoyer des messages" refusé pour `@everyone` pour empêcher toute discussion directe dedans (laisser "Envoyer des messages dans les fils" autorisé).
    - `STAFF_NOTIFY_CHANNEL_ID` : l'ID du salon staff (ex: `#logs-modération`, visible seulement par le staff) où une notification est postée à chaque nouveau ticket, avec un lien vers le fil.
    - `STAFF_ROLE_ID` : l'ID du rôle autorisé à cliquer sur les boutons d'action (ex: le rôle Modérateur)
+   - `CHANNEL_PROBLEME_ID`, `CHANNEL_BUG_ID`, `CHANNEL_SUGGESTION_ID`, `CHANNEL_CANDIDATURE_ID` (optionnel) : si renseignés, chaque commande n'est utilisable que dans le salon correspondant (ex: `/bug` refusé ailleurs que `#bugs`), et **le bot supprime automatiquement** tout message qui n'est pas une commande dans ces salons (`handleChannelMessage`). Laisser vide = pas de restriction/suppression.
+
+   Important : laisser "Envoyer des messages" **autorisé** pour `@everyone` dans ces salons — le refuser désactive aussi la zone de saisie des commandes slash côté client Discord (les deux sont liées dans l'interface, même si ce sont des permissions distinctes côté API). C'est le bot qui fait le ménage, pas une permission de salon.
 
    Permissions Discord à vérifier :
    - Le **bot** a besoin, dans le salon `LOG_CHANNEL_ID`, de "Créer des fils de discussion privés" et "Envoyer des messages dans les fils".

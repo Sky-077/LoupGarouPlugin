@@ -21,6 +21,13 @@ const CATEGORIES = {
     candidature: "Candidature Host",
 };
 
+const CATEGORY_CHANNEL_IDS = {
+    probleme: process.env.CHANNEL_PROBLEME_ID,
+    bug: process.env.CHANNEL_BUG_ID,
+    suggestion: process.env.CHANNEL_SUGGESTION_ID,
+    candidature: process.env.CHANNEL_CANDIDATURE_ID,
+};
+
 const STATUS = {
     OPEN: { label: "Ouvert", color: 0xed4245 },
     TAKEN: { label: "Pris en charge", color: 0xfee75c },
@@ -62,6 +69,15 @@ function buildActionRow(disabled) {
 async function handleTicketCommand(interaction) {
     if (!interaction.isChatInputCommand()) return false;
     if (!CATEGORIES[interaction.commandName]) return false;
+
+    const requiredChannelId = CATEGORY_CHANNEL_IDS[interaction.commandName];
+    if (requiredChannelId && interaction.channelId !== requiredChannelId) {
+        await interaction.reply({
+            content: `Cette commande ne peut être utilisée que dans <#${requiredChannelId}>.`,
+            flags: MessageFlags.Ephemeral,
+        });
+        return true;
+    }
 
     await interaction.showModal(buildModal(interaction.commandName));
     return true;
@@ -126,6 +142,22 @@ async function handleTicketModalSubmit(interaction) {
     return true;
 }
 
+const COMMAND_ONLY_CHANNEL_IDS = Object.values(CATEGORY_CHANNEL_IDS).filter(Boolean);
+
+async function handleChannelMessage(message) {
+    if (message.author.bot) return;
+    if (!COMMAND_ONLY_CHANNEL_IDS.includes(message.channelId)) return;
+
+    await message.delete().catch(() => {});
+
+    const notice = await message.channel
+        .send(`${message.author}, utilise la commande slash de ce salon plutôt qu'un message classique.`)
+        .catch(() => null);
+    if (notice) {
+        setTimeout(() => notice.delete().catch(() => {}), 5000);
+    }
+}
+
 async function handleTicketButton(interaction) {
     if (!interaction.isButton()) return false;
     const newStatus = ACTION_STATUS[interaction.customId];
@@ -161,4 +193,4 @@ async function handleTicketButton(interaction) {
     return true;
 }
 
-module.exports = { CATEGORIES, handleTicketCommand, handleTicketModalSubmit, handleTicketButton };
+module.exports = { CATEGORIES, handleTicketCommand, handleTicketModalSubmit, handleTicketButton, handleChannelMessage };
