@@ -19,6 +19,7 @@ const TEAM_LABELS = {
 };
 
 const rolesByCommand = new Map(roles.map((role) => [role.command, role]));
+const ROLES_CHANNEL_ID = process.env.ROLES_CHANNEL_ID;
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
@@ -40,6 +41,14 @@ client.on("interactionCreate", async (interaction) => {
 
     const role = rolesByCommand.get(interaction.commandName);
     if (!role) return;
+
+    if (ROLES_CHANNEL_ID && interaction.channelId !== ROLES_CHANNEL_ID) {
+        await interaction.reply({
+            content: `Cette commande ne peut être utilisée que dans <#${ROLES_CHANNEL_ID}>.`,
+            flags: MessageFlags.Ephemeral,
+        });
+        return;
+    }
 
     const embed = new EmbedBuilder()
         .setTitle(role.name)

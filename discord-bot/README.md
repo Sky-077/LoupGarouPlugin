@@ -12,6 +12,7 @@ Bot Discord séparé du plugin Minecraft (Node.js). Il ajoute :
    - `DISCORD_TOKEN` : le token du bot
    - `CLIENT_ID` : l'Application ID
    - `GUILD_ID` : l'ID du serveur "Le Cercle des Loups" (clic droit sur le serveur → Copier l'identifiant, mode développeur à activer dans les paramètres Discord). Recommandé : les commandes de guilde s'activent instantanément, contrairement aux commandes globales (~1h de propagation).
+   - `ROLES_CHANNEL_ID` (optionnel) : l'ID du salon `#rôles` — si renseigné, les 22 commandes `/<role>` ne sont utilisables que dans ce salon (refusé ailleurs). Laisser vide = pas de restriction.
 4. Pour le système de tickets, compléter aussi dans `.env` :
    - `LOG_CHANNEL_ID` : l'ID du salon **parent** des fils de tickets (ex: `#tickets`) — doit être visible par tout le monde (sinon l'ajout de l'auteur au fil échoue avec une erreur "Missing Access"), mais avec "Envoyer des messages" refusé pour `@everyone` pour empêcher toute discussion directe dedans (laisser "Envoyer des messages dans les fils" autorisé).
    - `STAFF_NOTIFY_CHANNEL_ID` : l'ID du salon staff (ex: `#logs-modération`, visible seulement par le staff) où une notification est postée à chaque nouveau ticket, avec un lien vers le fil.
