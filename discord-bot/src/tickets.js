@@ -11,6 +11,7 @@ const {
 } = require("discord.js");
 
 const LOG_CHANNEL_ID = process.env.LOG_CHANNEL_ID;
+const STAFF_NOTIFY_CHANNEL_ID = process.env.STAFF_NOTIFY_CHANNEL_ID;
 const STAFF_ROLE_ID = process.env.STAFF_ROLE_ID;
 
 const CATEGORIES = {
@@ -101,6 +102,15 @@ async function handleTicketModalSubmit(interaction) {
             .setTimestamp();
 
         await thread.send({ embeds: [embed], components: [buildActionRow(false)] });
+
+        if (STAFF_NOTIFY_CHANNEL_ID) {
+            const notifyChannel = await interaction.client.channels.fetch(STAFF_NOTIFY_CHANNEL_ID).catch(() => null);
+            if (notifyChannel) {
+                await notifyChannel
+                    .send(`🎫 Nouveau ticket **${category}** de **${interaction.user.tag}** : <#${thread.id}>`)
+                    .catch((error) => console.error("Erreur notification staff :", error.message));
+            }
+        }
 
         await interaction.reply({
             content: `Ton message a été transmis au staff. Un salon privé a été créé pour continuer la conversation : <#${thread.id}>`,

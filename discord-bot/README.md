@@ -2,7 +2,7 @@
 
 Bot Discord séparé du plugin Minecraft (Node.js). Il ajoute :
 - Une commande slash par rôle (`/villageois`, `/loup_garou`, `/sorciere`, ...) : chacune répond en privé (ephemeral, visible seulement par celui qui l'utilise) avec le camp et les pouvoirs du rôle.
-- Un système de tickets (`src/tickets.js`) : `/probleme`, `/bug`, `/suggestion` et `/candidature` ouvrent un formulaire privé, puis créent un **fil de discussion privé** dans le salon de logs (visible uniquement par l'auteur et le staff) où la conversation continue, avec des boutons d'action réservés au staff (Pris en charge / Résolu / Ignoré).
+- Un système de tickets (`src/tickets.js`) : `/probleme`, `/bug`, `/suggestion` et `/candidature` ouvrent un formulaire privé, puis créent un **fil de discussion privé** (visible uniquement par l'auteur et le staff) où la conversation continue, avec des boutons d'action réservés au staff (Pris en charge / Résolu / Ignoré). Une notification est aussi postée dans le salon de logs staff pour signaler le nouveau ticket.
 
 ## Installation
 
@@ -13,11 +13,12 @@ Bot Discord séparé du plugin Minecraft (Node.js). Il ajoute :
    - `CLIENT_ID` : l'Application ID
    - `GUILD_ID` : l'ID du serveur "Le Cercle des Loups" (clic droit sur le serveur → Copier l'identifiant, mode développeur à activer dans les paramètres Discord). Recommandé : les commandes de guilde s'activent instantanément, contrairement aux commandes globales (~1h de propagation).
 4. Pour le système de tickets, compléter aussi dans `.env` :
-   - `LOG_CHANNEL_ID` : l'ID du salon où les fils de tickets sont créés (ex: `#logs-modération`)
+   - `LOG_CHANNEL_ID` : l'ID du salon **parent** des fils de tickets (ex: `#tickets`) — doit être visible par tout le monde (sinon l'ajout de l'auteur au fil échoue avec une erreur "Missing Access"), mais avec "Envoyer des messages" refusé pour `@everyone` pour empêcher toute discussion directe dedans (laisser "Envoyer des messages dans les fils" autorisé).
+   - `STAFF_NOTIFY_CHANNEL_ID` : l'ID du salon staff (ex: `#logs-modération`, visible seulement par le staff) où une notification est postée à chaque nouveau ticket, avec un lien vers le fil.
    - `STAFF_ROLE_ID` : l'ID du rôle autorisé à cliquer sur les boutons d'action (ex: le rôle Modérateur)
 
    Permissions Discord à vérifier :
-   - Le **bot** a besoin, dans ce salon, de "Créer des fils de discussion privés" et "Envoyer des messages dans les fils".
+   - Le **bot** a besoin, dans le salon `LOG_CHANNEL_ID`, de "Créer des fils de discussion privés" et "Envoyer des messages dans les fils".
    - Le **rôle staff** a besoin de la permission "Gérer les fils de discussion" pour voir les fils privés sans y avoir été ajouté explicitement.
 5. `npm install`
 6. `npm run deploy-commands` (à refaire seulement si la liste des rôles change)
