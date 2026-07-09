@@ -21,6 +21,13 @@ const CATEGORIES = {
     candidature: "Candidature Host",
 };
 
+const CATEGORY_LABELS = {
+    probleme: "ton problème",
+    bug: "ton bug",
+    suggestion: "ta suggestion",
+    candidature: "ta candidature",
+};
+
 const CATEGORY_CHANNEL_IDS = {
     probleme: process.env.CHANNEL_PROBLEME_ID,
     bug: process.env.CHANNEL_BUG_ID,
@@ -50,7 +57,7 @@ function buildModal(commandName) {
             new ActionRowBuilder().addComponents(
                 new TextInputBuilder()
                     .setCustomId("content")
-                    .setLabel(`Décris ta ${category.toLowerCase()}`)
+                    .setLabel(`Décris ${CATEGORY_LABELS[commandName]}`)
                     .setStyle(TextInputStyle.Paragraph)
                     .setRequired(true)
                     .setMaxLength(1000)
@@ -147,6 +154,7 @@ const COMMAND_ONLY_CHANNEL_IDS = Object.values(CATEGORY_CHANNEL_IDS).filter(Bool
 async function handleChannelMessage(message) {
     if (message.author.bot) return;
     if (!COMMAND_ONLY_CHANNEL_IDS.includes(message.channelId)) return;
+    if (STAFF_ROLE_ID && message.member?.roles.cache.has(STAFF_ROLE_ID)) return;
 
     await message.delete().catch(() => {});
 
