@@ -18,7 +18,7 @@ public class MeSubCommand implements SubCommand {
 
     @Override
     public String getDescription() {
-        return "Affiche votre rôle actuel.";
+        return "Affiche votre rôle et ses pouvoirs.";
     }
 
     @Override
@@ -60,9 +60,7 @@ public class MeSubCommand implements SubCommand {
             return true;
         }
 
-        sender.sendMessage("§6===== Votre rôle =====");
-        sender.sendMessage("§eRôle : §f" + role.getName());
-        sender.sendMessage("§eÉquipe : §f" + role.getTeam());
+        role.sendInstructions(player);
 
         return true;
     }

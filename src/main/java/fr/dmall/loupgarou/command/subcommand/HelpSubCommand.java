@@ -26,11 +26,11 @@ public class HelpSubCommand implements SubCommand {
         sender.sendMessage("§e/lg delais <minjoueurs|invincibilite|revelation|pvp|vote|rapide> [valeur] §f- Configure les délais de partie [réservé à l'hôte]");
         sender.sendMessage("§e/lg menu §f- Ouvre le menu de paramètres de la partie [réservé à l'hôte]");
         sender.sendMessage("§e/lg role §f- Configure les rôles (add/remove/list/clear)");
-        sender.sendMessage("§e/lg me §f- Affiche votre rôle actuel");
+        sender.sendMessage("§e/lg me §f- Affiche votre rôle et ses pouvoirs");
         sender.sendMessage("§e/lg sonder <joueur> §f- Sonde un joueur (Voyante, la nuit)");
         sender.sendMessage("§e/lg infecter <joueur> §f- Accepte de transformer un joueur corrompu à 100% en Loup-Garou (Père des Loups)");
         sender.sendMessage("§e/lg laissermourir <joueur> §f- Refuse et laisse mourir un joueur corrompu à 100% (Père des Loups)");
-        sender.sendMessage("§e/lg regle §f- Réaffiche l'explication de votre rôle");
+        sender.sendMessage("§e/lg regle §f- Explique les règles générales du jeu");
         sender.sendMessage("§e/lg soigner <joueur> §f- Potion de vie (Sorcière)");
         sender.sendMessage("§e/lg empoisonner <joueur> §f- Potion de mort (Sorcière)");
         sender.sendMessage("§e/lg tirer <joueur> §f- Riposte en mourant (Chasseur)");

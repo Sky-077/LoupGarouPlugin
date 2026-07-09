@@ -108,12 +108,12 @@ Les Amoureux et les rôles solitaires ne sont concernés par aucun de ces effets
 | `/lg help` | Liste des commandes |
 | `/lg info` | État de la partie en cours |
 | `/lg join` / `/lg leave` | S'inscrire / se désinscrire |
-| `/lg me` | Voir son propre rôle |
-| `/lg regle` | Réafficher l'explication de son rôle |
+| `/lg me` | Voir son propre rôle et ses pouvoirs |
+| `/lg regle` | Explique les règles générales du jeu (disponible à tout moment) |
 | `/lg color <joueur1> <joueur2> ...>` | Colore le pseudo d'un ou plusieurs joueurs (au-dessus de la tête + liste Tab) — **visible uniquement par vous**, à tout moment |
 | `/lg host claim` / `/lg host release` | Revendiquer ou quitter le rôle d'Hôte (si vous êtes éligible) |
 
-Les commandes de pouvoir de rôle (`/lg sonder`, `/lg soigner`, `/lg tirer`, `/lg lier`, etc.) sont listées dans le message d'explication de votre rôle (`/lg regle`) une fois les rôles révélés.
+Les commandes de pouvoir de rôle (`/lg sonder`, `/lg soigner`, `/lg tirer`, `/lg lier`, etc.) sont listées dans le message d'explication de votre rôle (`/lg me`) une fois les rôles révélés.
 
 ## Astuces
 

@@ -19,8 +19,8 @@
 | `/lg host release` | Quitte le rôle d'Hôte (si on l'occupe actuellement) |
 | `/lg delais [minjoueurs\|invincibilite\|revelation\|pvp\|vote\|rapide] [valeur]` | Affiche (ouvert à tous) ou modifie (**réservé à l'Hôte actif**) le minimum de joueurs, les 4 délais de partie et le délai PVP/vote du mode rapide, en minutes |
 | `/lg menu` | Ouvre le menu GUI de paramètres (bordure/min. joueurs/délais/rôles) — **réservé à l'Hôte actif** |
-| `/lg me` | Affiche son propre rôle (bloqué tant que les rôles ne sont pas révélés) |
-| `/lg regle` | Réaffiche l'explication de son rôle (bloqué tant que non révélé) |
+| `/lg me` | Affiche son propre rôle et ses pouvoirs (bloqué tant que les rôles ne sont pas révélés) |
+| `/lg regle` | Explique les règles générales du jeu (ouvert à tous, disponible à tout moment) |
 | `/lg bordure <taille>` | Configure la taille de la bordure pour la prochaine partie — **réservé à l'Hôte actif** (sans argument : affiche la valeur actuelle, ouvert à tous) |
 | `/lg color <joueur1> <joueur2> ...>` | Ouvre un menu (16 laines colorées) pour colorer le pseudo (au-dessus de la tête + liste Tab) des joueurs listés, visible uniquement par soi-même |
 
@@ -76,7 +76,7 @@
 - [ ] `/lg fake spawn <nom> <role>` spawne bien un bot à la position de l'OP, visible dans le tab list et par les autres joueurs comme un vrai joueur (nom au-dessus de la tête, skin par défaut)
 - [ ] Le rôle assigné au spawn est correct (`/lg fake list` l'affiche) et n'est jamais réassigné par la suite (le bot n'apparaît pas dans le pool `/lg role`)
 - [ ] Spawné pendant une partie en cours (rôles révélés) : le bot compte bien pour la corruption (loup à proximité) et/ou le charme (Joueur de Flûte à proximité) en approchant un vrai joueur du bot ou l'inverse
-- [ ] Un bot avec un rôle Loup rejoint bien la liste `knownWolves` (visible via `/lg loups`/`/lg regle` des autres loups)
+- [ ] Un bot avec un rôle Loup rejoint bien la liste `knownWolves` (visible via `/lg loups`/`/lg me` des autres loups)
 - [ ] Le bot apparaît bien comme candidat/électeur dans le système de vote (compte dans les votes Village/Loups si son rôle le permet)
 - [ ] `/lg fake remove <nom>` et `/lg fake clear` suppriment bien le bot du serveur (plus dans le tab list) sans laisser d'erreur en console
 - [ ] Aucune erreur/exception dans les logs serveur pendant toute la durée de vie d'un bot (tick de jeu, changement jour/nuit, scoreboard, etc.)
@@ -189,8 +189,14 @@
 - [🟢] Chaque joueur reçoit bien un stack de 64 steaks cuits au moment du scattering
 - [🟢] La vie, la faim et le feu sont bien réinitialisés au scattering (corrigé : ne l'étaient pas, un joueur pouvait démarrer la partie suivante avec la vie/faim de la fin de la précédente) — à revalider
 
+### `/lg me` et `/lg regle` (commandes réorganisées)
+- [ ] `/lg me` affiche désormais le rôle **et** la liste complète des pouvoirs/instructions (fusion de l'ancien contenu de `/lg regle`)
+- [ ] `/lg regle` affiche désormais les règles générales du jeu (déroulé de partie, camps, conditions de victoire) — plus aucune référence au rôle du joueur
+- [ ] `/lg regle` fonctionne à tout moment : avant `/lg join`, pendant l'attente, avant la révélation des rôles, en pleine partie
+- [ ] `/lg help` reflète bien les nouvelles descriptions des deux commandes
+
 ### Révélation des rôles (10 min après le vrai début)
-- [🟢] Avant la révélation : `/lg me`, `/lg regle`, `/lg sonder`, `/lg soigner`, `/lg empoisonner`, `/lg tirer` renvoient tous "les rôles n'ont pas encore été révélés"
+- [ ] Avant la révélation : `/lg me`, `/lg sonder`, `/lg soigner`, `/lg empoisonner`, `/lg tirer` renvoient tous "les rôles n'ont pas encore été révélés" — `/lg regle` (règles générales) reste utilisable à tout moment, y compris avant révélation
 - [🟢] Avant la révélation : la corruption des loups ne progresse pas (aucun gain même en restant collé à la victime)
 - [🟢] Avant la révélation : le Loup-Garou n'a **pas** la Force la nuit, la Petite Fille ne peut **pas** activer l'invisibilité en retirant son armure
 - [🟢] À la révélation (10 min) : chaque joueur reçoit le message d'explication de son rôle, et le pouvoir jour/nuit s'active immédiatement si applicable (Force du Loup si c'est la nuit, etc.)
@@ -241,7 +247,7 @@
 - [🟢] Le Loup Blanc ne participe **pas** à la corruption (solo, hors meute)
 - [🟢] Quand un joueur corrompu à 100% meurt de la main d'un Loup-Garou ou Père des Loups (pas un autre camp) : sa mort réelle est suspendue, et c'est le **Père des Loups** (pas la victime) qui reçoit un message cliquable dans le chat pendant 10 secondes ("Infecter" / "Laisser mourir")
 - [🟢] Si aucun Père des Loups n'est vivant au moment du kill : la victime meurt normalement, aucune offre n'est envoyée
-- [🟢] En cliquant "Infecter" (ou `/lg infecter <joueur>`) dans les 10s : la victime devient Loup-Garou, repasse en survie (inventaire intact), rejoint la liste des loups connus (et réciproquement), `/lg regle` reflète le nouveau rôle
+- [ ] En cliquant "Infecter" (ou `/lg infecter <joueur>`) dans les 10s : la victime devient Loup-Garou, repasse en survie (inventaire intact), rejoint la liste des loups connus (et réciproquement), `/lg me` reflète le nouveau rôle
 - [🟢] En cliquant "Laisser mourir" (ou `/lg laissermourir <joueur>`) : la mort réelle a lieu immédiatement, sans attendre la fin des 10s
 - [🟢] Sans réponse du Père des Loups dans les 10s : la mort réelle a bien lieu normalement (comportement par défaut)
 - [🟢] La victime elle-même ne reçoit aucun message pendant ce délai (silencieux jusqu'au résultat final)
@@ -270,8 +276,8 @@
 
 ### Rôles (un par un, en conditions réelles avec plusieurs joueurs)
 - [🟢] **Villageois** : aucun comportement particulier
-- [🟢] **Loup-Garou** : Force I la nuit, retirée le jour ; `/lg regle` liste bien les autres Loups-Garous/Père des Loups de la partie (pas lui-même)
-- [🟢] **Père des Loups** : Force I comme un loup, corrompt les autres joueurs plus vite qu'un Loup-Garou classique (voir section Corruption) ; `/lg regle` liste bien les autres loups
+- [ ] **Loup-Garou** : Force I la nuit, retirée le jour ; `/lg me` liste bien les autres Loups-Garous/Père des Loups de la partie (pas lui-même)
+- [ ] **Père des Loups** : Force I comme un loup, corrompt les autres joueurs plus vite qu'un Loup-Garou classique (voir section Corruption) ; `/lg me` liste bien les autres loups
 - [🟢] **Grand Méchant Loup** : Force I en **permanence**, jour et nuit (contrairement au Loup-Garou classique qui la perd le jour) ; tous les autres aspects d'un loup normal fonctionnent (corruption, `/lg loups`, liste des loups connus, bonus de kill Speed/Absorption)
 - [🟢] **Bonus de kill des loups** : tuer un joueur donne Speed I + Absorption I (2♥) pendant 1 minute au tueur — vérifier pour Loup-Garou, Père des Loups, Grand Méchant Loup **et** Loup Blanc
 - [ ] **Loup-Garou Craintif** : tous les aspects normaux d'un loup (corruption, `/lg loups`, liste des loups connus) — mais Force I/Faiblesse/Résistance dynamiques selon le nombre de Loups-Garous à moins de 20 blocs (lui inclus), recalculé toutes les 5 secondes
@@ -333,18 +339,18 @@
   -[ ] Si un Loup-Garou ou un Père des Loups tue le Chasseur, il ne reçoit **pas** le bonus Speed I + Absorption I habituel (le Loup Blanc, lui, le reçoit normalement)
 - [🟢] **Cupidon** : reçoit un arc simple + livre Puissance IV + Punch I + 64 flèches **à la révélation (10 min)**, pas au scattering ; `/lg lier <joueur1> <joueur2>` fonctionne, 1x/partie
 - [🟢] **Chasseur de Primes** : reçoit un livre Tranchant IV **à la révélation (10 min)**, pas au scattering
-  - [🟢] Aucun contrat avant l'activation du PVP (`/lg regle` dit "Aucun contrat actif")
+  - [ ] Aucun contrat avant l'activation du PVP (`/lg me` dit "Aucune cible ne vous est actuellement assignée")
   - [🟢] Premier contrat reçu **à l'activation du PVP** (testable via `/lg forcepvp`, pas besoin d'attendre 30 min)
   - [🟢] Tuer la cible du 1er contrat donne un arc Puissance IV + 64 flèches et marque le contrat "rempli"
   - [🟢] Tuer la cible du 2e contrat donne des bottes en diamant Chute Amortie III
   - [🟢] Le second contrat n'arrive **pas** tout de suite après le premier, mais au **lever du jour suivant** (nouvel épisode)
   - [ ] Si la cible du contrat en cours meurt d'une autre main (PVP, chute...), le contrat est annulé (message au Chasseur de Primes) et le contrat suivant arrive au lever du jour suivant, comme pour un succès
-  - [ ] Une fois les 2 contrats résolus (remplis ou annulés), `/lg regle` affiche "Vous n'avez plus de contrat à accomplir"
-- [🟢] **Loup Blanc** : reçoit Force I la nuit comme un loup ; `/lg regle` liste bien les Loups-Garous/Père des Loups de la partie ; reçoit le livre Tranchant IV comme tout solo ; camp `Solitaire` dans le scoreboard (pas `Loups`) ; gagne seul même si tous les autres morts sont des loups
+  - [ ] Une fois les 2 contrats résolus (remplis ou annulés), `/lg me` affiche "Tous vos contrats ont déjà été traités"
+- [ ] **Loup Blanc** : reçoit Force I la nuit comme un loup ; `/lg me` liste bien les Loups-Garous/Père des Loups de la partie ; reçoit le livre Tranchant IV comme tout solo ; camp `Solitaire` dans le scoreboard (pas `Loups`) ; gagne seul même si tous les autres morts sont des loups
   - [🟢] Obtient bien 15 cœurs (30 PV) au moment de la révélation des rôles, plein de vie à cet instant
   - [🟢] Le bonus de cœurs est bien nettoyé en fin de partie (`/lg stop` ou victoire), retour à 10 cœurs normaux au lobby
-- [🟢] **Ange** : reçoit le livre Tranchant IV comme tout solo ; à la révélation, `/lg regle` invite à choisir sa forme
-  - [🟢] `/lg ange dechu` : passe à 12 cœurs, une cible vivante aléatoire est assignée (rôle révélé dans le message et via `/lg regle`)
+- [ ] **Ange** : reçoit le livre Tranchant IV comme tout solo ; à la révélation, `/lg me` invite à choisir sa forme
+  - [ ] `/lg ange dechu` : passe à 12 cœurs, une cible vivante aléatoire est assignée (rôle révélé dans le message et via `/lg me`)
   - [ ] Tuer sa cible (crédité comme tueur) fait passer l'Ange Déchu à 15 cœurs (message dédié) ; gagne seul
   - [🟢] `/lg ange gardien` : passe à 15 cœurs, un protégé vivant aléatoire est assigné (rôle révélé) ; l'Ange rejoint le camp effectif de son protégé (`teamOverride`, vérifier le scoreboard)
   - [ ] Si le protégé meurt : l'Ange Gardien passe à 12 cœurs + Faiblesse I permanente, redevient solitaire (`teamOverride` retiré), doit désormais gagner seul
@@ -375,7 +381,7 @@
   - [ ] Tous les effets (Invisibilité, Speed) sont bien nettoyés en fin de partie, pas de fuite après `/lg stop`
 - [🟢] **Imitateur** : Force I permanente (jour et nuit) dès la révélation
   - [🟢] La Force I disparaît automatiquement au milieu de l'épisode 6 (transition vers la nuit de l'épisode 6), sans avoir besoin de tuer qui que ce soit
-  - [🟢] La première victime qu'il tue (peu importe le camp) lui transmet son rôle : `/lg me` et `/lg regle` affichent le nouveau rôle juste après le kill, message dédié reçu
+  - [ ] La première victime qu'il tue (peu importe le camp) lui transmet son rôle : `/lg me` affiche le nouveau rôle juste après le kill, message dédié reçu
   - [🟢] Le rôle copié est une version **neuve** (charges/cooldowns non consommés), pas l'état exact de la victime
   - [ ] Il reçoit immédiatement les objets associés au rôle copié (arc du Chasseur, livres du Cupidon/Bienfaiteur, etc.) et le message d'explication du nouveau rôle
   - [ ] La Force I est immédiatement retirée dès qu'il imite un rôle (même si le milieu de l'épisode 6 n'est pas encore atteint)
@@ -437,7 +443,7 @@
 - [🟢] Sorcière qui soigne quelqu'un (`/lg soigner`) gagne +1 honneur
 - [ ] Un Villageois qui tue un allié Village perd -1 honneur (comportement inchangé)
 - [ ] **Corrigé** : un Loup qui tue un allié Loup gagne désormais **+1** honneur (pas -1) — se rapproche du +3 qui punit les Loups, au lieu de se rapprocher à tort du -3 qui les récompenserait (ancien effet pervers "trahir un Loup avantage le tueur")
-- [ ] À +3 d'honneur : Villageois gagne un cœur, Loup en perd un ; à -3 c'est l'inverse (vérifier via `/lg regle` ou en comptant les cœurs à l'écran)
+- [ ] À +3 d'honneur : Villageois gagne un cœur, Loup en perd un ; à -3 c'est l'inverse (vérifier via `/lg honneur <joueur>` en debug ou en comptant les cœurs à l'écran)
 - [ ] **Nouveau palier ±2** : à +2, un Villageois gagne un bonus de vitesse (Speed 0.5) et un Loup le perd (plus lent que la normale) ; à -2 c'est l'inverse
 - [ ] Le bonus de vitesse à ±2 reste actif en atteignant ±3 en plus du cœur (les paliers s'additionnent, ne s'excluent pas)
 - [ ] L'effet de cœur et l'effet de vitesse disparaissent si l'honneur repasse sous leur seuil respectif (pas des bonus figés)
