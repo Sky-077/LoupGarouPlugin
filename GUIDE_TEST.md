@@ -161,11 +161,12 @@
 ### Génération du monde
 - [🟢] Le monde de partie est bien vierge à chaque `/lg start`, sans trace de constructions/objets d'une partie précédente (corrigé : chaque partie utilise désormais un nom de monde unique — timestamp en suffixe — au lieu de réutiliser/supprimer le même dossier, qui pouvait rester verrouillé sous Windows et laisser resurgir l'ancien monde) — à revalider
 - [🟢] La bordure appliquée correspond bien à la valeur configurée via `/lg bordure`
-- [🟢] La recherche de zone évite bien les biomes interdits (océan, île champignon, glace/neige) au centre de la bordure — vérifier visuellement en `/lg forcestart` + explorer
+- [ ] La recherche de zone évite bien les biomes interdits (tous types d'océans, île champignon, glace/neige) **dans toute la bordure**, pas seulement pile au centre — corrigé : l'ancien test ne vérifiait que 5 points en croix (centre + 4 points cardinaux), ratant les diagonales, une bordure pouvait donc contenir un océan/île champignon sans être détectée ; teste maintenant 18 points (grille 3x3 à demi-rayon + rayon complet). À revalider en jeu, y compris en relançant plusieurs parties pour couvrir différentes seeds — reste une détection par échantillonnage, pas une garantie à 100% sur toute la surface (petite poche isolée entre deux points possible, cas rare)
 - [🟢] Aucune structure ne génère (village, temple, mineshaft, forteresse...)
 - [🟢] Aucun mob hostile/neutre (creeper, zombie, squelette, araignée, enderman...) ne spawn naturellement ; les animaux passifs (vache, cochon, poule) spawnent bien
 - [🟢] Impossible de voyager au Nether ou à l'End pendant la partie (message de blocage affiché)
 - [🟢] Le temps de génération du monde au lancement (peut geler le serveur une ou deux secondes)
+- [ ] La barre de localisation (flèches indiquant la direction des autres joueurs, activable côté client) reste inactive/vide dans le monde de partie — nouveau, `GameRules.LOCATOR_BAR` mis à `false` à la création du monde
 
 ### Limites d'enchantement, pêche et seaux de lave (actif à tout moment, pas seulement en partie)
 - [🟢] Table d'enchantement sur une armure en fer : jamais plus de Protection III proposé/appliqué
@@ -181,6 +182,7 @@
 - [🟢] Les livres donnés par un rôle (Cupidon Puissance IV, Chasseur, Bienfaiteur Protection II, rôles solitaires Tranchant IV) ne sont jamais bridés par ce système (ils ne passent pas par la table)
 - [🟢] La canne à pêche ne permet plus d'attraper quoi que ce soit (message "La pêche est désactivée." au lancer)
 - [🟢] Un seau de lave ne peut plus être vidé pour poser de la lave (message affiché, seau non consommé)
+- [ ] À l'enclume, fusionner deux objets/livres dont les enchantements sont tous les deux interdits (ex: Vitesse de Feu + Repoussée) : la case de résultat reste **vide** au lieu de proposer un objet/livre sans aucun enchantement — corrigé, rien n'est consommé (ni les deux objets d'origine, ni l'XP) tant que le résultat est vide
 
 ### Scattering et invincibilité
 - [🟢] Chaque joueur est téléporté à un endroit différent, sur un point de terrain sûr (pas dans le vide, pas dans l'eau/lave) — corrigé : évite maintenant les feuilles d'arbre, force le chargement du chunk, retente jusqu'à 10 fois si eau/lave — à revalider

@@ -3,6 +3,7 @@ package fr.dmall.loupgarou.game;
 import fr.dmall.loupgarou.LoupGarouPlugin;
 import fr.dmall.loupgarou.manager.Manager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRules;
 import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -139,6 +140,10 @@ public class WorldManager implements Manager {
         creator.generateStructures(false);
 
         World world = creator.createWorld();
+
+        // La barre de localisation (flèches indiquant la direction des autres joueurs) révélerait leur
+        // position relative en permanence — incompatible avec un jeu à rôles cachés, désactivée par défaut.
+        world.setGameRule(GameRules.LOCATOR_BAR, false);
 
         int[] center = findGoodRegionCenter(world);
         centerX = center[0];
@@ -369,18 +374,27 @@ public class WorldManager implements Manager {
 
         int radius = (int) (borderSize / 2.0);
 
-        int[][] offsets = {
-                { 0, 0 },
-                { radius, 0 }, { -radius, 0 },
-                { 0, radius }, { 0, -radius },
-        };
+        // Grille 3x3 à deux échelles (demi-rayon + rayon complet) au lieu d'une simple croix à 5 points :
+        // l'ancienne croix ne testait que les 4 points cardinaux, ratant entièrement les diagonales (NE/NO/SE/SO)
+        // — un océan ou une île champignon pouvait donc s'y trouver sans jamais être détecté. Toujours pas une
+        // garantie absolue sur toute la surface de la bordure (biome variable normal), mais couvre bien mieux
+        // la zone qu'avant pour un coût encore raisonnable (18 points par candidat au lieu de 5).
+        for (double fraction : new double[] { 0.5, 1.0 }) {
 
-        for (int[] offset : offsets) {
+            int offset = (int) (radius * fraction);
 
-            Biome biome = world.getBiome(centerX + offset[0], BIOME_SAMPLE_Y, centerZ + offset[1]);
+            for (int dx = -1; dx <= 1; dx++) {
 
-            if (FORBIDDEN_BIOMES.contains(biome)) {
-                return false;
+                for (int dz = -1; dz <= 1; dz++) {
+
+                    Biome biome = world.getBiome(centerX + dx * offset, BIOME_SAMPLE_Y, centerZ + dz * offset);
+
+                    if (FORBIDDEN_BIOMES.contains(biome)) {
+                        return false;
+                    }
+
+                }
+
             }
 
         }

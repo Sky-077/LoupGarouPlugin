@@ -15,6 +15,7 @@ import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
@@ -111,9 +112,29 @@ public class EnchantLimitListener implements Listener {
             return;
         }
 
-        if (applyEnchantCaps(result, (Player) viewer)) {
-            event.setResult(result);
+        if (!applyEnchantCaps(result, (Player) viewer)) {
+            return;
         }
+
+        // Si le filtrage n'a laissé aucun enchantement valide (ex: fusion de deux enchants interdits),
+        // annule le résultat au lieu de rendre un objet/livre vide contre les deux objets d'origine + l'XP :
+        // un résultat null laisse la case de résultat vide, donc rien n'est consommé (comme un objet incompatible).
+        if (hasNoEnchant(result)) {
+            event.setResult(null);
+            return;
+        }
+
+        event.setResult(result);
+
+    }
+
+    private boolean hasNoEnchant(ItemStack item) {
+
+        if (item.getType() == Material.ENCHANTED_BOOK) {
+            return ((EnchantmentStorageMeta) item.getItemMeta()).getStoredEnchants().isEmpty();
+        }
+
+        return item.getEnchantments().isEmpty();
 
     }
 
@@ -242,6 +263,13 @@ public class EnchantLimitListener implements Listener {
 
         return playerManager.get(player);
 
+    }
+
+    // shownLevels ne grossit que d'une entrée par joueur (écrasée à chaque nouvelle offre de la table),
+    // mais reste sinon accumulée à vie côté serveur sans jamais être libérée.
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        shownLevels.remove(event.getPlayer().getUniqueId());
     }
 
 }
